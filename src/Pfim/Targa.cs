@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Pfim
 {
@@ -21,15 +18,19 @@ namespace Pfim
                 case TargaHeader.TargaOrientation.BottomLeft:
                     BottomLeft(stream);
                     break;
+
                 case TargaHeader.TargaOrientation.BottomRight:
                     BottomRight(stream);
                     break;
+
                 case TargaHeader.TargaOrientation.TopRight:
                     TopRight(stream);
                     break;
+
                 case TargaHeader.TargaOrientation.TopLeft:
                     TopLeft(stream);
                     break;
+
                 default:
                     throw new ApplicationException("Targa orientation not recognized");
             }

@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Pfim
 {
     public class CompressedTarga : Targa
     {
-        public CompressedTarga(Stream str, TargaHeader header) : base(str, header) { }
+        public CompressedTarga(Stream str, TargaHeader header)
+            : base(str, header)
+        {
+        }
 
         protected override void BottomLeft(Stream str)
         {
