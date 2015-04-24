@@ -8,6 +8,7 @@ namespace Pfim
     /// </summary>
     public class UncompressedTarga : IDecodeTarga
     {
+        /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
@@ -30,6 +31,7 @@ namespace Pfim
             throw new NotImplementedException();
         }
 
+        /// <summary>Fills data starting from the top left</summary>
         public byte[] TopLeft(Stream str, TargaHeader header)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);

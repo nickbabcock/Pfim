@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
+using System.Text;
 
 namespace Pfim
 {
+    /// <summary>Class for parsing and storing information from a targa header</summary>
     public class TargaHeader
     {
+        /// <summary>The targa image's type</summary>
         public enum TargaImageType
         {
             /// <summary>
@@ -72,6 +74,9 @@ namespace Pfim
             TopRight = 3
         }
 
+        /// <summary>
+        /// Instantiate a targa header from a given stream. The stream will be parsed
+        /// </summary>
         public TargaHeader(Stream str)
         {
             byte[] buf = new byte[18];
@@ -97,7 +102,7 @@ namespace Pfim
             {
                 buf = new byte[IDLength];
                 str.Read(buf, 0, IDLength);
-                ImageId = new string(buf.Select(x => (char)x).ToArray());
+                ImageId = Encoding.ASCII.GetString(buf);
             }
 
             //if (HasColorMap)
@@ -128,6 +133,9 @@ namespace Pfim
         /// </summary>
         public bool HasColorMap { get; private set; }
 
+        /// <summary>
+        /// Type of the targa image
+        /// </summary>
         public TargaImageType ImageType { get; private set; }
 
         /// <summary>
@@ -175,6 +183,13 @@ namespace Pfim
         /// </summary>
         public TargaOrientation Orientation { get; private set; }
 
+        /// <summary>
+        /// This optional field contains identifying information about the
+        /// image. The maximum length for this field is 255 bytes. Refer to
+        /// Field 1 for the length of this field. If field 1 is set to Zero
+        /// indicating that no Image ID exists then these bytes are not
+        /// written to the file
+        /// </summary>
         public string ImageId { get; private set; }
 
         //public List<Color> ColorMap { get; private set; }

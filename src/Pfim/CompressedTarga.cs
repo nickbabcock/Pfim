@@ -8,6 +8,7 @@ namespace Pfim
     /// </summary>
     public class CompressedTarga : IDecodeTarga
     {
+        /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);

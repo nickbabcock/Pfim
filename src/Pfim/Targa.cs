@@ -3,9 +3,16 @@ using System.IO;
 
 namespace Pfim
 {
+    /// <summary>
+    /// Provides a mechanism for decoding and storing the decoded information
+    /// about a targa image
+    /// </summary>
     public class Targa
     {
+        /// <summary>Raw data of the image</summary>
         public readonly byte[] data;
+
+        /// <summary>Header of the image</summary>
         public readonly TargaHeader header;
 
         /// <summary>
