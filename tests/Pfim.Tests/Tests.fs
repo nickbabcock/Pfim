@@ -126,47 +126,17 @@ let ``parse targa 24 run length`` () =
                        yield! [|0uy;0uy;0uy|] } |> Seq.toArray
   data |> shouldEqual expected
 
+[<Test>]
+let ``parse targa true 32 bit run length`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"))
+  let expected =
+    seq { yield! [| for i in 1 .. 32 do yield! [| 0; 216; 255; 255 |] |]
+          yield! [| for i in 1 .. 16 do yield! [| 255; 148; 0; 255 |] |]
+          yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76; 255 |] |]
+          yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255; 255; |] |] }
+    |> toBytes
+  (image :?> CompressedTarga).Data |> shouldEqual expected  
 
-//       [TestCase]
-//        public void TargaTrue32RLE()
-//        {
-//            byte[] expected = new byte[64*4];
-//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-32-rle.tga"));
-//
-//            for (int i = 0; i < 64; i++)
-//            {
-//                if (i < 32)
-//                {
-//                    expected[i*4] = 0;
-//                    expected[i*4 + 1] = 216;
-//                    expected[i*4 + 2] = 255;
-//                    expected[i*4 + 3] = 255;
-//                }
-//                else if (i >= 32 && i < 48)
-//                {
-//                    expected[i * 4] = 255;
-//                    expected[i * 4 + 1] = 148;
-//                    expected[i * 4 + 2] = 0;
-//                    expected[i * 4 + 3] = 255;
-//                }
-//                else if (i >= 48 && i < 56)
-//                {
-//                    expected[i * 4] = 0;
-//                    expected[i * 4 + 1] = 255;
-//                    expected[i * 4 + 2] = 76;
-//                    expected[i * 4 + 3] = 255;
-//                }
-//                else
-//                {
-//                    expected[i * 4] = 0;
-//                    expected[i * 4 + 1] = 0;
-//                    expected[i * 4 + 2] = 255;
-//                    expected[i * 4 + 3] = 255;
-//                }
-//            }
-//
-//            CollectionAssert.AreEqual(expected, im.Data);
-//        }
 //
 //        [TestCase]
 //        public void TargaTrue24RLE()
