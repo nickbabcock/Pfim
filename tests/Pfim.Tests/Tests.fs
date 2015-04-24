@@ -6,11 +6,7 @@ open System.IO
 
 let shouldEqual (x : 'a) (y : 'a) = Assert.AreEqual(x, y, sprintf "Expected: %A\nActual: %A" x y)
 
-[<Test>]
-let ``hello returns 42`` () =
-  let result = Class1.a
-  printfn "%i" result
-  Assert.AreEqual(42,result)
+let toBytes arr = [| for i in arr -> byte(i) |]
 
 [<Test>]
 let ``translate identity`` () =
@@ -43,8 +39,6 @@ let ``translate all but the last byte`` () =
   let actual = Util.Translate(mem, buf, 4)
   actual |> shouldEqual 5
   buf |> shouldEqual [| 5uy; 100uy; 99uy; 98uy; 97uy |]
-
-let toBytes arr = [| for i in arr -> byte(i) |]
 
 [<Test>]
 let ``translate all but the last byte but the stream doesn't have the bytes`` () =
@@ -96,3 +90,251 @@ let ``four is the minimum stride`` () =
 [<Test>]
 let ``stride with padding`` () =
   Util.Stride(width = 2, pixelDepth = 24) |> shouldEqual 8
+
+[<Test>]
+let ``parse targa true 24 single color`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-24.tga"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 255uy; 176uy; 0uy |] |]
+  (image :?> UncompressedTarga).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse targa true 32 single color`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32.tga"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
+  (image :?> UncompressedTarga).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse targa 32 single small run length`` () =
+  let data = Array.zeroCreate 8
+  let stream = [| 129uy; 2uy; 4uy; 6uy; 8uy |]
+  CompressedTarga.RunLength(data, stream, 0, 0, 4)
+  data |> shouldEqual [| for i in 1 .. 2 do yield! [| 2uy; 4uy; 6uy; 8uy; |] |]
+
+[<Test>]
+let ``parse targa 24 single small run length`` () =
+  let data = Array.zeroCreate 6
+  let stream = [| 129uy; 2uy; 4uy; 6uy |]
+  CompressedTarga.RunLength(data, stream, 0, 0, 3)
+  data |> shouldEqual [| for i in 1 .. 2 do yield! [| 2uy; 4uy; 6uy; |] |]
+
+[<Test>]
+let ``parse targa 24 run length`` () =
+  let data = Array.zeroCreate 18
+  let stream = [| 132; 2; 4; 6; 128; 8; 10; 12; |] |>  toBytes
+  CompressedTarga.RunLength(data, stream, 0, 0, 3)
+  let expected = seq { yield! [| for i in 1 .. 5 do yield! [| 2uy; 4uy; 6uy; |] |]
+                       yield! [|0uy;0uy;0uy|] } |> Seq.toArray
+  data |> shouldEqual expected
+
+
+//       [TestCase]
+//        public void TargaTrue32RLE()
+//        {
+//            byte[] expected = new byte[64*4];
+//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-32-rle.tga"));
+//
+//            for (int i = 0; i < 64; i++)
+//            {
+//                if (i < 32)
+//                {
+//                    expected[i*4] = 0;
+//                    expected[i*4 + 1] = 216;
+//                    expected[i*4 + 2] = 255;
+//                    expected[i*4 + 3] = 255;
+//                }
+//                else if (i >= 32 && i < 48)
+//                {
+//                    expected[i * 4] = 255;
+//                    expected[i * 4 + 1] = 148;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else if (i >= 48 && i < 56)
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 76;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//            }
+//
+//            CollectionAssert.AreEqual(expected, im.Data);
+//        }
+//
+//        [TestCase]
+//        public void TargaTrue24RLE()
+//        {
+//            byte[] expected = new byte[64 * 3];
+//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-24-rle.tga"));
+//
+//            for (int i = 0; i < 64; i++)
+//            {
+//                if (i < 32)
+//                {
+//                    expected[i * 3] = 0;
+//                    expected[i * 3 + 1] = 216;
+//                    expected[i * 3 + 2] = 255;
+//                }
+//                else if (i >= 32 && i < 48)
+//                {
+//                    expected[i * 3] = 255;
+//                    expected[i * 3 + 1] = 148;
+//                    expected[i * 3 + 2] = 0;
+//                }
+//                else if (i >= 48 && i < 56)
+//                {
+//                    expected[i * 3] = 0;
+//                    expected[i * 3 + 1] = 255;
+//                    expected[i * 3 + 2] = 76;
+//                }
+//                else
+//                {
+//                    expected[i * 3] = 0;
+//                    expected[i * 3 + 1] = 0;
+//                    expected[i * 3 + 2] = 255;
+//                }
+//            }
+//
+//            CollectionAssert.AreEqual(expected, im.Data);
+//        }
+//
+//        [TestCase]
+//        public void TargaTrue32Mixed()
+//        {
+//            byte[] expected = new byte[64 * 4];
+//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-32-mixed.tga"));
+//
+//            for (int i = 0; i < 64; i++)
+//            {
+//                if (i < 16)
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 216;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else if (i >= 16 && i < 32)
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 64;
+//                    expected[i * 4 + 1] = 64;
+//                    expected[i * 4 + 2] = 64;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 0;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 0;
+//                    expected[i * 4 + 1] = 106;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 0;
+//                    expected[i * 4 + 1] = 216;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 0;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 182;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 0;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 76;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 33;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 144;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 255;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 255;
+//                    expected[i * 4 + 1] = 148;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 255;
+//                    expected[i * 4 + 1] = 38;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 255;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 72;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 255;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 178;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 220;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//
+//                    expected[++i * 4] = 110;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else if (i >= 32 && i < 48)
+//                {
+//                    expected[i * 4] = 255;
+//                    expected[i * 4 + 1] = 148;
+//                    expected[i * 4 + 2] = 0;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else if (i >= 48 && i < 56)
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 255;
+//                    expected[i * 4 + 2] = 76;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//                else
+//                {
+//                    expected[i * 4] = 0;
+//                    expected[i * 4 + 1] = 0;
+//                    expected[i * 4 + 2] = 255;
+//                    expected[i * 4 + 3] = 255;
+//                }
+//            }
+//
+//            CollectionAssert.AreEqual(expected, im.Data);
+//        }
+//
+//        [TestCase]
+//        public unsafe void TargaTrue32RLELarge()
+//        {
+//            byte[] expected = new byte[1200 * 1200 * 4];
+//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
+//            fixed (byte* ptr = expected)
+//                Util.memset((int*)ptr, 51 << 8 | 127 << 16 | 255 << 24, expected.Length);
+//
+//            CollectionAssert.AreEqual(expected, im.Data);
+//        }

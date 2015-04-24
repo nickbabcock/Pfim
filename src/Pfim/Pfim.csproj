@@ -43,7 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="dds\CompressedDDS.cs" />
+    <Compile Include="dds\DDSBase.cs" />
+    <Compile Include="dds\DDSFactory.cs" />
+    <Compile Include="dds\DDSHeader.cs" />
+    <Compile Include="dds\DirectDrawSurface.cs" />
+    <Compile Include="dds\DXT1DDS.cs" />
+    <Compile Include="dds\DXT3DDS.cs" />
+    <Compile Include="dds\DXT5DDS.cs" />
+    <Compile Include="dds\UnCompressedDDS.cs" />
+    <Compile Include="Pfim.cs" />
     <Compile Include="CompressedTarga.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Targa.cs" />
