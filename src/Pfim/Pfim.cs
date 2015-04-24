@@ -20,6 +20,8 @@ namespace Pfim
             {
                 switch (Path.GetExtension(path).ToUpper())
                 {
+                    case ".DDS":
+                        return DDSFactory.Create(fs);
                     case ".TGA":
                     case ".TPIC":
                         return Targa.Create(fs);

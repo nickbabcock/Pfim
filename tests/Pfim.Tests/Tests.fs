@@ -182,3 +182,9 @@ let ``parse targa true 32 bit run length large`` () =
     seq { yield! [| for i in 1 .. (1200 * 1200) do yield! [| 0; 51; 127; 255 |] |] }
     |> toBytes
   (image :?> CompressedTarga).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse 32 bit uncompressed dds`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
+  (image :?> UnCompressedDDS).Data |> shouldEqual expected

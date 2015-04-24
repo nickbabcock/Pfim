@@ -1,6 +1,6 @@
 ﻿namespace Pfim
 {
-    struct DDSLoadInfo
+    public struct DDSLoadInfo
     {
         internal bool compressed;
         internal bool swap;

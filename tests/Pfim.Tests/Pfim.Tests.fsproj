@@ -76,6 +76,9 @@
     <None Include="data\true-32.tga">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\32-bit-uncompressed.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 namespace Pfim
 {
-    enum CompressionAlgorithm : uint
+    public enum CompressionAlgorithm : uint
     {
         None = 0,
         D3DFMT_DXT1 = 827611204,  //  DXT1 compression texture format "1TXD" converted from hex to num
@@ -16,7 +16,7 @@ namespace Pfim
     }
 
     [Flags]
-    enum DDSFlags : uint
+    public enum DDSFlags : uint
     {
         /// <summary>
         /// Required in every .dds file.
@@ -58,7 +58,8 @@ namespace Pfim
         /// </summary>
         Depth = 0x800000
     }
-    struct DDSPixelFormat
+
+    public struct DDSPixelFormat
     {
         /// <summary>
         /// Structure size; set to 32 (bytes).
@@ -110,7 +111,8 @@ namespace Pfim
         /// </summary>
         public uint ABitMask;
     }
-    class DDSHeader
+
+    public class DDSHeader
     {
         /// <summary>
         /// Size of a Direct Draw Header in number of bytes.  This does not include the magic number

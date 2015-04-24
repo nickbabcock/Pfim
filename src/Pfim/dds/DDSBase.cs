@@ -2,7 +2,7 @@
 
 namespace Pfim
 {
-    abstract class DDSBase
+    public abstract class DDSBase
     {
         protected DDSHeader Header { get; private set; } 
 

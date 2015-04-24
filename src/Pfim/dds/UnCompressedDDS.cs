@@ -6,13 +6,14 @@ namespace Pfim
     /// A DirectDraw Surface that is not compressed.  
     /// Thus what is in the input stream gets directly translated to the image buffer.
     /// </summary>
-    class UnCompressedDDS : DDSBase
+    public class UnCompressedDDS : DDSBase
     {
         private static DDSLoadInfo loadInfoB8G8R8A8 = new DDSLoadInfo(false, false, false, 1, 4 /*PixelFormat.Format32bppArgb*/);
         private static DDSLoadInfo loadInfoB8G8R8 = new DDSLoadInfo(false, false, false, 1, 3 /*PixelFormat.Format24bppRgb*/);
         private static DDSLoadInfo loadInfoB5G5R5A1 = new DDSLoadInfo(false, true, false, 1, 2 /*PixelFormat.Format16bppArgb1555*/);
         private static DDSLoadInfo loadInfoB5G6R5 = new DDSLoadInfo(false, true, false, 1, 2 /*PixelFormat.Format16bppRgb565*/);
         private static DDSLoadInfo loadInfoIndex8 = new DDSLoadInfo(false, false, true, 1, 1 /*PixelFormat.Format8bppIndexed*/);
+        private byte[] buffer;
 
         public UnCompressedDDS(Stream stream, DDSHeader header)
             : base(header)
@@ -28,7 +29,7 @@ namespace Pfim
             else if (header.PixelFormat.RGBBitCount == 8)
                 LoadInfo = loadInfoIndex8;
 
-            byte[] buffer = new byte[Size];
+            buffer = new byte[Size];
             int workingIndex = 0;
 
             // If the total length of the image is less than the buffer size
@@ -54,6 +55,8 @@ namespace Pfim
                 } while (!done);
             }
         }
+
+        public byte[] Data { get { return buffer; } }
 
         public bool IsSixteenBitAlphaZero
         {
