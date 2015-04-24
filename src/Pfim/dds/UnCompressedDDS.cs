@@ -30,30 +30,7 @@ namespace Pfim
                 LoadInfo = loadInfoIndex8;
 
             buffer = new byte[Size];
-            int workingIndex = 0;
-
-            // If the total length of the image is less than the buffer size
-            if (Util.BUFFER_SIZE > Size)
-            {
-                stream.Read(buffer, workingIndex, Size);
-            }
-            else
-            {
-                bool done = false;
-                do
-                {
-                    if (Util.BUFFER_SIZE + workingIndex > Size)
-                    {
-                        stream.Read(buffer, workingIndex, Size - workingIndex);
-                        done = true;
-                    }
-                    else
-                    {
-                        workingIndex += stream.Read(buffer, workingIndex, Util.BUFFER_SIZE);
-                    }
-
-                } while (!done);
-            }
+            Util.Fill(stream, buffer);
         }
 
         public byte[] Data { get { return buffer; } }
