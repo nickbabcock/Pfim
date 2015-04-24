@@ -1,9 +1,11 @@
-﻿namespace Pfim
+﻿using System.IO;
+
+namespace Pfim
 {
     class DXT1DDS : CompressedDDS
     {
         private static DDSLoadInfo DXT1LoadInfo = new DDSLoadInfo(true, false, false, 4, 8/*, PixelFormat.Format24bppRgb*/);
-        public DXT1DDS(System.IO.FileStream fsStream, DDSHeader header)
+        public DXT1DDS(Stream fsStream, DDSHeader header)
             : base(fsStream, header, DXT1LoadInfo)
         {
             

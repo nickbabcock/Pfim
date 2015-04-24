@@ -10,8 +10,8 @@ namespace Pfim
 
         private static byte[] alpha = new byte[8];
 
-        public DXT5DDS(FileStream fsStream, DDSHeader header)
-            : base(fsStream, header, loadInfoDXT5)
+        public DXT5DDS(Stream stream, DDSHeader header)
+            : base(stream, header, loadInfoDXT5)
         {
         }
 

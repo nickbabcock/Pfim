@@ -123,16 +123,16 @@ namespace Pfim
         const uint DDS_MAGIC = 542327876;
 
         DDSPixelFormat pixelFormat;
-        public DDSHeader(FileStream fsStream)
+        public DDSHeader(Stream stream)
         {
-            headerInit(fsStream);
+            headerInit(stream);
         }
-        private unsafe void headerInit(FileStream fsStream)
+        private unsafe void headerInit(Stream stream)
         {
             byte[] buffer = new byte[SIZE + 4];
             Reserved1 = new uint[11];
             int bufferSize, workingSize;
-            bufferSize = workingSize = fsStream.Read(buffer, 0, SIZE + 4);
+            bufferSize = workingSize = stream.Read(buffer, 0, SIZE + 4);
 
             fixed (byte* bufferPtr = buffer)
             {

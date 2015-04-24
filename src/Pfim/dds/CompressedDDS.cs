@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using System.IO;
 
 namespace Pfim
 {
     abstract class CompressedDDS : DDSBase
     {
-        public CompressedDDS(FileStream fsStream, DDSHeader header, DDSLoadInfo loadinfo)
+        public CompressedDDS(Stream stream, DDSHeader header, DDSLoadInfo loadinfo)
             : base(header, loadinfo)
         {
-            ReadImage(fsStream);
+            ReadImage(stream);
         }
 
-        private void ReadImage(FileStream fsStream)
+        private void ReadImage(Stream stream)
         {
             byte[] rgbarr = new byte[Header.Width * Header.Height * PixelDepth];
             uint rgbIndex = 0;
@@ -32,7 +27,7 @@ namespace Pfim
 
             do
             {
-                bufferSize = workingSize = fsStream.Read(fileBuffer, 0, Util.BUFFER_SIZE);
+                bufferSize = workingSize = stream.Read(fileBuffer, 0, Util.BUFFER_SIZE);
                 int bIndex = 0;
                 while (workingSize > 0 && pixelsLeft > 0)
                 {
@@ -40,7 +35,7 @@ namespace Pfim
                     //Get the next buffer
                     if (workingSize < bytesPerStride)
                     {
-                        bufferSize = workingSize = Util.Translate(fsStream, fileBuffer, workingSize);
+                        bufferSize = workingSize = Util.Translate(stream, fileBuffer, workingSize);
                         bIndex = 0;
                     }
 

@@ -7,8 +7,8 @@ namespace Pfim
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
         private static DDSLoadInfo loadInfoDXT3 = new DDSLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
-        public DXT3DDS(FileStream fsStream, DDSHeader header)
-            : base(fsStream, header, loadInfoDXT3)
+        public DXT3DDS(Stream stream, DDSHeader header)
+            : base(stream, header, loadInfoDXT3)
         {
         }
 

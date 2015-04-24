@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Pfim
 {
@@ -15,7 +14,7 @@ namespace Pfim
         private static DDSLoadInfo loadInfoB5G6R5 = new DDSLoadInfo(false, true, false, 1, 2 /*PixelFormat.Format16bppRgb565*/);
         private static DDSLoadInfo loadInfoIndex8 = new DDSLoadInfo(false, false, true, 1, 1 /*PixelFormat.Format8bppIndexed*/);
 
-        public UnCompressedDDS(FileStream fsStream, DDSHeader header)
+        public UnCompressedDDS(Stream stream, DDSHeader header)
             : base(header)
         {
             if (IsThirtyTwoBitRGBA)
@@ -35,7 +34,7 @@ namespace Pfim
             // If the total length of the image is less than the buffer size
             if (Util.BUFFER_SIZE > Size)
             {
-                fsStream.Read(buffer, workingIndex, Size);
+                stream.Read(buffer, workingIndex, Size);
             }
             else
             {
@@ -44,12 +43,12 @@ namespace Pfim
                 {
                     if (Util.BUFFER_SIZE + workingIndex > Size)
                     {
-                        fsStream.Read(buffer, workingIndex, Size - workingIndex);
+                        stream.Read(buffer, workingIndex, Size - workingIndex);
                         done = true;
                     }
                     else
                     {
-                        workingIndex += fsStream.Read(buffer, workingIndex, Util.BUFFER_SIZE);
+                        workingIndex += stream.Read(buffer, workingIndex, Util.BUFFER_SIZE);
                     }
 
                 } while (!done);
