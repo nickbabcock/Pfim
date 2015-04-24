@@ -56,10 +56,6 @@ namespace Pfim
                     rgbIndex += (PixelDepth * (LoadInfo.divSize - 1) * Header.Width);
                 }
             } while (bufferSize != 0 && pixelsLeft != 0);
-
-            //var byteHandler = GCHandle.Alloc(rgbarr, GCHandleType.Pinned);
-            //Image = new Bitmap((int)Header.Width, (int)Header.Height, (int)(Header.Width * PixelDepth), LoadInfo.pixelFormat, byteHandler.AddrOfPinnedObject());
-            //byteHandler.Free();
         }
 
         protected abstract int Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex);
