@@ -1,27 +1,38 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Pfim
 {
+    /// <summary>
+    /// Utility class housing methods used by multiple image decoders
+    /// </summary>
     public static class Util
     {
+        /// <summary>
+        /// Buffer size to read data from
+        /// </summary>
         public const int BUFFER_SIZE = 0x8000;
 
         /// <summary>
-        /// Takes all the bytes at and after an index and moves them to the front and fills the rest of the buffer with information from the stream.
+        /// Takes all the bytes at and after an index and moves them to the front and fills the rest
+        /// of the buffer with information from the stream.
         /// </summary>
         /// <remarks>
-        /// This function is useful when the buffer doesn't have enough information to process a certain amount of information thus more information
-        /// from the stream has to be read. This preserves the information that hasn't been read by putting it at the front.
+        /// This function is useful when the buffer doesn't have enough information to process a
+        /// certain amount of information thus more information from the stream has to be read. This
+        /// preserves the information that hasn't been read by putting it at the front.
         /// </remarks>
         /// <param name="str">Stream where more data will be read to fill in end of the buffer.</param>
         /// <param name="buf">The buffer that contains the data that will be translated.</param>
-        /// <param name="bufIndex">Start of the translation. The value initially at this index will be the value at index 0 in the buffer after translation.</param>
-        /// <returns>The total number of bytes read into the buffer and translated. May be less than the buffer's length.</returns>
-        public static int Translate(Stream str,  byte[] buf, int bufIndex)
+        /// <param name="bufIndex">
+        /// Start of the translation. The value initially at this index will be the value at index 0
+        /// in the buffer after translation.
+        /// </param>
+        /// <returns>
+        /// The total number of bytes read into the buffer and translated. May be less than the
+        /// buffer's length.
+        /// </returns>
+        public static int Translate(Stream str, byte[] buf, int bufIndex)
         {
             Buffer.BlockCopy(buf, bufIndex, buf, 0, buf.Length - bufIndex);
             int result = str.Read(buf, buf.Length - bufIndex, bufIndex);
@@ -88,13 +99,12 @@ namespace Pfim
         /// <param name="rowSize">The size in bytes of each row.</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
         /// <param name="padding">
-        /// The number of bytes that make up the padding in the stride. 
-        /// rowSize + padding = stride
+        /// The number of bytes that make up the padding in the stride. rowSize + padding = stride
         /// </param>
         public static void FillBottomLeft(
             Stream str,
             byte[] data,
-            int rowSize, 
+            int rowSize,
             int bufSize = BUFFER_SIZE,
             int padding = 0)
         {
