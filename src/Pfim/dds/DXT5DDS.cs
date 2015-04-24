@@ -47,14 +47,14 @@ namespace Pfim
             alphaCodes |= ((ulong)fileBuffer[bIndex++] << 32);
             alphaCodes |= ((ulong)fileBuffer[bIndex++] << 40);
 
-            /* Colors are stored in a pair of 16 bits */
+            // Colors are stored in a pair of 16 bits
             ushort color0 = fileBuffer[bIndex++];
             color0 |= (ushort)(fileBuffer[bIndex++] << 8);
 
             ushort color1 = (fileBuffer[bIndex++]);
             color1 |= (ushort)(fileBuffer[bIndex++] << 8);
 
-            /*Extract R5G6B5 (in that order */
+            // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
             byte g0 = (byte)((color0 & 0x7E0) >> 5);
             byte b0 = (byte)((color0 & 0xF800) >> 11);
@@ -84,10 +84,10 @@ namespace Pfim
 
                 for (int j = 0; j < 4; j++)
                 {
-                    //3 bits determine alpha index to use
+                    // 3 bits determine alpha index to use
                     byte alphaIndex = (byte)((alphaCodes >> (alphaShift + 3*j)) & 0x07);
 
-                    //index code [0-3]
+                    // index code [0-3]
                     switch (((rowVal >> (j * 2)) & 0x03))
                     {
                         case 0:

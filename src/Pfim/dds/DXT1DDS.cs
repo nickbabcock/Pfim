@@ -13,14 +13,14 @@ namespace Pfim
 
         protected override int Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex)
         {
-            /* Colors are stored in a pair of 16 bits */
+            // Colors are stored in a pair of 16 bits
             ushort color0 = fileBuffer[bIndex++];
             color0 |= (ushort)(fileBuffer[bIndex++] << 8);
 
             ushort color1 = (fileBuffer[bIndex++]);
             color1 |= (ushort)(fileBuffer[bIndex++] << 8);
 
-            //Extract R5G6B5 (in that order)
+            // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
             byte g0 = (byte)((color0 & 0x7E0) >> 5);
             byte b0 = (byte)((color0 & 0xF800) >> 11);
@@ -35,8 +35,8 @@ namespace Pfim
             g1 = (byte)(g1 << 2 | g1 >> 3);
             b1 = (byte)(b1 << 3 | b1 >> 2);
 
-            //Used the two extracted colors to create two new colors
-            //that are slightly different.
+            // Used the two extracted colors to create two new colors that are
+            // slightly different.
             byte r2;
             byte g2;
             byte b2;
@@ -66,15 +66,15 @@ namespace Pfim
             byte rowVal = 0;
             for (int i = 0; i < 4; i++)
             {
-                //Every 2 bit is a code [0-3] and represent what
-                //color the current pixel is
+                // Every 2 bit is a code [0-3] and represent what color the
+                // current pixel is
 
-                //Read in a byte and thus 4 colors
+                // Read in a byte and thus 4 colors
                 rowVal = fileBuffer[bIndex++];
                 for (int j = 0; j < 8; j += 2)
                 {
-                    //Extract code by shifting the row byte so that we can
-                    //AND it with 3 and get a value [0-3]
+                    // Extract code by shifting the row byte so that we can
+                    // AND it with 3 and get a value [0-3]
                     switch ((rowVal >> j) & 0x03)
                     {
                         case 0:
@@ -99,11 +99,12 @@ namespace Pfim
                             break;
                     }
                 }
-                //Jump down a row and start at the beginning of the row
+
+                // Jump down a row and start at the beginning of the row
                 rgbIndex += Header.Width * 3 - 12;
             }
 
-            //Reset position to start of block
+            // Reset position to start of block
             return bIndex;
         }
         protected override byte PixelDepth

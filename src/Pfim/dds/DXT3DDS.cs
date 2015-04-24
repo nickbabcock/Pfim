@@ -21,20 +21,20 @@ namespace Pfim
              * to store values for later use.
              */
 
-            //Remember where the alpha data is stored so we can decode simultaneously
+            //R emember where the alpha data is stored so we can decode simultaneously
             int alphaPtr = bIndex;
 
-            //Jump ahead to the color data
+            // Jump ahead to the color data
             bIndex += 8;
 
-            /* Colors are stored in a pair of 16 bits */
+            // Colors are stored in a pair of 16 bits
             ushort color0 = fileBuffer[bIndex++];
             color0 |= (ushort)(fileBuffer[bIndex++] << 8);
 
             ushort color1 = (fileBuffer[bIndex++]);
             color1 |= (ushort)(fileBuffer[bIndex++] << 8);
 
-            //Extract R5G6B5 (in that order)
+            // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
             byte g0 = (byte)((color0 & 0x7E0) >> 5);
             byte b0 = (byte)((color0 & 0xF800) >> 11);
@@ -49,8 +49,8 @@ namespace Pfim
             g1 = (byte)(g1 << 2 | g1 >> 3);
             b1 = (byte)(b1 << 3 | b1 >> 2);
 
-            //Used the two extracted colors to create two new colors
-            //that are slightly different.
+            // Used the two extracted colors to create two new colors
+            // that are slightly different.
             byte r2 = (byte)((2 * r0 + r1) / 3);
             byte g2 = (byte)((2 * g0 + g1) / 3);
             byte b2 = (byte)((2 * b0 + b1) / 3);
@@ -65,8 +65,8 @@ namespace Pfim
             {
                 rowVal = fileBuffer[bIndex++];
 
-                //Each row of rgb values have 4 alpha values that 
-                //are encoded in 4 bits
+                // Each row of rgb values have 4 alpha values that  are
+                // encoded in 4 bits
                 rowAlpha = fileBuffer[alphaPtr++];
                 rowAlpha |= (ushort)(fileBuffer[alphaPtr++] << 8);
 
@@ -75,7 +75,7 @@ namespace Pfim
                     byte currentAlpha = (byte)((rowAlpha >> (j * 2)) & 0x0f);
                     currentAlpha |= (byte)(currentAlpha << 4);
 
-                    //index code
+                    // index code
                     switch (((rowVal >> j) & 0x03))
                     {
                         case 0:
