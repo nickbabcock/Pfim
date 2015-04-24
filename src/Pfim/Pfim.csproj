@@ -52,6 +52,7 @@
     <Compile Include="dds\Dxt3Dds.cs" />
     <Compile Include="dds\Dxt5Dds.cs" />
     <Compile Include="dds\UncompressedDds.cs" />
+    <Compile Include="IDecodeTarga.cs" />
     <Compile Include="Pfim.cs" />
     <Compile Include="CompressedTarga.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

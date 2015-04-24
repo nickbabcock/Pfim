@@ -3,19 +3,16 @@ using System.IO;
 
 namespace Pfim
 {
-    public class CompressedTarga : Targa
+    public class CompressedTarga : IDecodeTarga
     {
-        public CompressedTarga(TargaHeader header)
-            : base(header)
+        public byte[] BottomLeft(Stream str, TargaHeader header)
         {
-        }
-
-        protected override void BottomLeft(Stream str)
-        {
+            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var data = new byte[header.Height * stride];
             byte[] filebuffer = new byte[Util.BUFFER_SIZE];
-            int dataIndex = data.Length - Stride;
+            int dataIndex = data.Length - stride;
             int workingSize = str.Read(filebuffer, 0, Util.BUFFER_SIZE);
-            int bytesPerPixel = Header.PixelDepth / 8;
+            int bytesPerPixel = header.PixelDepth / 8;
             int fileBufferIndex = 0;
 
             while (dataIndex >= 0)
@@ -65,22 +62,24 @@ namespace Pfim
                         colIndex += count;
                         dataIndex += bytcount;
                     }
-                } while (colIndex < Header.Width);
-                dataIndex -= bytesPerPixel * Header.Width + Stride;
+                } while (colIndex < header.Width);
+                dataIndex -= bytesPerPixel * header.Width + stride;
             }
+
+            return data;
         }
 
-        protected override void BottomRight(Stream str)
+        public byte[] BottomRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
-        protected override void TopRight(Stream str)
+        public byte[] TopRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
-        protected override void TopLeft(Stream str)
+        public byte[] TopLeft(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }

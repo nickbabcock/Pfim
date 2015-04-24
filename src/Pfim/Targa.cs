@@ -3,60 +3,47 @@ using System.IO;
 
 namespace Pfim
 {
-    public abstract class Targa
+    public class Targa
     {
-        protected byte[] data;
+        public readonly byte[] data;
+        public readonly TargaHeader header;
 
-        public Targa(TargaHeader header)
+        public Targa(TargaHeader header, byte[] data)
         {
-            Header = header;
-            Stride = Util.Stride(header.Width, header.PixelDepth);
-            data = new byte[Header.Height * Stride];
+            this.header = header;
+            this.data = data;
         }
-
-        protected int Stride { get; private set; }
-
-        public byte[] Data { get { return data; } }
-
-        public TargaHeader Header { get; private set; }
-
-        protected abstract void BottomLeft(Stream str);
-
-        protected abstract void BottomRight(Stream str);
-
-        protected abstract void TopRight(Stream str);
-
-        protected abstract void TopLeft(Stream str);
 
         public static Targa Create(Stream str)
         {
             var header = new TargaHeader(str);
-            var targa = (header.IsCompressed) ? (Targa)(new CompressedTarga(header))
-                : new UncompressedTarga(header);
+            var targa = (header.IsCompressed) ? (IDecodeTarga)(new CompressedTarga())
+                : new UncompressedTarga();
 
+            byte[] data;
             switch (header.Orientation)
             {
                 case TargaHeader.TargaOrientation.BottomLeft:
-                    targa.BottomLeft(str);
+                    data = targa.BottomLeft(str, header);
                     break;
 
                 case TargaHeader.TargaOrientation.BottomRight:
-                    targa.BottomRight(str);
+                    data = targa.BottomRight(str, header);
                     break;
 
                 case TargaHeader.TargaOrientation.TopRight:
-                    targa.TopRight(str);
+                    data = targa.TopRight(str, header);
                     break;
 
                 case TargaHeader.TargaOrientation.TopLeft:
-                    targa.TopLeft(str);
+                    data = targa.TopLeft(str, header);
                     break;
 
                 default:
                     throw new ApplicationException("Targa orientation not recognized");
             }
 
-            return targa;
+            return new Targa(header, data);
         }
     }
 }

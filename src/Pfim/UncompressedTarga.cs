@@ -3,33 +3,34 @@ using System.IO;
 
 namespace Pfim
 {
-    public class UncompressedTarga : Targa
+    public class UncompressedTarga : IDecodeTarga
     {
-        public UncompressedTarga(TargaHeader header)
-            : base(header)
+        public byte[] BottomLeft(Stream str, TargaHeader header)
         {
-        }
-
-        protected override void BottomLeft(Stream str)
-        {
-            var pixelWidth = Header.PixelDepth * Header.Width;
-            var padding = Util.Stride(Header.Width, Header.PixelDepth) * 8 - pixelWidth;
+            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var data = new byte[header.Width * stride];
+            var pixelWidth = header.PixelDepth * header.Width;
+            var padding = stride * 8 - pixelWidth;
             Util.FillBottomLeft(str, data, pixelWidth / 8, padding: padding);
+            return data;
         }
 
-        protected override void BottomRight(Stream str)
+        public byte[] BottomRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
-        protected override void TopRight(Stream str)
+        public byte[] TopRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
-        protected override void TopLeft(Stream str)
+        public byte[] TopLeft(Stream str, TargaHeader header)
         {
+            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var data = new byte[header.Width * stride];
             Util.Fill(str, data);
+            return data;
         }
     }
 }

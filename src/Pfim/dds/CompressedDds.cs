@@ -45,8 +45,8 @@ namespace Pfim
                     {
                         bIndex = Decompress(fileBuffer, rgbarr, bIndex, rgbIndex);
 
-                        //Advance to the next block, which is (pixel depth *
-                        //divSize) bytes away
+                        // Advance to the next block, which is (pixel depth *
+                        // divSize) bytes away
                         rgbIndex += LoadInfo.divSize * PixelDepth;
                     }
 
