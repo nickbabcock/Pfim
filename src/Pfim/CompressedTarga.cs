@@ -3,6 +3,9 @@ using System.IO;
 
 namespace Pfim
 {
+    /// <summary>
+    /// Defines a series of functions that can decode a compressed targa image
+    /// </summary>
     public class CompressedTarga : IDecodeTarga
     {
         public byte[] BottomLeft(Stream str, TargaHeader header)
@@ -30,13 +33,13 @@ namespace Pfim
                     {
                         workingSize = str.Read(data, 0, Util.BUFFER_SIZE);
                         fileBufferIndex = 0;
-                        count = (isRunLength = (filebuffer[fileBufferIndex] & 128) != 0) ? bytesPerPixel + 1 :
-                            filebuffer[fileBufferIndex] + 1;
+                        isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                        count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
                     }
                     else
                     {
-                        count = (isRunLength = (filebuffer[fileBufferIndex] & 128) != 0) ? bytesPerPixel + 1 :
-                            filebuffer[fileBufferIndex] + 1;
+                        isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                        count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
 
                         if (fileBufferIndex + count > workingSize)
                         {
@@ -69,38 +72,42 @@ namespace Pfim
             return data;
         }
 
+        /// <summary>Not implemented</summary>
         public byte[] BottomRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Not implemented</summary>
         public byte[] TopRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Not implemented</summary>
         public byte[] TopLeft(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Compressed Targa images contain Run Length Packets of length 1 + <see cref="colorDepth"/>.
+        /// Compressed Targa images contain Run Length Packets of length 1 + <paramref name="colorDepth"/>.
         /// The first byte contains how long many pixels are encoded in the packet and the following bytes
         /// determine what colors will be. This function will expand this packet and store the expansion
         /// in the data buffer.
         /// </summary>
         /// <param name="data">Where the expanded run length data will be stored.</param>
-        /// <param name="fileBuffer">Buffer that contains the compressed run length info.</param>
+        /// <param name="streamBuffer">Buffer that contains the compressed run length info.</param>
         /// <param name="dataIndex">Index of where to start storing the expanded data.</param>
-        /// <param name="fileBufferIndex">Index of where the compressed data.</param>
+        /// <param name="streamBufferIndex">Index of where the compressed data.</param>
         /// <param name="colorDepth">The number of bytes in a pixel</param>
-        public unsafe static void RunLength(byte[] data, byte[] fileBuffer, int dataIndex, int fileBufferIndex, int colorDepth)
+        public unsafe static void RunLength(byte[] data, byte[] streamBuffer,
+            int dataIndex, int streamBufferIndex, int colorDepth)
         {
-            int runLength = fileBuffer[fileBufferIndex++] - 127;
-            byte color0 = fileBuffer[fileBufferIndex++];
-            byte color1 = fileBuffer[fileBufferIndex++];
-            byte color2 = fileBuffer[fileBufferIndex++];
+            int runLength = streamBuffer[streamBufferIndex++] - 127;
+            byte color0 = streamBuffer[streamBufferIndex++];
+            byte color1 = streamBuffer[streamBufferIndex++];
+            byte color2 = streamBuffer[streamBufferIndex++];
             fixed (byte* ptr = &data[dataIndex])
             {
                 if (colorDepth == 3)
@@ -138,7 +145,7 @@ namespace Pfim
                 }
                 else if (colorDepth == 4)
                 {
-                    byte color3 = fileBuffer[fileBufferIndex++];
+                    byte color3 = streamBuffer[streamBufferIndex++];
                     var comb = (color0 | color1 << 8 | color2 << 16 | color3 << 24);
                     Util.memset((int*)ptr, comb, runLength * 4);
                 }

@@ -8,12 +8,23 @@ namespace Pfim
         public readonly byte[] data;
         public readonly TargaHeader header;
 
-        public Targa(TargaHeader header, byte[] data)
+        /// <summary>
+        /// Constructs a targa image from a targa image and raw data
+        /// </summary>
+        /// <param name="header">The targa header</param>
+        /// <param name="data">The decoded targa data</param>
+        internal Targa(TargaHeader header, byte[] data)
         {
             this.header = header;
             this.data = data;
         }
 
+        /// <summary>
+        /// Creates a targa image from a given stream. The type of targa is determined from the
+        /// targa header, which is assumed to be a part of the stream
+        /// </summary>
+        /// <param name="str">Stream to read the targa image from</param>
+        /// <returns>A targa image</returns>
         public static Targa Create(Stream str)
         {
             var header = new TargaHeader(str);

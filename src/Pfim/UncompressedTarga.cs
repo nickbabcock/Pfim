@@ -3,6 +3,9 @@ using System.IO;
 
 namespace Pfim
 {
+    /// <summary>
+    /// Defines a series of functions that can decode a uncompressed targa image
+    /// </summary>
     public class UncompressedTarga : IDecodeTarga
     {
         public byte[] BottomLeft(Stream str, TargaHeader header)
@@ -15,11 +18,13 @@ namespace Pfim
             return data;
         }
 
+        /// <summary>Not implemented</summary>
         public byte[] BottomRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Not implemented</summary>
         public byte[] TopRight(Stream str, TargaHeader header)
         {
             throw new NotImplementedException();
