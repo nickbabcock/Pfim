@@ -135,45 +135,19 @@ let ``parse targa true 32 bit run length`` () =
           yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76; 255 |] |]
           yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255; 255; |] |] }
     |> toBytes
-  (image :?> CompressedTarga).Data |> shouldEqual expected  
+  (image :?> CompressedTarga).Data |> shouldEqual expected
 
-//
-//        [TestCase]
-//        public void TargaTrue24RLE()
-//        {
-//            byte[] expected = new byte[64 * 3];
-//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-24-rle.tga"));
-//
-//            for (int i = 0; i < 64; i++)
-//            {
-//                if (i < 32)
-//                {
-//                    expected[i * 3] = 0;
-//                    expected[i * 3 + 1] = 216;
-//                    expected[i * 3 + 2] = 255;
-//                }
-//                else if (i >= 32 && i < 48)
-//                {
-//                    expected[i * 3] = 255;
-//                    expected[i * 3 + 1] = 148;
-//                    expected[i * 3 + 2] = 0;
-//                }
-//                else if (i >= 48 && i < 56)
-//                {
-//                    expected[i * 3] = 0;
-//                    expected[i * 3 + 1] = 255;
-//                    expected[i * 3 + 2] = 76;
-//                }
-//                else
-//                {
-//                    expected[i * 3] = 0;
-//                    expected[i * 3 + 1] = 0;
-//                    expected[i * 3 + 2] = 255;
-//                }
-//            }
-//
-//            CollectionAssert.AreEqual(expected, im.Data);
-//        }
+[<Test>]
+let ``parse targa true 24 bit run length`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"))
+  let expected =
+    seq { yield! [| for i in 1 .. 32 do yield! [| 0; 216; 255 |] |]
+          yield! [| for i in 1 .. 16 do yield! [| 255; 148; 0 |] |]
+          yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76 |] |]
+          yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255|] |] }
+    |> toBytes
+  (image :?> CompressedTarga).Data |> shouldEqual expected
+
 //
 //        [TestCase]
 //        public void TargaTrue32Mixed()
