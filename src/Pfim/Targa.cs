@@ -7,33 +7,11 @@ namespace Pfim
     {
         protected byte[] data;
 
-        public Targa(Stream stream, TargaHeader header)
+        public Targa(TargaHeader header)
         {
             Header = header;
             Stride = Util.Stride(header.Width, header.PixelDepth);
             data = new byte[Header.Height * Stride];
-
-            switch (Header.Orientation)
-            {
-                case TargaHeader.TargaOrientation.BottomLeft:
-                    BottomLeft(stream);
-                    break;
-
-                case TargaHeader.TargaOrientation.BottomRight:
-                    BottomRight(stream);
-                    break;
-
-                case TargaHeader.TargaOrientation.TopRight:
-                    TopRight(stream);
-                    break;
-
-                case TargaHeader.TargaOrientation.TopLeft:
-                    TopLeft(stream);
-                    break;
-
-                default:
-                    throw new ApplicationException("Targa orientation not recognized");
-            }
         }
 
         protected int Stride { get; private set; }
@@ -53,7 +31,32 @@ namespace Pfim
         public static Targa Create(Stream str)
         {
             var header = new TargaHeader(str);
-            return (header.IsCompressed) ? (Targa)(new CompressedTarga(str, header)) : new UncompressedTarga(str, header);
+            var targa = (header.IsCompressed) ? (Targa)(new CompressedTarga(header))
+                : new UncompressedTarga(header);
+
+            switch (header.Orientation)
+            {
+                case TargaHeader.TargaOrientation.BottomLeft:
+                    targa.BottomLeft(str);
+                    break;
+
+                case TargaHeader.TargaOrientation.BottomRight:
+                    targa.BottomRight(str);
+                    break;
+
+                case TargaHeader.TargaOrientation.TopRight:
+                    targa.TopRight(str);
+                    break;
+
+                case TargaHeader.TargaOrientation.TopLeft:
+                    targa.TopLeft(str);
+                    break;
+
+                default:
+                    throw new ApplicationException("Targa orientation not recognized");
+            }
+
+            return targa;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Pfim
 {
     public class UncompressedTarga : Targa
     {
-        public UncompressedTarga(Stream str, TargaHeader header)
-            : base(str, header)
+        public UncompressedTarga(TargaHeader header)
+            : base(header)
         {
         }
 

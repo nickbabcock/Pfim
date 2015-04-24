@@ -5,8 +5,8 @@ namespace Pfim
 {
     public class CompressedTarga : Targa
     {
-        public CompressedTarga(Stream str, TargaHeader header)
-            : base(str, header)
+        public CompressedTarga(TargaHeader header)
+            : base(header)
         {
         }
 
