@@ -5,13 +5,43 @@ using System.Text;
 using System.IO;
 namespace Pfim
 {
+    /// <summary>
+    /// Denotes the compression algorithm used in the image. Either the image
+    /// is uncompressed or uses some sort of block compression. The
+    /// compression used is encoded in the header of image as textual
+    /// representation of itself. So a DXT1 image is encoded as "1TXD" so the
+    /// enum represents these values directly
+    /// </summary>
     public enum CompressionAlgorithm : uint
     {
+        /// <summary>
+        /// No compression was used in the image.
+        /// </summary>
         None = 0,
-        D3DFMT_DXT1 = 827611204,  //  DXT1 compression texture format "1TXD" converted from hex to num
+
+        /// <summary>
+        /// <see cref="Dxt1Dds"/>. Also known as BC1
+        /// </summary>
+        D3DFMT_DXT1 = 827611204,
+
+        /// <summary>
+        /// Not supported. Also known as BC2
+        /// </summary>
         D3DFMT_DXT2 = 844388420,
+
+        /// <summary>
+        /// <see cref="Dxt3Dds"/>. Also known as BC3
+        /// </summary>
         D3DFMT_DXT3 = 861165636,
+
+        /// <summary>
+        /// Not supported. Also known as BC4
+        /// </summary>
         D3DFMT_DXT4 = 877942852,
+
+        /// <summary>
+        /// <see cref="Dxt5Dds"/>. Also known as BC5
+        /// </summary>
         D3DFMT_DXT5 = 894720068
     }
 
@@ -243,6 +273,5 @@ namespace Pfim
         /// Unused
         /// </summary>
         public uint Reserved2 { get; private set; }
-        public bool IsCompressed { get; private set; }
     }
 }

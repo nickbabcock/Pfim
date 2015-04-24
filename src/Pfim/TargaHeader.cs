@@ -10,20 +10,67 @@ namespace Pfim
     {
         public enum TargaImageType
         {
+            /// <summary>
+            /// No image data included
+            /// </summary>
             NoData = 0,
+
+            /// <summary>
+            /// Uncompressed, color-mapped image
+            /// </summary>
             UncompressedColorMap = 1,
+
+            /// <summary>
+            /// Uncompressed, true-color image
+            /// </summary>
             UncompressedTrueColor = 2,
+
+            /// <summary>
+            /// Uncompressed, black-and-white image
+            /// </summary>
             UncompressedBW = 3,
+
+            /// <summary>
+            /// Run-length encoded, color-mapped image
+            /// </summary>
             RunLengthColorMap = 9,
+
+            /// <summary>
+            /// Run-length encoded, true-color image
+            /// </summary>
             RunLengthTrueColor = 10,
+
+            /// <summary>
+            /// Run-length encoded, black-and-white image
+            /// </summary>
             RunLengthBW = 11,
         }
 
+        /// <summary>
+        /// Targa images may be laid out in such a way that the bytes in the
+        /// file corresponds to different x and y origins. This enum
+        /// enumerates all possible origins of the first pixel
+        /// </summary>
         public enum TargaOrientation
         {
+            /// <summary>
+            /// First byte read corresponds to the pixel in the bottom left
+            /// </summary>
             BottomLeft = 0,
+
+            /// <summary>
+            /// First byte read corresponds to the pixel in the bottom right
+            /// </summary>
             BottomRight = 1,
+
+            /// <summary>
+            /// First byte read corresponds to the pixel in the top left
+            /// </summary>
             TopLeft = 2,
+
+            /// <summary>
+            /// First byte read corresponds to the pixel in the top right
+            /// </summary>
             TopRight = 3
         }
 
@@ -134,6 +181,10 @@ namespace Pfim
 
         //public List<Color> ColorMap { get; private set; }
 
+        /// <summary>
+        /// Returns whether the data is run length encoded, which means the
+        /// image is compressed
+        /// </summary>
         public bool IsCompressed
         {
             get
