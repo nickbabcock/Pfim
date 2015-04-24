@@ -175,13 +175,10 @@ let ``parse targa true 32 bit mixed encoding`` () =
     |> toBytes
   (image :?> CompressedTarga).Data |> shouldEqual expected
 
-//        [TestCase]
-//        public unsafe void TargaTrue32RLELarge()
-//        {
-//            byte[] expected = new byte[1200 * 1200 * 4];
-//            var im = (CompressedTarga)Pdoxcl2GFX.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
-//            fixed (byte* ptr = expected)
-//                Util.memset((int*)ptr, 51 << 8 | 127 << 16 | 255 << 24, expected.Length);
-//
-//            CollectionAssert.AreEqual(expected, im.Data);
-//        }
+[<Test>]
+let ``parse targa true 32 bit run length large`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32-rle-large.tga"))
+  let expected =
+    seq { yield! [| for i in 1 .. (1200 * 1200) do yield! [| 0; 51; 127; 255 |] |] }
+    |> toBytes
+  (image :?> CompressedTarga).Data |> shouldEqual expected
