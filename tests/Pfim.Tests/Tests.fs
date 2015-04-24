@@ -194,3 +194,15 @@ let ``parse simple dxt1`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy |] |]
   (image :?> CompressedDds).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse simple dxt3`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
+  (image :?> CompressedDds).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse simple dxt5`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
+  (image :?> CompressedDds).Data |> shouldEqual expected
