@@ -2,7 +2,7 @@
 
 namespace Pfim
 {
-    abstract class CompressedDds : DdsBase
+    public abstract class CompressedDds : DdsBase
     {
         public CompressedDds(Stream stream, DdsHeader header, DdsLoadInfo loadinfo)
             : base(header, loadinfo)
@@ -10,9 +10,12 @@ namespace Pfim
             ReadImage(stream);
         }
 
+        public byte[] Data { get { return rgbarr; } }
+        private byte[] rgbarr;
+
         private void ReadImage(Stream stream)
         {
-            byte[] rgbarr = new byte[Header.Width * Header.Height * PixelDepth];
+            rgbarr = new byte[Header.Width * Header.Height * PixelDepth];
             uint rgbIndex = 0;
 
             int bufferSize;

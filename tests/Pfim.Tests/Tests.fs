@@ -188,3 +188,9 @@ let ``parse 32 bit uncompressed dds`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
   (image :?> UncompressedDDS).Data |> shouldEqual expected
+
+[<Test>]
+let ``parse simple dxt1`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"))
+  let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy |] |]
+  (image :?> CompressedDds).Data |> shouldEqual expected
