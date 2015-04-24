@@ -2,12 +2,12 @@
 
 namespace Pfim
 {
-    public abstract class DDSBase
+    public abstract class DdsBase
     {
-        protected DDSHeader Header { get; private set; } 
+        protected DdsHeader Header { get; private set; } 
 
-        private DDSLoadInfo _loadInfo;
-        protected DDSLoadInfo LoadInfo
+        private DdsLoadInfo _loadInfo;
+        protected DdsLoadInfo LoadInfo
         {
             get
             {
@@ -20,11 +20,11 @@ namespace Pfim
             }
         }
 
-        public DDSBase(DDSHeader header)
+        public DdsBase(DdsHeader header)
         {
             Header = header;
         }
-        public DDSBase(DDSHeader header, DDSLoadInfo loadinfo)
+        public DdsBase(DdsHeader header, DdsLoadInfo loadinfo)
         {
             Header = header;
             LoadInfo = loadinfo;

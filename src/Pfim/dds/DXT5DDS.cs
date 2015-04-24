@@ -2,15 +2,15 @@
 
 namespace Pfim
 {
-    class DXT5DDS : CompressedDDS
+    class Dxt5Dds : CompressedDds
     {
-        private static DDSLoadInfo loadInfoDXT5 = new DDSLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
+        private static DdsLoadInfo loadInfoDXT5 = new DdsLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
 
         private static byte[] alpha = new byte[8];
 
-        public DXT5DDS(Stream stream, DDSHeader header)
+        public Dxt5Dds(Stream stream, DdsHeader header)
             : base(stream, header, loadInfoDXT5)
         {
         }

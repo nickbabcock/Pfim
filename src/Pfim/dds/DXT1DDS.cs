@@ -2,10 +2,10 @@
 
 namespace Pfim
 {
-    class DXT1DDS : CompressedDDS
+    class Dxt1Dds : CompressedDds
     {
-        private static DDSLoadInfo DXT1LoadInfo = new DDSLoadInfo(true, false, false, 4, 8/*, PixelFormat.Format24bppRgb*/);
-        public DXT1DDS(Stream fsStream, DDSHeader header)
+        private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, 4, 8/*, PixelFormat.Format24bppRgb*/);
+        public Dxt1Dds(Stream fsStream, DdsHeader header)
             : base(fsStream, header, DXT1LoadInfo)
         {
             

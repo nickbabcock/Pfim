@@ -2,12 +2,12 @@
 
 namespace Pfim
 {
-    class DXT3DDS : CompressedDDS
+    class Dxt3Dds : CompressedDds
     {
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
-        private static DDSLoadInfo loadInfoDXT3 = new DDSLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
-        public DXT3DDS(Stream stream, DDSHeader header)
+        private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
+        public Dxt3Dds(Stream stream, DdsHeader header)
             : base(stream, header, loadInfoDXT3)
         {
         }

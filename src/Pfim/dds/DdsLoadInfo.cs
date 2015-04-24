@@ -1,6 +1,6 @@
 ﻿namespace Pfim
 {
-    public struct DDSLoadInfo
+    public struct DdsLoadInfo
     {
         internal bool compressed;
         internal bool swap;
@@ -23,7 +23,7 @@
         internal uint blockBytes;
         //internal PixelFormat pixelFormat;
 
-        public DDSLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes/*, PixelFormat PixelFormat*/)
+        public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes/*, PixelFormat PixelFormat*/)
         {
             compressed = isCompresed;
             swap = isSwap;

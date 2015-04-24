@@ -112,7 +112,7 @@ namespace Pfim
         public uint ABitMask;
     }
 
-    public class DDSHeader
+    public class DdsHeader
     {
         /// <summary>
         /// Size of a Direct Draw Header in number of bytes.  This does not include the magic number
@@ -125,7 +125,7 @@ namespace Pfim
         const uint DDS_MAGIC = 542327876;
 
         DDSPixelFormat pixelFormat;
-        public DDSHeader(Stream stream)
+        public DdsHeader(Stream stream)
         {
             headerInit(stream);
         }

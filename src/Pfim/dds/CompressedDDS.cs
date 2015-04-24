@@ -2,9 +2,9 @@
 
 namespace Pfim
 {
-    abstract class CompressedDDS : DDSBase
+    abstract class CompressedDds : DdsBase
     {
-        public CompressedDDS(Stream stream, DDSHeader header, DDSLoadInfo loadinfo)
+        public CompressedDds(Stream stream, DdsHeader header, DdsLoadInfo loadinfo)
             : base(header, loadinfo)
         {
             ReadImage(stream);
