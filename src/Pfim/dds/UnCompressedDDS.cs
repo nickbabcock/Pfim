@@ -60,9 +60,9 @@ namespace Pfim
             get
             {
                 return (Header.PixelFormat.RGBBitCount == 16) &&
-   (Header.PixelFormat.RBitMask == 0x0000f800) &&
-   (Header.PixelFormat.GBitMask == 0x000007e0) &&
-   (Header.PixelFormat.BBitMask == 0x0000001f);
+                   (Header.PixelFormat.RBitMask == 0x0000f800) &&
+                   (Header.PixelFormat.GBitMask == 0x000007e0) &&
+                   (Header.PixelFormat.BBitMask == 0x0000001f);
             }
         }
         public bool IsSixteenBitAlphaOne
@@ -70,10 +70,10 @@ namespace Pfim
             get
             {
                 return (Header.PixelFormat.RGBBitCount == 16) &&
-   (Header.PixelFormat.RBitMask == 0x00007c00) &&
-   (Header.PixelFormat.GBitMask == 0x000003e0) &&
-   (Header.PixelFormat.BBitMask == 0x0000001f) &&
-   (Header.PixelFormat.ABitMask == 0x00008000);
+                   (Header.PixelFormat.RBitMask == 0x00007c00) &&
+                   (Header.PixelFormat.GBitMask == 0x000003e0) &&
+                   (Header.PixelFormat.BBitMask == 0x0000001f) &&
+                   (Header.PixelFormat.ABitMask == 0x00008000);
             }
         }
         public bool IsThirtyTwoBitRGBA
@@ -81,10 +81,10 @@ namespace Pfim
             get
             {
                 return (Header.PixelFormat.RGBBitCount == 32) &&
-                                                 (Header.PixelFormat.RBitMask == 0xff0000) &&
-                                                 (Header.PixelFormat.GBitMask == 0xff00) &&
-                                                 (Header.PixelFormat.BBitMask == 0xff) &&
-                                                 (Header.PixelFormat.ABitMask == 0xff000000U);
+                    (Header.PixelFormat.RBitMask == 0xff0000) &&
+                    (Header.PixelFormat.GBitMask == 0xff00) &&
+                    (Header.PixelFormat.BBitMask == 0xff) &&
+                    (Header.PixelFormat.ABitMask == 0xff000000U);
             }
         }
         public bool IsTwentyFourBitRGB
