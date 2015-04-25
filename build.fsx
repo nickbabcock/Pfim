@@ -332,6 +332,17 @@ Target "Release" (fun _ ->
 
 Target "BuildPackage" DoNothing
 
+Target "Benchmark" (fun _ ->
+    trace "Starting benchmarks"
+    let result =
+        ExecProcess (fun info ->
+            info.FileName <- ("bin/Pfim.Benchmarks/Pfim.Benchmarks.exe")
+            info.WorkingDirectory <- "bin/Pfim.Benchmarks"
+        ) (System.TimeSpan.FromMinutes 5.)
+
+    if result <> 0 then failwith "Failed result from Benchmark tests"
+)
+
 // --------------------------------------------------------------------------------------
 // Run all targets by default. Invoke 'build <Target>' to override
 
@@ -344,6 +355,7 @@ Target "All" DoNothing
   ==> "RunTests"
   =?> ("GenerateReferenceDocs",isLocalBuild)
   =?> ("GenerateDocs",isLocalBuild)
+  ==> "Benchmark"
   ==> "All"
   =?> ("ReleaseDocs",isLocalBuild)
 
