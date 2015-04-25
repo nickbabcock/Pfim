@@ -2,9 +2,11 @@ source https://nuget.org/api/v2
 
 nuget FSharp.Formatting 2.8.0
 nuget FSharpVSPowerTools.Core 1.7.0
-nuget NUnit 
+nuget NUnit
 nuget NUnit.Runners
 nuget FAKE
+nuget SimpleSpeedTester
 nuget SourceLink.Fake
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx
+github DigitalDollhouse/SimsPackCleanInstaller:ts1pack TargaImage/TargaImage.cs
