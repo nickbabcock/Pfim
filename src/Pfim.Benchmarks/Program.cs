@@ -29,9 +29,14 @@ namespace Pfim.Benchmarks
                     new MagickImage(new MemoryStream(data), settings);
                 }, 5);
 
+            DevILSharp.Bootstrap.Init();
+            var devil = testGroup.Plan("Devil", () =>
+                    DevILSharp.Image.Load(data, DevILSharp.ImageType.Tga), 5);
+
             Console.WriteLine(pfim.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
             Console.WriteLine(targaImage.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
             Console.WriteLine(magick.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
+            Console.WriteLine(devil.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
         }
 
     }
