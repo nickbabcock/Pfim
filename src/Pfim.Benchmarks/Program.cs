@@ -1,4 +1,5 @@
-﻿using SimpleSpeedTester.Core;
+﻿using ImageMagick;
+using SimpleSpeedTester.Core;
 using SimpleSpeedTester.Core.OutcomeFilters;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,16 @@ namespace Pfim.Benchmarks
             var targaImage = testGroup.Plan("TargaImage", () =>
                 new Paloma.TargaImage(new MemoryStream(data)), 5);
 
+            var magick = testGroup.Plan("magick", () =>
+                {
+                    var settings = new MagickReadSettings();
+                    settings.Format = MagickFormat.Tga;
+                    new MagickImage(new MemoryStream(data), settings);
+                }, 5);
+
             Console.WriteLine(pfim.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
             Console.WriteLine(targaImage.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
+            Console.WriteLine(magick.GetResult().GetSummary(new ExcludeMinAndMaxTestOutcomeFilter()));
         }
 
     }
