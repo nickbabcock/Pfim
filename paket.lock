@@ -30,3 +30,9 @@ GITHUB
   remote: DigitalDollhouse/SimsPackCleanInstaller
   specs:
     TargaImage/TargaImage.cs (428217f21824503dca205c921d3a5320436d18bb)
+  remote: ftrvxmtrx/tga
+  specs:
+    testdata/rgb24_top_left.tga (022d57dd0b6581766a0d0fdeba09994b61fe70c5)
+  remote: MemFusion/memfusion_prototype
+  specs:
+    MFUtil/GroupWhen.fs (2fa58dce15d96f7ec0793f2ffd3b0e5e1f377d1b)

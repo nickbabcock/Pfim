@@ -57,6 +57,15 @@
   <Import Project="$(FSharpTargetsPath)" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
+    <Compile Include="..\..\paket-files\MemFusion\memfusion_prototype\MFUtil\GroupWhen.fs">
+      <Paket>True</Paket>
+      <Link>GroupWhen.fs</Link>
+    </Compile>
+    <Content Include="..\..\paket-files\ftrvxmtrx\tga\testdata\rgb24_top_left.tga">
+      <Paket>True</Paket>
+      <Link>paket-files/rgb24_top_left.tga</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Compile Include="Tests.fs" />
     <None Include="data\dxt3-simple.dds">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

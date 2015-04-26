@@ -184,6 +184,23 @@ let ``parse targa true 32 bit run length large`` () =
   (image :?> Targa).data |> shouldEqual expected
 
 [<Test>]
+let ``parse targa top left`` () =
+  let image = Pfim.Pfim.FromFile(Path.Combine("paket-files", "rgb24_top_left.tga"))
+  let actual = (image :?> Targa).data
+
+  actual
+  |> Array.mapi (fun i v -> i, v)
+  |> Seq.groupWhen (fun (i, v) -> i%3 = 0)
+  |> Seq.map (Seq.map snd >> Seq.toArray)
+  |> Seq.iteri (fun index arr ->
+    match arr with
+    | [| 0uy; 255uy; 0uy |]
+    | [| 12uy; 0uy; 255uy |]
+    | [| 255uy; 255uy; 255uy |] -> ()
+    | [| 255uy; g; b |] when g = b -> ()
+    | x -> Assert.Fail(sprintf "Unexpected color %A at: %d, %d" x (index % 64) (index / 64)))
+
+[<Test>]
 let ``parse 32 bit uncompressed dds`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]

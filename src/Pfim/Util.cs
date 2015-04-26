@@ -109,7 +109,6 @@ namespace Pfim
             int padding = 0)
         {
             int bufferIndex = 0;
-            int workingSize = 0;
             byte[] buffer = new byte[bufSize];
             int stride = rowSize + padding;
             int rowsPerBuffer = Math.Min(bufSize, data.Length) / stride;
@@ -121,7 +120,7 @@ namespace Pfim
             if (rowsPerBuffer == 0)
                 throw new ArgumentOutOfRangeException("rowSize", "Row size must be small enough to fit in the buffer");
 
-            workingSize = str.Read(buffer, 0, bufSize);
+            int workingSize = str.Read(buffer, 0, bufSize);
             do
             {
                 for (int i = 0; i < rowsToRead; i++)
