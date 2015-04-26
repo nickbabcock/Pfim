@@ -59,6 +59,14 @@
       <Link>data\true-24.tga</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\tests\Pfim.Tests\data\true-32-rle-large.tga">
+      <Link>data\true-32-rle-large.tga</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\tests\Pfim.Tests\data\true-32-rle.tga">
+      <Link>data\true-32-rle.tga</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pfim\Pfim.csproj">
