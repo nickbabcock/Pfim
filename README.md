@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/bmc00ghxk0cvv0wi/branch/master?svg=true)](https://ci.appveyor.com/project/nickbabcock/pfim/branch/master)
+[![Build status](https://travis-ci.org/nickbabcock/Pfim.svg?branch=master)](https://travis-ci.org/nickbabcock/Pfim)
+
 # Pfim
 
 - [Targa image specification](http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf)
