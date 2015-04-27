@@ -17,13 +17,15 @@ namespace Pfim.Benchmarks
         {
             Console.WriteLine("{0,-20} {1,-13} {2,-13} {3,-13} {4,-13}", "Benchmark", "Pfim", "TargaImage", "Image Magick", "DevIL");
             Console.WriteLine(new string('-', 79));
-            runTest("uncmp-btm-left tga", File.ReadAllBytes(Path.Combine("data", "true-24.tga")), MagickFormat.Tga, DevILSharp.ImageType.Tga);
-            runTest("cmp-btm-left tga", File.ReadAllBytes(Path.Combine("data", "true-32-rle.tga")), MagickFormat.Tga, DevILSharp.ImageType.Tga);
-            runTest("large tga", File.ReadAllBytes(Path.Combine("data", "true-32-rle-large.tga")), MagickFormat.Tga, DevILSharp.ImageType.Tga);
+            runTest("uncmp-btm-left tga", "true-24.tga", MagickFormat.Tga, DevILSharp.ImageType.Tga);
+            runTest("cmp-btm-left tga", "true-32-rle.tga", MagickFormat.Tga, DevILSharp.ImageType.Tga);
+            runTest("large tga", "true-32-rle-large.tga", MagickFormat.Tga, DevILSharp.ImageType.Tga);
         }
 
-        private static void runTest(string groupName, byte[] data, MagickFormat format, DevILSharp.ImageType imageType)
+        private static void runTest(string groupName, string dataPath, MagickFormat format, DevILSharp.ImageType imageType)
         {
+            byte[] data = File.ReadAllBytes(Path.Combine("data", dataPath));
+
             var testGroup = new TestGroup(groupName);
             var pfim = testGroup.Plan("Pfim", () => Targa.Create(new MemoryStream(data)), 5)
                 .GetResult().GetSummary(filter).AverageExecutionTime;
