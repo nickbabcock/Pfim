@@ -16,8 +16,8 @@ copyright
 tags
     C# Image Parsing
 summary
-    Image file format parser
+    Image decoder
 description
-    A super simple and super fast image parser
+    A super simple and super fast image decoder
 
 
