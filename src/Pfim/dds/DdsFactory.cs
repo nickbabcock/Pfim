@@ -20,7 +20,7 @@ namespace Pfim
                 case CompressionAlgorithm.D3DFMT_DXT5:
                     return new Dxt5Dds(stream, header);
                 case CompressionAlgorithm.None:
-                    return new UncompressedDDS(stream, header);
+                    return new UncompressedDds(stream, header);
                 default:
                     throw new ArgumentException("FourCC: " + header.PixelFormat.FourCC + " not supported.");
             }
