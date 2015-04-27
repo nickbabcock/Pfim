@@ -7,13 +7,6 @@
 Introducing your project
 ========================
 
-Say more
+There'll be more info here soon.
 
-*)
-#r "Pfim.dll"
-open Pfim
-
-Library.hello 0
-(**
-Some more info
 *)
