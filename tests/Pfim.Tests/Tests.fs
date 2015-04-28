@@ -95,13 +95,13 @@ let ``stride with padding`` () =
 let ``parse targa true 24 single color`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-24.tga"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 255uy; 176uy; 0uy |] |]
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa true 32 single color`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32.tga"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa 32 single small run length`` () =
@@ -135,7 +135,7 @@ let ``parse targa true 32 bit run length`` () =
           yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76; 255 |] |]
           yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255; 255; |] |] }
     |> toBytes
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa true 24 bit run length`` () =
@@ -146,7 +146,7 @@ let ``parse targa true 24 bit run length`` () =
           yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76 |] |]
           yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255|] |] }
     |> toBytes
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa true 32 bit mixed encoding`` () =
@@ -173,7 +173,7 @@ let ``parse targa true 32 bit mixed encoding`` () =
           yield! [| for i in 1 .. 8 do yield! [| 0; 255; 76; 255 |] |]
           yield! [| for i in 1 .. 8 do yield! [| 0; 0; 255; 255 |] |] }
     |> toBytes
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa true 32 bit run length large`` () =
@@ -181,12 +181,12 @@ let ``parse targa true 32 bit run length large`` () =
   let expected =
     seq { yield! [| for i in 1 .. (1200 * 1200) do yield! [| 0; 51; 127; 255 |] |] }
     |> toBytes
-  (image :?> Targa).data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse targa top left`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("paket-files", "rgb24_top_left.tga"))
-  let actual = (image :?> Targa).data
+  let actual = image.Data
 
   actual
   |> Array.mapi (fun i v -> i, v)
@@ -204,22 +204,22 @@ let ``parse targa top left`` () =
 let ``parse 32 bit uncompressed dds`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
-  (image :?> UncompressedDds).Data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse simple dxt1`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy |] |]
-  (image :?> CompressedDds).Data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse simple dxt3`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
-  (image :?> CompressedDds).Data |> shouldEqual expected
+  image.Data |> shouldEqual expected
 
 [<Test>]
 let ``parse simple dxt5`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
-  (image :?> CompressedDds).Data |> shouldEqual expected
+  image.Data |> shouldEqual expected

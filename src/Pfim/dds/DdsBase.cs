@@ -2,7 +2,7 @@
 
 namespace Pfim
 {
-    public abstract class DdsBase
+    public abstract class DdsBase : IImage
     {
         protected DdsHeader Header { get; private set; } 
 
@@ -50,5 +50,24 @@ namespace Pfim
         public int Stride { get; private set; }
 
         public uint NumberOfPixels { get; private set; }
+
+        public abstract byte[] Data { get; }
+        public int Width { get { return (int)Header.Width; } }
+
+        public int Height { get { return (int)Header.Height; } }
+
+        public ImageFormat Format
+        {
+            get
+            {
+                switch (BitsPerPixel)
+                {
+                    case 24: return ImageFormat.Bgr24;
+                    case 32: return ImageFormat.Bgra32;
+                    default: throw new ApplicationException(
+                        "Unrecognized pixel depth: " + BitsPerPixel.ToString());
+                }
+            }
+        }
     }
 }

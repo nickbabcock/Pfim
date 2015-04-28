@@ -10,7 +10,7 @@ namespace Pfim
             ReadImage(stream);
         }
 
-        public byte[] Data { get { return rgbarr; } }
+        public override byte[] Data { get { return rgbarr; } }
         private byte[] rgbarr;
 
         private void ReadImage(Stream stream)

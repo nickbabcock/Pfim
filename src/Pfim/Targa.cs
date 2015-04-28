@@ -7,13 +7,13 @@ namespace Pfim
     /// Provides a mechanism for decoding and storing the decoded information
     /// about a targa image
     /// </summary>
-    public class Targa
+    public class Targa : IImage
     {
         /// <summary>Raw data of the image</summary>
-        public readonly byte[] data;
+        private readonly byte[] data;
 
         /// <summary>Header of the image</summary>
-        public readonly TargaHeader header;
+        private readonly TargaHeader header;
 
         /// <summary>
         /// Constructs a targa image from a targa image and raw data
@@ -62,6 +62,28 @@ namespace Pfim
             }
 
             return new Targa(header, data);
+        }
+
+        public byte[] Data { get { return data; } }
+
+        public int Width { get { return header.Width; } }
+
+        public int Height { get { return header.Height; } }
+
+        public int Stride { get { return Util.Stride(header.Width, header.PixelDepth); } }
+
+        public ImageFormat Format
+        {
+            get
+            {
+                switch (header.PixelDepth)
+                {
+                    case 24: return ImageFormat.Bgr24;
+                    case 32: return ImageFormat.Bgra32;
+                    default: throw new ApplicationException(
+                        "Unrecognized pixel depth: " + header.PixelDepth.ToString());
+                }
+            }
         }
     }
 }

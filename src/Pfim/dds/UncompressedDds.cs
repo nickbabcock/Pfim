@@ -33,7 +33,7 @@ namespace Pfim
             Util.Fill(stream, buffer);
         }
 
-        public byte[] Data { get { return buffer; } }
+        public override byte[] Data { get { return buffer; } }
 
         public bool IsSixteenBitAlphaZero
         {

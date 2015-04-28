@@ -8,7 +8,7 @@ namespace Pfim
 {
     public static class Pfim
     {
-        public static object FromFile(string path)
+        public static IImage FromFile(string path)
         {
             if (String.IsNullOrEmpty(path))
                 throw new ArgumentNullException("path");
