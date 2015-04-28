@@ -62,8 +62,8 @@ namespace Pfim
             {
                 switch (BitsPerPixel)
                 {
-                    case 24: return ImageFormat.Bgr24;
-                    case 32: return ImageFormat.Bgra32;
+                    case 24: return ImageFormat.Rgb24;
+                    case 32: return ImageFormat.Rgba32;
                     default: throw new ApplicationException(
                         "Unrecognized pixel depth: " + BitsPerPixel.ToString());
                 }

@@ -10,39 +10,25 @@ namespace Pfim
         /// <summary>The targa image's type</summary>
         public enum TargaImageType
         {
-            /// <summary>
-            /// No image data included
-            /// </summary>
+            /// <summary>No image data included</summary>
             NoData = 0,
 
-            /// <summary>
-            /// Uncompressed, color-mapped image
-            /// </summary>
+            /// <summary>Uncompressed, color-mapped image</summary>
             UncompressedColorMap = 1,
 
-            /// <summary>
-            /// Uncompressed, true-color image
-            /// </summary>
+            /// <summary>Uncompressed, true-color image</summary>
             UncompressedTrueColor = 2,
 
-            /// <summary>
-            /// Uncompressed, black-and-white image
-            /// </summary>
+            /// <summary>Uncompressed, black-and-white image</summary>
             UncompressedBW = 3,
 
-            /// <summary>
-            /// Run-length encoded, color-mapped image
-            /// </summary>
+            /// <summary>Run-length encoded, color-mapped image</summary>
             RunLengthColorMap = 9,
 
-            /// <summary>
-            /// Run-length encoded, true-color image
-            /// </summary>
+            /// <summary>Run-length encoded, true-color image</summary>
             RunLengthTrueColor = 10,
 
-            /// <summary>
-            /// Run-length encoded, black-and-white image
-            /// </summary>
+            /// <summary>Run-length encoded, black-and-white image</summary>
             RunLengthBW = 11,
         }
 

@@ -6,8 +6,10 @@ using System.Text;
 
 namespace Pfim
 {
+    /// <summary>Decodes images into a uniform structure</summary>
     public static class Pfim
     {
+        /// <summary>Constructs an image from a given file</summary>
         public static IImage FromFile(string path)
         {
             if (String.IsNullOrEmpty(path))
