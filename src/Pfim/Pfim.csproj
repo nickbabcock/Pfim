@@ -52,15 +52,15 @@
     <Compile Include="dds\Dxt3Dds.cs" />
     <Compile Include="dds\Dxt5Dds.cs" />
     <Compile Include="dds\UncompressedDds.cs" />
-    <Compile Include="IDecodeTarga.cs" />
+    <Compile Include="targa\IDecodeTarga.cs" />
     <Compile Include="IImage.cs" />
     <Compile Include="ImageFormat.cs" />
     <Compile Include="Pfim.cs" />
-    <Compile Include="CompressedTarga.cs" />
+    <Compile Include="targa\CompressedTarga.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Targa.cs" />
-    <Compile Include="TargaHeader.cs" />
-    <Compile Include="UncompressedTarga.cs" />
+    <Compile Include="targa\Targa.cs" />
+    <Compile Include="targa\TargaHeader.cs" />
+    <Compile Include="targa\UncompressedTarga.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
