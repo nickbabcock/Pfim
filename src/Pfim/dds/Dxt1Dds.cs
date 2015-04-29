@@ -4,7 +4,10 @@ namespace Pfim
 {
     class Dxt1Dds : CompressedDds
     {
-        private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, 4, 8/*, PixelFormat.Format24bppRgb*/);
+        const int PIXEL_DEPTH = 3;
+        const int DIV_SIZE = 4;
+
+        private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, DIV_SIZE, 8/*, PixelFormat.Format24bppRgb*/);
 
         protected override byte PixelDepth
         {
@@ -101,7 +104,7 @@ namespace Pfim
                 }
 
                 // Jump down a row and start at the beginning of the row
-                dataIndex += width * 3 - 12;
+                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
             }
 
             // Reset position to start of block
