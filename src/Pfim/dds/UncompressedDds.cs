@@ -32,7 +32,7 @@ namespace Pfim
                 (Header.PixelFormat.ABitMask == 0x00008000);
         }
 
-        public bool IsThirtyTwoBitRGBA(DdsHeader Header)
+        public bool IsThirtyTwoBitRgba(DdsHeader Header)
         {
                 return (Header.PixelFormat.RGBBitCount == 32) &&
                     (Header.PixelFormat.RBitMask == 0xff0000) &&
@@ -41,7 +41,7 @@ namespace Pfim
                     (Header.PixelFormat.ABitMask == 0xff000000U);
         }
 
-        public bool IsTwentyFourBitRGB(DdsHeader Header)
+        public bool IsTwentyFourBitRgb(DdsHeader Header)
         {
             return (Header.PixelFormat.RGBBitCount == 24) &&
                 (Header.PixelFormat.RBitMask == 0xff0000) &&
@@ -51,9 +51,9 @@ namespace Pfim
 
         public DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            if (IsThirtyTwoBitRGBA(header))
+            if (IsThirtyTwoBitRgba(header))
                 return loadInfoB8G8R8A8;
-            else if (IsTwentyFourBitRGB(header))
+            else if (IsTwentyFourBitRgb(header))
                 return loadInfoB8G8R8;
             else if (IsSixteenBitAlphaOne(header))
                 return loadInfoB5G5R5A1;

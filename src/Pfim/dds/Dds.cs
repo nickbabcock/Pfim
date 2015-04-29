@@ -12,6 +12,10 @@ namespace Pfim
         private readonly DdsLoadInfo info;
         private readonly byte[] data;
 
+        /// <summary>
+        /// Instantiates a direct draw surface image from a header, the data,
+        /// and additional info.
+        /// </summary>
         public Dds(DdsHeader header, byte[] data, DdsLoadInfo info)
         {
             this.header = header;
