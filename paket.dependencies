@@ -7,7 +7,7 @@ nuget Magick.NET-Q16-AnyCPU
 nuget NUnit
 nuget NUnit.Runners
 nuget FAKE
-nuget SimpleSpeedTester
+nuget PerfUtil
 nuget SourceLink.Fake
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx

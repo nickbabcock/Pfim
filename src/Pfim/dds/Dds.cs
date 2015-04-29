@@ -67,7 +67,7 @@ namespace Pfim
             }
         }
 
-        internal static Dds Create(Stream stream)
+        public static Dds Create(Stream stream)
         {
             DdsHeader header = new DdsHeader(stream);
             IDecodeDds decoder;

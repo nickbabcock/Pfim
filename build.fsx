@@ -355,7 +355,7 @@ Target "All" DoNothing
   ==> "RunTests"
   =?> ("GenerateReferenceDocs",isLocalBuild)
   =?> ("GenerateDocs",isLocalBuild)
-  =?> ("Benchmark", isLocalBuild)
+  (**=?> ("Benchmark", isLocalBuild)*)
   ==> "All"
   =?> ("ReleaseDocs",isLocalBuild)
 

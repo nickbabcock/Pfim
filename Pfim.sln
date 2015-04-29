@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pfim", "src\Pfim\Pfim.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pfim.Benchmarks", "src\Pfim.Benchmarks\Pfim.Benchmarks.csproj", "{295C4FB7-E73E-4923-A087-C43DA080A79B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Pfim.Bench", "src\Pfim.Bench\Pfim.Bench.fsproj", "{E9B8D8CF-3096-43CA-A51E-C632D93E05D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{295C4FB7-E73E-4923-A087-C43DA080A79B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{295C4FB7-E73E-4923-A087-C43DA080A79B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{295C4FB7-E73E-4923-A087-C43DA080A79B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B8D8CF-3096-43CA-A51E-C632D93E05D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B8D8CF-3096-43CA-A51E-C632D93E05D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B8D8CF-3096-43CA-A51E-C632D93E05D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B8D8CF-3096-43CA-A51E-C632D93E05D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

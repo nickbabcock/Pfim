@@ -20,12 +20,12 @@ NUGET
     NUnit.Runners (2.6.4)
     Octokit (0.10.0)
       Microsoft.Net.Http
-    SimpleSpeedTester (1.1.0)
+    PerfUtil (0.1.8)
     SourceLink.Fake (0.5.0)
 GITHUB
   remote: fsharp/FAKE
   specs:
-    modules/Octokit/Octokit.fsx (14d903b5dff6f4818227c0ff80c66b806d9e17c2)
+    modules/Octokit/Octokit.fsx (3a37084ec188ad359b6c7f7badb900a64f4b4322)
       Octokit
   remote: DigitalDollhouse/SimsPackCleanInstaller
   specs:
