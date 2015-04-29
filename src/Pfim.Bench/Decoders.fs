@@ -51,23 +51,22 @@ type TargaDecoder () =
       using(new Paloma.TargaImage(str)) (fun x -> ())
     | _ -> failwith "Not supported"
 
-//type ImageMagickDecoder () =
-//  inherit Decoder ()
-//
-//  override __.Name = "ImageMagick"
-//  override __.decode data typ =
-//    match typ with
-//    | ImageType.Dds -> failwith "not all"
-//    | ImageType.Targa ->
-//      let settings = MagickReadSettings()
-//      settings.Format <- MagickFormat.Tga
-//      new MagickImage(new MemoryStream(data), settings) |> ignore
-//    | _ -> failwith "Not supported"
+type ImageMagickDecoder () =
+  inherit Decoder ()
 
-
+  override __.Name = "ImageMagick"
+  override __.decode data typ =
+    match typ with
+    | ImageType.Dds -> failwith "not all"
+    | ImageType.Targa ->
+      let settings = MagickReadSettings()
+      settings.Format <- System.Nullable MagickFormat.Tga
+      new MagickImage(new MemoryStream(data), settings) |> ignore
+    | _ -> failwith "Not supported"
 
 type DecoderPerf =
   static member CreateComparer () =
     let this = new PfimDecoder() :> Decoder
-    let others = [ new DevilDecoder() :> Decoder; new TargaDecoder() :> Decoder ]
-    new ImplementationComparer<Decoder>(this, others, warmup = true)
+    let others = [ new DevilDecoder() :> Decoder
+                   new TargaDecoder() :> Decoder ]
+    new ImplementationComparer<Decoder>(this, others, warmup = false)
