@@ -14,10 +14,10 @@ requireLicenseAcceptance
 copyright
     Copyright 2015
 tags
-    C# Image Parsing
+    C# Image Parsing Decoding
 summary
     Image decoder
 description
-    A super simple and super fast image decoder
+    A super simple and super fast image decoder that can work targa (.tga) and direct draw surface (.dds) images
 
 
