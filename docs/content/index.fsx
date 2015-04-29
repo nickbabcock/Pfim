@@ -46,9 +46,9 @@ The library is available under the MIT license, which allows modification and
 redistribution for both commercial and non-commercial purposes. For more
 information see the [License file][license].
 
-  [content]: https://github.com/fsprojects/Pfim/tree/master/docs/content
-  [gh]: https://github.com/fsprojects/Pfim
-  [issues]: https://github.com/fsprojects/Pfim/issues
-  [readme]: https://github.com/fsprojects/Pfim/blob/master/README.md
-  [license]: https://github.com/fsprojects/Pfim/blob/master/LICENSE.txt
+  [content]: https://github.com/nickbabcock/Pfim/tree/master/docs/content
+  [gh]: https://github.com/nickbabcock/Pfim
+  [issues]: https://github.com/nickbabcock/Pfim/issues
+  [readme]: https://github.com/nickbabcock/Pfim/blob/master/README.md
+  [license]: https://github.com/nickbabcock/Pfim/blob/master/LICENSE.txt
 *)
