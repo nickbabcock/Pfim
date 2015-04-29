@@ -45,8 +45,9 @@ namespace Pfim
         D3DFMT_DXT5 = 894720068
     }
 
+    /// <summary>Flags to indicate which members contain valid data.</summary>
     [Flags]
-    public enum DDSFlags : uint
+    public enum DdsFlags : uint
     {
         /// <summary>
         /// Required in every .dds file.
@@ -89,6 +90,10 @@ namespace Pfim
         Depth = 0x800000
     }
 
+    /// <summary>
+    /// Surface pixel format.
+    /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943984(v=vs.85).aspx
+    /// </summary>
     public struct DdsPixelFormat
     {
         /// <summary>
@@ -102,10 +107,11 @@ namespace Pfim
         public uint Flags;
 
         /// <summary>
-        /// Four-character codes for specifying compressed or custom formats. 
-        /// Possible values include: DXT1, DXT2, DXT3, DXT4, or DXT5. 
-        /// A FourCC of DX10 indicates the prescense of the DDS_HEADER_DXT10 extended header, 
-        /// and the dxgiFormat member of that structure indicates the true format. When using a four-character code, 
+        /// Four-character codes for specifying compressed or custom formats.
+        /// Possible values include: DXT1, DXT2, DXT3, DXT4, or DXT5.  A
+        /// FourCC of DX10 indicates the prescense of the DDS_HEADER_DXT10
+        /// extended header,  and the dxgiFormat member of that structure
+        /// indicates the true format. When using a four-character code,
         /// dwFlags must include DDPF_FOURCC.
         /// </summary>
         public CompressionAlgorithm FourCC;
@@ -142,10 +148,15 @@ namespace Pfim
         public uint ABitMask;
     }
 
+    /// <summary>
+    /// The header that accompanies all direct draw images
+    /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943982(v=vs.85).aspx
+    /// </summary>
     public class DdsHeader
     {
         /// <summary>
-        /// Size of a Direct Draw Header in number of bytes.  This does not include the magic number
+        /// Size of a Direct Draw Header in number of bytes.
+        /// This does not include the magic number
         /// </summary>
         public const int SIZE = 124;
 
@@ -155,10 +166,13 @@ namespace Pfim
         const uint DDS_MAGIC = 542327876;
 
         DdsPixelFormat pixelFormat;
+
+        /// <summary>Create header from stream</summary>
         public DdsHeader(Stream stream)
         {
             headerInit(stream);
         }
+
         private unsafe void headerInit(Stream stream)
         {
             byte[] buffer = new byte[SIZE + 4];
@@ -173,7 +187,7 @@ namespace Pfim
                     throw new ApplicationException("Not a valid DDS");
                 if ((Size = *workingBufferPtr++) != SIZE)
                     throw new ApplicationException("Not a valid header size");
-                Flags = (DDSFlags)(*workingBufferPtr++);
+                Flags = (DdsFlags)(*workingBufferPtr++);
                 Height = *workingBufferPtr++;
                 Width = *workingBufferPtr++;
                 PitchOrLinearSize = *workingBufferPtr++;
@@ -211,7 +225,7 @@ namespace Pfim
         /// <summary>
         /// Flags to indicate which members contain valid data. 
         /// </summary>
-        DDSFlags Flags { get;  set; }
+        DdsFlags Flags { get;  set; }
 
         /// <summary>
         /// Surface height in pixels

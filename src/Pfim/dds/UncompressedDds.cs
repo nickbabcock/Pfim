@@ -9,11 +9,11 @@ namespace Pfim
     /// </summary>
     public class UncompressedDds : IDecodeDds
     {
-        private static DdsLoadInfo loadInfoB8G8R8A8 = new DdsLoadInfo(false, false, false, 1, 4 /*PixelFormat.Format32bppArgb*/);
-        private static DdsLoadInfo loadInfoB8G8R8 = new DdsLoadInfo(false, false, false, 1, 3 /*PixelFormat.Format24bppRgb*/);
-        private static DdsLoadInfo loadInfoB5G5R5A1 = new DdsLoadInfo(false, true, false, 1, 2 /*PixelFormat.Format16bppArgb1555*/);
-        private static DdsLoadInfo loadInfoB5G6R5 = new DdsLoadInfo(false, true, false, 1, 2 /*PixelFormat.Format16bppRgb565*/);
-        private static DdsLoadInfo loadInfoIndex8 = new DdsLoadInfo(false, false, true, 1, 1 /*PixelFormat.Format8bppIndexed*/);
+        private static DdsLoadInfo loadInfoB8G8R8A8 = new DdsLoadInfo(false, false, false, 1, 4, 32);
+        private static DdsLoadInfo loadInfoB8G8R8 = new DdsLoadInfo(false, false, false, 1, 3, 32);
+        private static DdsLoadInfo loadInfoB5G5R5A1 = new DdsLoadInfo(false, true, false, 1, 2, 16);
+        private static DdsLoadInfo loadInfoB5G6R5 = new DdsLoadInfo(false, true, false, 1, 2, 16);
+        private static DdsLoadInfo loadInfoIndex8 = new DdsLoadInfo(false, false, true, 1, 1, 8);
 
         public bool IsSixteenBitAlphaZero(DdsHeader Header)
         {

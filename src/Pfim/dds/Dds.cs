@@ -32,7 +32,7 @@ namespace Pfim
         }
 
         /// <summary>Number of bits that compose a pixel</summary>
-        public int BitsPerPixel { get { return 1; /*((int)info.pixelFormat & 0xff00) >> 8;*/ } }
+        public int BitsPerPixel { get { return (int)header.Depth; } }
 
         /// <summary>Number of bytes that compose a pixel</summary>
         public int BytesPerPixel { get { return BitsPerPixel / 8; } }

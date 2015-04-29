@@ -21,16 +21,17 @@
         /// Uncompressed DDS do not need this value.
         /// </summary>
         internal uint blockBytes;
-        //internal PixelFormat pixelFormat;
 
-        public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes/*, PixelFormat PixelFormat*/)
+        internal int depth;
+
+        public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes, int aDepth)
         {
             compressed = isCompresed;
             swap = isSwap;
             palette = isPalette;
             divSize = aDivSize;
             blockBytes = aBlockBytes;
-            //pixelFormat = PixelFormat;
+            depth = aDepth;
         }
     }
 }

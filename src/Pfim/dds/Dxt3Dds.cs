@@ -6,7 +6,7 @@ namespace Pfim
     {
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
-        private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
+        private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16, 32);
 
         protected override byte PixelDepth
         {
