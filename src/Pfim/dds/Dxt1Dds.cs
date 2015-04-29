@@ -9,10 +9,7 @@ namespace Pfim
 
         private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, DIV_SIZE, 8, 24);
 
-        protected override byte PixelDepth
-        {
-            get { return 3; }
-        }
+        protected override byte PixelDepth { get { return 3; } }
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {

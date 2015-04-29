@@ -15,6 +15,7 @@ namespace Pfim
         private static DdsLoadInfo loadInfoB5G6R5 = new DdsLoadInfo(false, true, false, 1, 2, 16);
         private static DdsLoadInfo loadInfoIndex8 = new DdsLoadInfo(false, false, true, 1, 1, 8);
 
+        /// <summary>Determines if the image is R5G6R5</summary>
         public bool IsSixteenBitAlphaZero(DdsHeader Header)
         {
             return (Header.PixelFormat.RGBBitCount == 16) &&
@@ -23,6 +24,7 @@ namespace Pfim
                 (Header.PixelFormat.BBitMask == 0x0000001f);
         }
 
+        /// <summary>Determines if the image is R5G5R5A1</summary>
         public bool IsSixteenBitAlphaOne(DdsHeader Header)
         {
             return (Header.PixelFormat.RGBBitCount == 16) &&
@@ -32,6 +34,7 @@ namespace Pfim
                 (Header.PixelFormat.ABitMask == 0x00008000);
         }
 
+        /// <summary>Determines if the image is 32bit rgb</summary>
         public bool IsThirtyTwoBitRgba(DdsHeader Header)
         {
                 return (Header.PixelFormat.RGBBitCount == 32) &&
@@ -41,6 +44,7 @@ namespace Pfim
                     (Header.PixelFormat.ABitMask == 0xff000000U);
         }
 
+        /// <summary>Determines if the image is 24bit rgb</summary>
         public bool IsTwentyFourBitRgb(DdsHeader Header)
         {
             return (Header.PixelFormat.RGBBitCount == 24) &&
@@ -49,6 +53,7 @@ namespace Pfim
                 (Header.PixelFormat.BBitMask == 0xff);
         }
 
+        /// <summary>Determine image info from header</summary>
         public DdsLoadInfo ImageInfo(DdsHeader header)
         {
             if (IsThirtyTwoBitRgba(header))
@@ -64,6 +69,7 @@ namespace Pfim
             throw new ApplicationException("Unrecognized format");
         }
 
+        /// <summary>Decode data into raw rgb format</summary>
         public byte[] Decode(Stream str, DdsHeader header)
         {
             byte[] buffer = new byte[Dds.CalcSize(ImageInfo(header), header)];

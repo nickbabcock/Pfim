@@ -1,5 +1,6 @@
 ﻿namespace Pfim
 {
+    /// <summary>Contains additional info about the image</summary>
     public struct DdsLoadInfo
     {
         internal bool compressed;
@@ -24,6 +25,7 @@
 
         internal int depth;
 
+        /// <summary>Initialize the load info structure</summary>
         public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes, int aDepth)
         {
             compressed = isCompresed;

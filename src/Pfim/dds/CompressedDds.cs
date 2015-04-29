@@ -2,12 +2,21 @@
 
 namespace Pfim
 {
+    /// <summary>
+    /// Class representing decoding compressed direct draw surfaces
+    /// </summary>
     public abstract class CompressedDds : IDecodeDds
     {
+        /// <summary>Determine image info from header</summary>
         public abstract DdsLoadInfo ImageInfo(DdsHeader header);
+
+        /// <summary>Uncompress a given block</summary>
         protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width);
+
+        /// <summary>Number of bytes for a pixel in the decoded data</summary>
         protected abstract byte PixelDepth { get; }
 
+        /// <summary>Decode data into raw rgb format</summary>
         public byte[] Decode(Stream stream, DdsHeader header)
         {
             byte[] data = new byte[header.Width * header.Height * PixelDepth];

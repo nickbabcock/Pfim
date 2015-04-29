@@ -32,10 +32,7 @@ namespace Pfim
             return bIndex;
         }
 
-        protected override byte PixelDepth
-        {
-            get { return PIXEL_DEPTH; }
-        }
+        protected override byte PixelDepth { get { return PIXEL_DEPTH; } }
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {

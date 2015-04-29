@@ -8,10 +8,7 @@ namespace Pfim
         const byte DIV_SIZE = 4;
         private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16, 32);
 
-        protected override byte PixelDepth
-        {
-            get { return PIXEL_DEPTH; }
-        }
+        protected override byte PixelDepth { get { return PIXEL_DEPTH; } }
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
