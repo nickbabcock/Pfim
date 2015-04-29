@@ -89,7 +89,7 @@ namespace Pfim
         Depth = 0x800000
     }
 
-    public struct DDSPixelFormat
+    public struct DdsPixelFormat
     {
         /// <summary>
         /// Structure size; set to 32 (bytes).
@@ -154,7 +154,7 @@ namespace Pfim
         /// </summary>
         const uint DDS_MAGIC = 542327876;
 
-        DDSPixelFormat pixelFormat;
+        DdsPixelFormat pixelFormat;
         public DdsHeader(Stream stream)
         {
             headerInit(stream);
@@ -247,7 +247,7 @@ namespace Pfim
         /// <summary>
         /// The pixel format 
         /// </summary>
-        public DDSPixelFormat PixelFormat { get { return pixelFormat ;} }
+        public DdsPixelFormat PixelFormat { get { return pixelFormat ;} }
 
         /// <summary>
         /// Specifies the complexity of the surfaces stored.
