@@ -5,20 +5,20 @@ namespace Pfim
     class Dxt1Dds : CompressedDds
     {
         private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, 4, 8/*, PixelFormat.Format24bppRgb*/);
-        public Dxt1Dds(Stream fsStream, DdsHeader header)
-            : base(fsStream, header, DXT1LoadInfo)
+
+        protected override byte PixelDepth
         {
-            
+            get { return 3; }
         }
 
-        protected override int Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             // Colors are stored in a pair of 16 bits
-            ushort color0 = fileBuffer[bIndex++];
-            color0 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color0 = stream[streamIndex++];
+            color0 |= (ushort)(stream[streamIndex++] << 8);
 
-            ushort color1 = (fileBuffer[bIndex++]);
-            color1 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color1 = (stream[streamIndex++]);
+            color1 |= (ushort)(stream[streamIndex++] << 8);
 
             // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
@@ -70,7 +70,7 @@ namespace Pfim
                 // current pixel is
 
                 // Read in a byte and thus 4 colors
-                rowVal = fileBuffer[bIndex++];
+                rowVal = stream[streamIndex++];
                 for (int j = 0; j < 8; j += 2)
                 {
                     // Extract code by shifting the row byte so that we can
@@ -78,38 +78,39 @@ namespace Pfim
                     switch ((rowVal >> j) & 0x03)
                     {
                         case 0:
-                            rgbarr[rgbIndex++] = r0;
-                            rgbarr[rgbIndex++] = g0;
-                            rgbarr[rgbIndex++] = b0;
+                            data[dataIndex++] = r0;
+                            data[dataIndex++] = g0;
+                            data[dataIndex++] = b0;
                             break;
                         case 1:
-                            rgbarr[rgbIndex++] = r1;
-                            rgbarr[rgbIndex++] = g1;
-                            rgbarr[rgbIndex++] = b1;
+                            data[dataIndex++] = r1;
+                            data[dataIndex++] = g1;
+                            data[dataIndex++] = b1;
                             break;
                         case 2:
-                            rgbarr[rgbIndex++] = r2;
-                            rgbarr[rgbIndex++] = g2;
-                            rgbarr[rgbIndex++] = b2;
+                            data[dataIndex++] = r2;
+                            data[dataIndex++] = g2;
+                            data[dataIndex++] = b2;
                             break;
                         case 3:
-                            rgbarr[rgbIndex++] = r3;
-                            rgbarr[rgbIndex++] = g3;
-                            rgbarr[rgbIndex++] = b3;
+                            data[dataIndex++] = r3;
+                            data[dataIndex++] = g3;
+                            data[dataIndex++] = b3;
                             break;
                     }
                 }
 
                 // Jump down a row and start at the beginning of the row
-                rgbIndex += Header.Width * 3 - 12;
+                dataIndex += width * 3 - 12;
             }
 
             // Reset position to start of block
-            return bIndex;
+            return streamIndex;
         }
-        protected override byte PixelDepth
+
+        public override DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            get { return 3; }
+            return DXT1LoadInfo;
         }
     }
 }

@@ -2,35 +2,31 @@
 
 namespace Pfim
 {
-    public abstract class CompressedDds : DdsBase
+    public abstract class CompressedDds : IDecodeDds
     {
-        public CompressedDds(Stream stream, DdsHeader header, DdsLoadInfo loadinfo)
-            : base(header, loadinfo)
-        {
-            ReadImage(stream);
-        }
+        public abstract DdsLoadInfo ImageInfo(DdsHeader header);
+        protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width);
+        protected abstract byte PixelDepth { get; }
 
-        public override byte[] Data { get { return rgbarr; } }
-        private byte[] rgbarr;
-
-        private void ReadImage(Stream stream)
+        public byte[] Decode(Stream stream, DdsHeader header)
         {
-            rgbarr = new byte[Header.Width * Header.Height * PixelDepth];
-            uint rgbIndex = 0;
+            byte[] data = new byte[header.Width * header.Height * PixelDepth];
+            DdsLoadInfo loadInfo = ImageInfo(header);
+            uint dataIndex = 0;
 
             int bufferSize;
             int workingSize;
-            uint pixelsLeft = Header.Width * Header.Height;
+            uint pixelsLeft = header.Width * header.Height;
 
             // The number of bytes that represent a stride in the image
-            int bytesPerStride = (int)((Header.Width / LoadInfo.divSize) * LoadInfo.blockBytes);
-            int blocksPerStride = (int)(Header.Width / LoadInfo.divSize);
+            int bytesPerStride = (int)((header.Width / loadInfo.divSize) * loadInfo.blockBytes);
+            int blocksPerStride = (int)(header.Width / loadInfo.divSize);
 
-            byte[] fileBuffer = new byte[Util.BUFFER_SIZE];
+            byte[] streamBuffer = new byte[Util.BUFFER_SIZE];
 
             do
             {
-                bufferSize = workingSize = stream.Read(fileBuffer, 0, Util.BUFFER_SIZE);
+                bufferSize = workingSize = stream.Read(streamBuffer, 0, Util.BUFFER_SIZE);
                 int bIndex = 0;
                 while (workingSize > 0 && pixelsLeft > 0)
                 {
@@ -38,7 +34,7 @@ namespace Pfim
                     // set of 16 square pixels Get the next buffer
                     if (workingSize < bytesPerStride)
                     {
-                        bufferSize = workingSize = Util.Translate(stream, fileBuffer, workingSize);
+                        bufferSize = workingSize = Util.Translate(stream, streamBuffer, workingSize);
                         bIndex = 0;
                     }
 
@@ -46,26 +42,25 @@ namespace Pfim
                     // this includes the normally 4 pixels below the stride)
                     for (uint i = 0; i < blocksPerStride; i++)
                     {
-                        bIndex = Decompress(fileBuffer, rgbarr, bIndex, rgbIndex);
+                        bIndex = Decode(streamBuffer, data, bIndex, dataIndex, header.Width);
 
                         // Advance to the next block, which is (pixel depth *
                         // divSize) bytes away
-                        rgbIndex += LoadInfo.divSize * PixelDepth;
+                        dataIndex += loadInfo.divSize * PixelDepth;
                     }
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    pixelsLeft -= Header.Width * LoadInfo.divSize;
+                    pixelsLeft -= header.Width * loadInfo.divSize;
                     workingSize -= bytesPerStride;
 
                     // Jump down to the block that is exactly (divSize - 1)
                     // below the current row we are on
-                    rgbIndex += (PixelDepth * (LoadInfo.divSize - 1) * Header.Width);
+                    dataIndex += (PixelDepth * (loadInfo.divSize - 1) * header.Width);
                 }
             } while (bufferSize != 0 && pixelsLeft != 0);
-        }
 
-        protected abstract int Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex);
-        protected abstract byte PixelDepth { get; }
+            return data;
+        }
     }
 }

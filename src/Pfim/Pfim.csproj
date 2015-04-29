@@ -44,13 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dds\CompressedDds.cs" />
-    <Compile Include="dds\DdsBase.cs" />
-    <Compile Include="dds\DdsFactory.cs" />
+    <Compile Include="dds\Dds.cs" />
     <Compile Include="dds\DdsHeader.cs" />
     <Compile Include="dds\DdsLoadInfo.cs" />
     <Compile Include="dds\Dxt1Dds.cs" />
     <Compile Include="dds\Dxt3Dds.cs" />
     <Compile Include="dds\Dxt5Dds.cs" />
+    <Compile Include="dds\IDecodeDds.cs" />
     <Compile Include="dds\UncompressedDds.cs" />
     <Compile Include="targa\IDecodeTarga.cs" />
     <Compile Include="IImage.cs" />

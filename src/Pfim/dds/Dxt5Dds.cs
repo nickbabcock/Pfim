@@ -8,12 +8,7 @@ namespace Pfim
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
 
-        private static byte[] alpha = new byte[8];
-
-        public Dxt5Dds(Stream stream, DdsHeader header)
-            : base(stream, header, loadInfoDXT5)
-        {
-        }
+        private byte[] alpha = new byte[8];
 
         private int extractAlpha(byte[] workingFilePtr, int bIndex)
         {
@@ -36,23 +31,29 @@ namespace Pfim
             }
             return bIndex;
         }
-        protected override int  Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex)
-        {
-            bIndex = extractAlpha(fileBuffer, bIndex);
 
-            ulong alphaCodes = fileBuffer[bIndex++];
-            alphaCodes |= ((ulong)fileBuffer[bIndex++] << 8);
-            alphaCodes |= ((ulong)fileBuffer[bIndex++] << 16);
-            alphaCodes |= ((ulong)fileBuffer[bIndex++] << 24);
-            alphaCodes |= ((ulong)fileBuffer[bIndex++] << 32);
-            alphaCodes |= ((ulong)fileBuffer[bIndex++] << 40);
+        protected override byte PixelDepth
+        {
+            get { return PIXEL_DEPTH; }
+        }
+
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        {
+            streamIndex = extractAlpha(stream, streamIndex);
+
+            ulong alphaCodes = stream[streamIndex++];
+            alphaCodes |= ((ulong)stream[streamIndex++] << 8);
+            alphaCodes |= ((ulong)stream[streamIndex++] << 16);
+            alphaCodes |= ((ulong)stream[streamIndex++] << 24);
+            alphaCodes |= ((ulong)stream[streamIndex++] << 32);
+            alphaCodes |= ((ulong)stream[streamIndex++] << 40);
 
             // Colors are stored in a pair of 16 bits
-            ushort color0 = fileBuffer[bIndex++];
-            color0 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color0 = stream[streamIndex++];
+            color0 |= (ushort)(stream[streamIndex++] << 8);
 
-            ushort color1 = (fileBuffer[bIndex++]);
-            color1 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color1 = (stream[streamIndex++]);
+            color1 |= (ushort)(stream[streamIndex++] << 8);
 
             // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
@@ -78,52 +79,52 @@ namespace Pfim
             byte b3 = (byte)((b0 + 2 * b1) / 3);
 
             byte rowVal = 0;
-            for (int alphaShift = 0; alphaShift < 48; alphaShift+=12)
+            for (int alphaShift = 0; alphaShift < 48; alphaShift += 12)
             {
-                rowVal = fileBuffer[bIndex++];
+                rowVal = stream[streamIndex++];
 
                 for (int j = 0; j < 4; j++)
                 {
                     // 3 bits determine alpha index to use
-                    byte alphaIndex = (byte)((alphaCodes >> (alphaShift + 3*j)) & 0x07);
+                    byte alphaIndex = (byte)((alphaCodes >> (alphaShift + 3 * j)) & 0x07);
 
                     // index code [0-3]
                     switch (((rowVal >> (j * 2)) & 0x03))
                     {
                         case 0:
-                            rgbarr[rgbIndex++] = r0;
-                            rgbarr[rgbIndex++] = g0;
-                            rgbarr[rgbIndex++] = b0;
-                            rgbarr[rgbIndex++] = alpha[alphaIndex];
+                            data[dataIndex++] = r0;
+                            data[dataIndex++] = g0;
+                            data[dataIndex++] = b0;
+                            data[dataIndex++] = alpha[alphaIndex];
                             break;
                         case 1:
-                            rgbarr[rgbIndex++] = r1;
-                            rgbarr[rgbIndex++] = g1;
-                            rgbarr[rgbIndex++] = b1;
-                            rgbarr[rgbIndex++] = alpha[alphaIndex];
+                            data[dataIndex++] = r1;
+                            data[dataIndex++] = g1;
+                            data[dataIndex++] = b1;
+                            data[dataIndex++] = alpha[alphaIndex];
                             break;
                         case 2:
-                            rgbarr[rgbIndex++] = r2;
-                            rgbarr[rgbIndex++] = g2;
-                            rgbarr[rgbIndex++] = b2;
-                            rgbarr[rgbIndex++] = alpha[alphaIndex];
+                            data[dataIndex++] = r2;
+                            data[dataIndex++] = g2;
+                            data[dataIndex++] = b2;
+                            data[dataIndex++] = alpha[alphaIndex];
                             break;
                         case 3:
-                            rgbarr[rgbIndex++] = r3;
-                            rgbarr[rgbIndex++] = g3;
-                            rgbarr[rgbIndex++] = b3;
-                            rgbarr[rgbIndex++] = alpha[alphaIndex];
+                            data[dataIndex++] = r3;
+                            data[dataIndex++] = g3;
+                            data[dataIndex++] = b3;
+                            data[dataIndex++] = alpha[alphaIndex];
                             break;
                     }
                 }
-                rgbIndex += PIXEL_DEPTH * (Header.Width - DIV_SIZE);
+                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
             }
-            return bIndex;
+            return streamIndex;
         }
 
-        protected override byte PixelDepth
+        public override DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            get { return PIXEL_DEPTH; }
+            return loadInfoDXT5;
         }
     }
 }

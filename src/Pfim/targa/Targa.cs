@@ -64,14 +64,19 @@ namespace Pfim
             return new Targa(header, data);
         }
 
+        /// <summary>The raw image data</summary>
         public byte[] Data { get { return data; } }
 
+        /// <summary>Width of the image in pixels</summary>
         public int Width { get { return header.Width; } }
 
+        /// <summary>Height of the image in pixels</summary>
         public int Height { get { return header.Height; } }
 
+        /// <summary>The number of bytes that compose one line</summary>
         public int Stride { get { return Util.Stride(header.Width, header.PixelDepth); } }
 
+        /// <summary>The format of the raw data</summary>
         public ImageFormat Format
         {
             get

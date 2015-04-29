@@ -7,12 +7,13 @@ namespace Pfim
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
         private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16/*, PixelFormat.Format32bppArgb*/);
-        public Dxt3Dds(Stream stream, DdsHeader header)
-            : base(stream, header, loadInfoDXT3)
+
+        protected override byte PixelDepth
         {
+            get { return PIXEL_DEPTH; }
         }
 
-        protected override int Decompress(byte[] fileBuffer, byte[] rgbarr, int bIndex, uint rgbIndex)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             /* 
              * Strategy for decompression:
@@ -21,18 +22,18 @@ namespace Pfim
              * to store values for later use.
              */
 
-            //R emember where the alpha data is stored so we can decode simultaneously
-            int alphaPtr = bIndex;
+            // Remember where the alpha data is stored so we can decode simultaneously
+            int alphaPtr = streamIndex;
 
             // Jump ahead to the color data
-            bIndex += 8;
+            streamIndex += 8;
 
             // Colors are stored in a pair of 16 bits
-            ushort color0 = fileBuffer[bIndex++];
-            color0 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color0 = stream[streamIndex++];
+            color0 |= (ushort)(stream[streamIndex++] << 8);
 
-            ushort color1 = (fileBuffer[bIndex++]);
-            color1 |= (ushort)(fileBuffer[bIndex++] << 8);
+            ushort color1 = (stream[streamIndex++]);
+            color1 |= (ushort)(stream[streamIndex++] << 8);
 
             // Extract R5G6B5 (in that order)
             byte r0 = (byte)((color0 & 0x1f));
@@ -63,12 +64,12 @@ namespace Pfim
             ushort rowAlpha;
             for (int i = 0; i < 4; i++)
             {
-                rowVal = fileBuffer[bIndex++];
+                rowVal = stream[streamIndex++];
 
                 // Each row of rgb values have 4 alpha values that  are
                 // encoded in 4 bits
-                rowAlpha = fileBuffer[alphaPtr++];
-                rowAlpha |= (ushort)(fileBuffer[alphaPtr++] << 8);
+                rowAlpha = stream[alphaPtr++];
+                rowAlpha |= (ushort)(stream[alphaPtr++] << 8);
 
                 for (int j = 0; j < 8; j += 2)
                 {
@@ -79,38 +80,39 @@ namespace Pfim
                     switch (((rowVal >> j) & 0x03))
                     {
                         case 0:
-                            rgbarr[rgbIndex++] = r0;
-                            rgbarr[rgbIndex++] = g0;
-                            rgbarr[rgbIndex++] = b0;
-                            rgbarr[rgbIndex++] = currentAlpha;
+                            data[dataIndex++] = r0;
+                            data[dataIndex++] = g0;
+                            data[dataIndex++] = b0;
+                            data[dataIndex++] = currentAlpha;
                             break;
                         case 1:
-                            rgbarr[rgbIndex++] = r1;
-                            rgbarr[rgbIndex++] = g1;
-                            rgbarr[rgbIndex++] = b1;
-                            rgbarr[rgbIndex++] = currentAlpha;
+                            data[dataIndex++] = r1;
+                            data[dataIndex++] = g1;
+                            data[dataIndex++] = b1;
+                            data[dataIndex++] = currentAlpha;
                             break;
                         case 2:
-                            rgbarr[rgbIndex++] = r2;
-                            rgbarr[rgbIndex++] = g2;
-                            rgbarr[rgbIndex++] = b2;
-                            rgbarr[rgbIndex++] = currentAlpha;
+                            data[dataIndex++] = r2;
+                            data[dataIndex++] = g2;
+                            data[dataIndex++] = b2;
+                            data[dataIndex++] = currentAlpha;
                             break;
                         case 3:
-                            rgbarr[rgbIndex++] = r3;
-                            rgbarr[rgbIndex++] = g3;
-                            rgbarr[rgbIndex++] = b3;
-                            rgbarr[rgbIndex++] = currentAlpha;
+                            data[dataIndex++] = r3;
+                            data[dataIndex++] = g3;
+                            data[dataIndex++] = b3;
+                            data[dataIndex++] = currentAlpha;
                             break;
                     }
                 }
-                rgbIndex += PIXEL_DEPTH * (Header.Width - DIV_SIZE);
+                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
             }
-            return bIndex;
+            return streamIndex;
         }
-        protected override byte PixelDepth
+
+        public override DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            get { return PIXEL_DEPTH; }
+            return loadInfoDXT3;
         }
     }
 }
