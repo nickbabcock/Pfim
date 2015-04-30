@@ -9,7 +9,7 @@ module Tests =
   let load x = File.ReadAllBytes(Path.Combine("data", x))
 
   [<PerfTest(100)>]
-  let ``large targa`` (d : Decoder) =
+  let ``large-compressed targa`` (d : Decoder) =
     DevILSharp.Bootstrap.Init()
     let data = load "true-32-rle-large.tga"
     d.decode data ImageType.Targa

@@ -61,7 +61,7 @@ type ImageMagickDecoder () =
     | ImageType.Targa ->
       let settings = MagickReadSettings()
       settings.Format <- System.Nullable MagickFormat.Tga
-      new MagickImage(new MemoryStream(data), settings) |> ignore
+      using (new MagickImage(new MemoryStream(data), settings)) (fun x -> ())
     | _ -> failwith "Not supported"
 
 type FreeImageDecoder () =
@@ -80,5 +80,6 @@ type DecoderPerf =
     let this = new PfimDecoder() :> Decoder
     let others = [ new DevilDecoder() :> Decoder
                    new TargaDecoder() :> Decoder
+                   new ImageMagickDecoder() :> Decoder
                    new FreeImageDecoder() :> Decoder ]
     new ImplementationComparer<Decoder>(this, others, warmup = false)
