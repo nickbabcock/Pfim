@@ -68,6 +68,5 @@ type DecoderPerf =
   static member CreateComparer () =
     let this = new PfimDecoder() :> Decoder
     let others = [ new DevilDecoder() :> Decoder
-                   new TargaDecoder() :> Decoder
-                   new ImageMagickDecoder() :> Decoder ]
+                   new TargaDecoder() :> Decoder ]
     new ImplementationComparer<Decoder>(this, others, warmup = false)

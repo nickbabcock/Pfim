@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pygal
 import csv
 import sys
@@ -6,7 +7,7 @@ from collections import namedtuple
 from pygal.style import CleanStyle
 
 
-implementations = ['DevIL', 'ImageMagick', 'Pfim', 'TargaImage']
+implementations = ['DevIL', 'Pfim', 'TargaImage']
 Benchmark = namedtuple('Benchmark', ['title'] + implementations)
 
 

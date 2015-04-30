@@ -334,13 +334,21 @@ Target "BuildPackage" DoNothing
 
 Target "Benchmark" (fun _ ->
     trace "Starting benchmarks"
-    let result =
+
+    let result0 =
         ExecProcess (fun info ->
-            info.FileName <- ("bin/Pfim.Benchmarks/Pfim.Benchmarks.exe")
-            info.WorkingDirectory <- "bin/Pfim.Benchmarks"
+            info.FileName <- ("bin/Pfim.Bench/Pfim.Bench.exe")
+            info.Arguments <- "benchmarks.csv"
+            info.WorkingDirectory <- "bin/Pfim.Bench"
         ) (System.TimeSpan.FromMinutes 5.)
 
-    if result <> 0 then failwith "Failed result from Benchmark tests"
+    let result1 =
+        ExecProcess (fun info ->
+            info.FileName <- ("env/Scripts/python")
+            info.Arguments <- " svg.py bin/Pfim.Bench/benchmarks.csv"
+        ) (System.TimeSpan.FromMinutes 5.)
+
+    if result0 <> 0 || result1 <> 0 then failwith "Failed result from Benchmark tests"
 )
 
 // --------------------------------------------------------------------------------------
@@ -355,7 +363,7 @@ Target "All" DoNothing
   ==> "RunTests"
   =?> ("GenerateReferenceDocs",isLocalBuild)
   =?> ("GenerateDocs",isLocalBuild)
-  (**=?> ("Benchmark", isLocalBuild)*)
+  =?> ("Benchmark", isLocalBuild && Directory.Exists("env"))
   ==> "All"
   =?> ("ReleaseDocs",isLocalBuild)
 

@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>e9b8d8cf-3096-43ca-a51e-c632d93e05d8</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Pfim.Bench</RootNamespace>
     <AssemblyName>Pfim.Bench</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
+    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>Pfim.Bench</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Decoders.fs" />
     <Compile Include="Tests.fs" />
-    <None Include="Script.fsx" />
+    <Compile Include="Script.fs" />
     <None Include="paket.references" />
     <None Include="..\..\tests\Pfim.Tests\data\true-24.tga">
       <Link>data\true-24.tga</Link>
