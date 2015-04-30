@@ -9,8 +9,10 @@ nuget NUnit.Runners
 nuget FAKE
 nuget PerfUtil
 nuget SourceLink.Fake
+nuget vvvv.FreeImage
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx
 github DigitalDollhouse/SimsPackCleanInstaller:ts1pack TargaImage/TargaImage.cs
 github ftrvxmtrx/tga testdata/rgb24_top_left.tga
 github MemFusion/memfusion_prototype MFUtil/GroupWhen.fs
+github QW0101/FreeImage FreeImage.dll

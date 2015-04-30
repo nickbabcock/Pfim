@@ -64,9 +64,21 @@ type ImageMagickDecoder () =
       new MagickImage(new MemoryStream(data), settings) |> ignore
     | _ -> failwith "Not supported"
 
+type FreeImageDecoder () =
+  inherit Decoder ()
+
+  override __.Name = "FreeImage"
+  override __.decode data typ =
+    match typ with
+    | ImageType.Dds -> failwith "not all"
+    | ImageType.Targa ->
+      FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data)).ToBitmap() |> ignore
+    | _ -> failwith "Not supported"
+
 type DecoderPerf =
   static member CreateComparer () =
     let this = new PfimDecoder() :> Decoder
     let others = [ new DevilDecoder() :> Decoder
-                   new TargaDecoder() :> Decoder ]
+                   new TargaDecoder() :> Decoder
+                   new FreeImageDecoder() :> Decoder ]
     new ImplementationComparer<Decoder>(this, others, warmup = false)

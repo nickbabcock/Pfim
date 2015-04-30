@@ -22,7 +22,7 @@ let runPerfs path =
     |> PerfTest.run (fun () -> DecoderPerf.CreateComparer () :> _)
 
   let file = File.CreateText(path)
-  file.WriteLine("Test,DevIL,Pfim,TargaImage")
+  file.WriteLine("Test,DevIL,FreeImage,Pfim,TargaImage")
 
   perfResults
   |> List.collect (fun x ->

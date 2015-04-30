@@ -7,6 +7,7 @@ open Fake
 open Fake.Git
 open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
+open Fake.FileUtils
 open System
 open System.IO
 #if MONO
@@ -335,6 +336,7 @@ Target "BuildPackage" DoNothing
 Target "Benchmark" (fun _ ->
     trace "Starting benchmarks"
 
+    cp "lib/FreeImage.dll" "bin/Pfim.Bench/."
     let result0 =
         ExecProcess (fun info ->
             info.FileName <- ("bin/Pfim.Bench/Pfim.Bench.exe")

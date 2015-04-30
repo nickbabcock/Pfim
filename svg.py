@@ -7,7 +7,7 @@ from collections import namedtuple
 from pygal.style import CleanStyle
 
 
-implementations = ['DevIL', 'Pfim', 'TargaImage']
+implementations = ['DevIL', 'FreeImage', 'Pfim', 'TargaImage']
 Benchmark = namedtuple('Benchmark', ['title'] + implementations)
 
 
