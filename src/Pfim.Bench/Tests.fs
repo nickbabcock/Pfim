@@ -14,14 +14,14 @@ module Tests =
     let data = load "true-32-rle-large.tga"
     d.decode data ImageType.Targa
 
-//  [<PerfTest(200)>]
-//  let ``24bit targa`` (d : Decoder) =
-//    DevILSharp.Bootstrap.Init()
-//    let data = load "true-24.tga"
-//    d.decode data ImageType.Targa
-//
-//  [<PerfTest(200)>]
-//  let ``32bit run-length targa`` (d : Decoder) =
-//    DevILSharp.Bootstrap.Init()
-//    let data = load "true-32-rle.tga"
-//    d.decode data ImageType.Targa
+  [<PerfTest(200)>]
+  let ``24bit targa`` (d : Decoder) =
+    DevILSharp.Bootstrap.Init()
+    let data = load "true-24.tga"
+    d.decode data ImageType.Targa
+
+  [<PerfTest(200)>]
+  let ``32bit run-length targa`` (d : Decoder) =
+    DevILSharp.Bootstrap.Init()
+    let data = load "true-32-rle.tga"
+    d.decode data ImageType.Targa
