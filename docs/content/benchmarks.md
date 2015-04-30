@@ -7,7 +7,10 @@ it comes to ease of use (I know, I had to create these benchmarks!). These
 benchmarks are always up-to-date as they are generated when a new release of
 Pfim is.
 
-![Large Compressed Benchmark](/img/large-compressed-targa.svg)
-![Large Uncompressed Benchmark](/img/large-uncompressed-targa.svg)
-![Small Compressed Benchmark](/img/small-compressed-targa.svg)
-![Small Uncompressed Benchmark](/img/small-uncompressed-targa.svg)
+![Large Compressed Benchmark](/Pfim/img/large-compressed-targa.svg)
+
+![Large Uncompressed Benchmark](/Pfim/img/large-uncompressed-targa.svg)
+
+![Small Compressed Benchmark](/Pfim/img/small-compressed-targa.svg)
+
+![Small Uncompressed Benchmark](/Pfim/img/small-uncompressed-targa.svg)
