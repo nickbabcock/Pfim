@@ -26,6 +26,14 @@ on being backend and frontend agnostic.
     // Load image from file path
     IImage image = Pfim.FromFile(@"C:\image.tga");
 
+## Motivation
+
+There currently is a lack of .NET image decoders that strike a good balance
+between speed and simplicity. Pfim fills this role by being entirely written
+in .NET (no need to worry about cross platform) with an easy API to learn.
+Pfim also clocks in as one of the fastest (if not the fastest) implementation.
+See the [benchmarks](/Pfim/benchmarks.html) for more information.
+
 ## Samples & Documentation
 
  * [Tutorial](tutorial.html) contains a walkthrough some of the API for more uses.

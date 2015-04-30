@@ -3,11 +3,20 @@
 
 # Pfim
 
+[Main documention page](http://nickbabcock.github.io/Pfim/)
+
 Pfim is an incredibly simple and fast image decoding library with an emphasis
 on being backend and frontend agnostic. This means that you can add Pfim to
 your server, Windows Form, or WPF app!
 
-[Main documention page](http://nickbabcock.github.io/Pfim/)
+Building the library is as easy as
+
+```
+./build.sh   // linux
+build.cmd    // windows
+```
+
+## Developer Resources
 
 - [Targa image specification](http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf)
 - [Block compression](https://msdn.microsoft.com/en-us/library/bb694531(v=vs.85).aspx) (useful for dds)
