@@ -1,7 +1,7 @@
 ﻿namespace Pfim
 {
     /// <summary>Contains additional info about the image</summary>
-    public struct DdsLoadInfo
+    internal struct DdsLoadInfo
     {
         internal bool compressed;
         internal bool swap;

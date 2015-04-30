@@ -2,7 +2,7 @@
 
 namespace Pfim
 {
-    class Dxt3Dds : CompressedDds
+    internal class Dxt3Dds : CompressedDds
     {
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;

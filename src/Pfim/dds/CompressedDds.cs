@@ -5,7 +5,7 @@ namespace Pfim
     /// <summary>
     /// Class representing decoding compressed direct draw surfaces
     /// </summary>
-    public abstract class CompressedDds : IDecodeDds
+    internal abstract class CompressedDds : IDecodeDds
     {
         /// <summary>Determine image info from header</summary>
         public abstract DdsLoadInfo ImageInfo(DdsHeader header);

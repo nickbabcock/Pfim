@@ -2,7 +2,7 @@
 
 namespace Pfim
 {
-    class Dxt5Dds : CompressedDds
+    internal class Dxt5Dds : CompressedDds
     {
         private static DdsLoadInfo loadInfoDXT5 = new DdsLoadInfo(true, false, false, 4, 16, 32);
         const byte PIXEL_DEPTH = 4;

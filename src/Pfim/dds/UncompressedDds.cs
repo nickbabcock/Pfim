@@ -7,7 +7,7 @@ namespace Pfim
     /// A DirectDraw Surface that is not compressed.  
     /// Thus what is in the input stream gets directly translated to the image buffer.
     /// </summary>
-    public class UncompressedDds : IDecodeDds
+    internal class UncompressedDds : IDecodeDds
     {
         private static DdsLoadInfo loadInfoB8G8R8A8 = new DdsLoadInfo(false, false, false, 1, 4, 32);
         private static DdsLoadInfo loadInfoB8G8R8 = new DdsLoadInfo(false, false, false, 1, 3, 32);

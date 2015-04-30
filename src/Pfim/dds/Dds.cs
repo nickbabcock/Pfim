@@ -16,7 +16,7 @@ namespace Pfim
         /// Instantiates a direct draw surface image from a header, the data,
         /// and additional info.
         /// </summary>
-        public Dds(DdsHeader header, byte[] data, DdsLoadInfo info)
+        internal Dds(DdsHeader header, byte[] data, DdsLoadInfo info)
         {
             this.header = header;
             this.data = data;
@@ -24,7 +24,7 @@ namespace Pfim
         }
 
         /// <summary>Calculates the number of bytes to hold image data</summary>
-        public static int CalcSize(DdsLoadInfo info, DdsHeader header)
+        internal static int CalcSize(DdsLoadInfo info, DdsHeader header)
         {
             int width = (int)Math.Max(info.divSize, header.Width);
             int height = (int)Math.Max(info.divSize, header.Height);
@@ -67,6 +67,7 @@ namespace Pfim
             }
         }
 
+        /// <summary>Create a direct draw image from a stream</summary>
         public static Dds Create(Stream stream)
         {
             DdsHeader header = new DdsHeader(stream);
