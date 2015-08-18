@@ -205,21 +205,33 @@ let ``parse 32 bit uncompressed dds`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy; 255uy |] |]
   image.Data |> shouldEqual expected
+  image.Height |> shouldEqual 64
+  image.Width |> shouldEqual 64
+  image.Format |> shouldEqual ImageFormat.Rgba32
 
 [<Test>]
 let ``parse simple dxt1`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 127uy |] |]
   image.Data |> shouldEqual expected
+  image.Height |> shouldEqual 64
+  image.Width |> shouldEqual 64
+  image.Format |> shouldEqual ImageFormat.Rgb24
 
 [<Test>]
 let ``parse simple dxt3`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
   image.Data |> shouldEqual expected
+  image.Height |> shouldEqual 64
+  image.Width |> shouldEqual 64
+  image.Format |> shouldEqual ImageFormat.Rgba32
 
 [<Test>]
 let ``parse simple dxt5`` () =
   let image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"))
   let expected = [| for i in 1 .. 64 * 64 do yield! [| 0uy; 0uy; 128uy; 255uy |] |]
   image.Data |> shouldEqual expected
+  image.Height |> shouldEqual 64
+  image.Width |> shouldEqual 64
+  image.Format |> shouldEqual ImageFormat.Rgba32
