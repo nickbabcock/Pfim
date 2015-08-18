@@ -1,3 +1,6 @@
+### 0.3.1 - August 18th 2015
+* Fix pixel depth calculations for compressed dds
+
 ### 0.3 - April 30 2015
 * Internalized a lot of API to simplify usage
 * Publish benchmarking

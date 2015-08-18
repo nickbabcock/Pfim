@@ -4,10 +4,10 @@ using System.Reflection;
 [assembly: AssemblyTitleAttribute("Pfim.Benchmarks")]
 [assembly: AssemblyProductAttribute("Pfim")]
 [assembly: AssemblyDescriptionAttribute("Image file format parser")]
-[assembly: AssemblyVersionAttribute("0.3")]
-[assembly: AssemblyFileVersionAttribute("0.3")]
+[assembly: AssemblyVersionAttribute("0.3.1")]
+[assembly: AssemblyFileVersionAttribute("0.3.1")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "0.3";
+        internal const string Version = "0.3.1";
     }
 }
