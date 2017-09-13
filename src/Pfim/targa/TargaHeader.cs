@@ -88,7 +88,7 @@ namespace Pfim
             {
                 buf = new byte[IDLength];
                 str.Read(buf, 0, IDLength);
-                ImageId = Encoding.ASCII.GetString(buf);
+                ImageId = Encoding.Unicode.GetString(buf, 0, buf.Length);
             }
 
             //if (HasColorMap)

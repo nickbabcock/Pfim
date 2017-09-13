@@ -184,9 +184,9 @@ namespace Pfim
             {
                 uint* workingBufferPtr = (uint*)bufferPtr;
                 if (*workingBufferPtr++ != DDS_MAGIC)
-                    throw new ApplicationException("Not a valid DDS");
+                    throw new Exception("Not a valid DDS");
                 if ((Size = *workingBufferPtr++) != SIZE)
-                    throw new ApplicationException("Not a valid header size");
+                    throw new Exception("Not a valid header size");
                 Flags = (DdsFlags)(*workingBufferPtr++);
                 Height = *workingBufferPtr++;
                 Width = *workingBufferPtr++;

@@ -66,7 +66,7 @@ namespace Pfim
                 return loadInfoB5G6R5;
             else if (header.PixelFormat.RGBBitCount == 8)
                 return loadInfoIndex8;
-            throw new ApplicationException("Unrecognized format");
+            throw new Exception("Unrecognized format");
         }
 
         /// <summary>Decode data into raw rgb format</summary>

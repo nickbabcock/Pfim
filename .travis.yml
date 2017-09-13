@@ -1,6 +1,6 @@
 language: csharp
-
+mono: none
+dotnet: 2.0.0
 sudo: false  # use the new container-based Travis infrastructure 
-
 script: 
-  - ./build.sh All
+  - dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj

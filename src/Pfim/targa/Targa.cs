@@ -58,7 +58,7 @@ namespace Pfim
                     break;
 
                 default:
-                    throw new ApplicationException("Targa orientation not recognized");
+                    throw new Exception("Targa orientation not recognized");
             }
 
             return new Targa(header, data);
@@ -85,7 +85,7 @@ namespace Pfim
                 {
                     case 24: return ImageFormat.Rgb24;
                     case 32: return ImageFormat.Rgba32;
-                    default: throw new ApplicationException(
+                    default: throw new Exception(
                         "Unrecognized pixel depth: " + header.PixelDepth.ToString());
                 }
             }

@@ -1,78 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{03EC99EE-E533-41CB-87DB-1FC5AEFA3108}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pfim</RootNamespace>
-    <AssemblyName>Pfim</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Pfim.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Pfim.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Product>Pfim</Product>
+    <Description>A super simple and super fast image decoder that can work targa (.tga) and direct draw surface (.dds) images</Description>
+    <Copyright>Nick Babcock</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Authors>Nick Babcock</Authors>
+    <PackageTags>image-decoding</PackageTags>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/nickbabcock/Pfim/master/LICENSE.txt</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/nickbabcock/Pfim</RepositoryUrl>
+    <Major>0</Major>
+    <Minor>3</Minor>
+    <Revision>1</Revision>
+    <AssemblyVersion>$(Major).$(Minor).$(Revision)</AssemblyVersion>
+    <AssemblyFileVersion>$(Major).$(Minor).$(Revision)</AssemblyFileVersion>
+    <InformationalVersion>$(Major).$(Minor).$(Revision)</InformationalVersion>
+    <Version>$(Major).$(Minor).$(Revision)$(VersionSuffix)</Version>
+    <FileVersion>$(Major).$(Minor).$(Revision)</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="dds\CompressedDds.cs" />
-    <Compile Include="dds\Dds.cs" />
-    <Compile Include="dds\DdsHeader.cs" />
-    <Compile Include="dds\DdsLoadInfo.cs" />
-    <Compile Include="dds\Dxt1Dds.cs" />
-    <Compile Include="dds\Dxt3Dds.cs" />
-    <Compile Include="dds\Dxt5Dds.cs" />
-    <Compile Include="dds\IDecodeDds.cs" />
-    <Compile Include="dds\UncompressedDds.cs" />
-    <Compile Include="targa\IDecodeTarga.cs" />
-    <Compile Include="IImage.cs" />
-    <Compile Include="ImageFormat.cs" />
-    <Compile Include="Pfim.cs" />
-    <Compile Include="targa\CompressedTarga.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="targa\Targa.cs" />
-    <Compile Include="targa\TargaHeader.cs" />
-    <Compile Include="targa\UncompressedTarga.cs" />
-    <Compile Include="Util.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
-    <None Include="paket.template" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

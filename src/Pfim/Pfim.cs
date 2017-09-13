@@ -29,7 +29,7 @@ namespace Pfim
                         return Targa.Create(fs);
                     default:
                         string error = string.Format("{0}: unrecognized file format.", path);
-                        throw new ApplicationException(error);
+                        throw new Exception(error);
                 }
             }
         }
