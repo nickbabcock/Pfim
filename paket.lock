@@ -29,11 +29,3 @@ GITHUB
     modules/Octokit/Octokit.fsx (56f47d2c0b59f9835c7339bd9a92d3e983ff6f93)
       Octokit
   remote: ftrvxmtrx/tga
-  specs:
-    testdata/rgb24_top_left.tga (bd8e8d5be13a2bda61c29a47ca41ecc8f20ee731)
-  remote: MemFusion/memfusion_prototype
-  specs:
-    MFUtil/GroupWhen.fs (2fa58dce15d96f7ec0793f2ffd3b0e5e1f377d1b)
-  remote: QW0101/FreeImage
-  specs:
-    FreeImage.dll (60e0aa277fe6eebf755785029b513540c9a272f7)
