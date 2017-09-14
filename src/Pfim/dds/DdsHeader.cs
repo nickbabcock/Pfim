@@ -258,7 +258,7 @@ namespace Pfim
         /// <summary>
         /// The pixel format 
         /// </summary>
-        public DdsPixelFormat PixelFormat { get { return pixelFormat ;} }
+        public DdsPixelFormat PixelFormat => pixelFormat;
 
         /// <summary>
         /// Specifies the complexity of the surfaces stored.

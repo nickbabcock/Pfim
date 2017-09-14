@@ -102,7 +102,7 @@ namespace Pfim
         /// <param name="dataIndex">Index of where to start storing the expanded data.</param>
         /// <param name="streamBufferIndex">Index of where the compressed data.</param>
         /// <param name="colorDepth">The number of bytes in a pixel</param>
-        public unsafe static void RunLength(byte[] data, byte[] streamBuffer,
+        public static unsafe void RunLength(byte[] data, byte[] streamBuffer,
             int dataIndex, int streamBufferIndex, int colorDepth)
         {
             int runLength = streamBuffer[streamBufferIndex++] - 127;

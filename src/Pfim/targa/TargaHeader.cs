@@ -184,14 +184,8 @@ namespace Pfim
         /// Returns whether the data is run length encoded, which means the
         /// image is compressed
         /// </summary>
-        public bool IsCompressed
-        {
-            get
-            {
-                return ImageType == TargaImageType.RunLengthTrueColor ||
-                    ImageType == TargaImageType.RunLengthColorMap ||
-                    ImageType == TargaImageType.RunLengthBW;
-            }
-        }
+        public bool IsCompressed => ImageType == TargaImageType.RunLengthTrueColor ||
+                                    ImageType == TargaImageType.RunLengthColorMap ||
+                                    ImageType == TargaImageType.RunLengthBW;
     }
 }

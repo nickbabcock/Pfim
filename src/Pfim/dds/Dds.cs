@@ -32,28 +32,22 @@ namespace Pfim
         }
 
         /// <summary>Number of bits that compose a pixel</summary>
-        public int BitsPerPixel
-        {
-            get { return header.Depth != 0 ? (int)header.Depth : info.depth; }
-        }
+        public int BitsPerPixel => header.Depth != 0 ? (int)header.Depth : info.depth;
 
         /// <summary>Number of bytes that compose a pixel</summary>
-        public int BytesPerPixel { get { return BitsPerPixel / 8; } }
+        public int BytesPerPixel => BitsPerPixel / 8;
 
         /// <summary>The number of bytes that compose one line</summary>
-        public int Stride
-        {
-            get { return (int)(4 * ((header.Width * BytesPerPixel + 3) / 4)); }
-        }
+        public int Stride => (int)(4 * ((header.Width * BytesPerPixel + 3) / 4));
 
         /// <summary>The raw image data</summary>
-        public byte[] Data { get { return data; } }
+        public byte[] Data => data;
 
         /// <summary>Width of the image in pixels</summary>
-        public int Width { get { return (int)header.Width; } }
+        public int Width => (int)header.Width;
 
         /// <summary>Height of the image in pixels</summary>
-        public int Height { get { return (int)header.Height; } }
+        public int Height => (int)header.Height;
 
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format

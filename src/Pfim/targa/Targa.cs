@@ -65,16 +65,16 @@ namespace Pfim
         }
 
         /// <summary>The raw image data</summary>
-        public byte[] Data { get { return data; } }
+        public byte[] Data => data;
 
         /// <summary>Width of the image in pixels</summary>
-        public int Width { get { return header.Width; } }
+        public int Width => header.Width;
 
         /// <summary>Height of the image in pixels</summary>
-        public int Height { get { return header.Height; } }
+        public int Height => header.Height;
 
         /// <summary>The number of bytes that compose one line</summary>
-        public int Stride { get { return Util.Stride(header.Width, header.PixelDepth); } }
+        public int Stride => Util.Stride(header.Width, header.PixelDepth);
 
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format
