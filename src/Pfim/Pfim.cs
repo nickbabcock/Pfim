@@ -16,7 +16,7 @@ namespace Pfim
                 throw new ArgumentNullException("path");
 
             if (!File.Exists(path))
-                throw new FileNotFoundException("Image does not exist.", path);
+                throw new FileNotFoundException($"Image does not exist: {Path.GetFullPath(path)}", path);
 
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, Util.BUFFER_SIZE))
             {
