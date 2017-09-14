@@ -61,6 +61,13 @@ namespace Pfim
                     {
                         int bytcount = count * bytesPerPixel;
                         fileBufferIndex++;
+
+                        if (filebuffer.Length - fileBufferIndex - bytcount < 0)
+                        {
+                            workingSize = Util.Translate(str, data, workingSize);
+                            fileBufferIndex = 0;
+                        }
+
                         Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
                         fileBufferIndex += bytcount;
                         colIndex += count;

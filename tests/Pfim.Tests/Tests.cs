@@ -117,6 +117,21 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void parseTargaCya()
+        {
+            //byte[] expected = new byte[64 * 64 * 3];
+            //for (int i = 0; i < expected.Length; i += 3)
+            //{
+            //    expected[i] = 255;
+            //    expected[i + 1] = 176;
+            //    expected[i + 2] = 0;
+            //}
+
+            var image = Pfim.FromFile(Path.Combine("data", "CYA.tga"));
+            //Assert.Equal(image.Data, expected);
+        }
+
+        [Fact]
         public void parseTargaTrue32SingleColor () {
             byte[] expected = new byte[64 * 64 * 4];  
             for (int i = 0; i < expected.Length; i += 4) {
