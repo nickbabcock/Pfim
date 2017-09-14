@@ -14,7 +14,7 @@ namespace Pfim.Tests
             byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 0);
-            Assert.Equal(actual, 5);
+            Assert.Equal(5, actual);
         }
 
         [Fact]
@@ -22,8 +22,8 @@ namespace Pfim.Tests
             byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream(new byte[]{ 100 });
             var actual = Util.Translate(mem, buf, 1);
-            Assert.Equal(actual, 5);
-            Assert.Equal(buf, new byte[] { 2, 3, 4, 5, 100 });
+            Assert.Equal(5, actual);
+            Assert.Equal(new byte[] { 2, 3, 4, 5, 100 }, buf);
         }
 
         [Fact]
@@ -31,8 +31,8 @@ namespace Pfim.Tests
             byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 1);
-            Assert.Equal(actual, 4);
-            Assert.Equal(buf, new byte[] { 2, 3, 4, 5, 5 });
+            Assert.Equal(4, actual);
+            Assert.Equal(new byte[] { 2, 3, 4, 5, 5 }, buf);
         }
 
         [Fact]
@@ -40,8 +40,8 @@ namespace Pfim.Tests
             byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream(new byte[] {100, 99, 98, 97});
             var actual = Util.Translate(mem, buf, 4);
-            Assert.Equal(actual, 5);
-            Assert.Equal(buf, new byte[] { 5, 100, 99, 98, 97 });
+            Assert.Equal(5, actual);
+            Assert.Equal(new byte[] { 5, 100, 99, 98, 97 }, buf);
         }
 
         [Fact]
@@ -49,8 +49,8 @@ namespace Pfim.Tests
             byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 4);
-            Assert.Equal(actual, 1);
-            Assert.Equal(buf, new byte[] { 5, 2, 3, 4, 5 });
+            Assert.Equal(1, actual);
+            Assert.Equal(new byte[] { 5, 2, 3, 4, 5 }, buf);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Pfim.Tests
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5});
             Util.FillBottomLeft(mem, data, 1);
-            Assert.Equal(data, new byte[] { 5, 4, 3, 2, 1 });
+            Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Pfim.Tests
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6});
             Util.FillBottomLeft(mem, data, 2);
-            Assert.Equal(data, new byte[] { 5, 6, 3, 4, 1, 2 });
+            Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace Pfim.Tests
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5});
             Util.FillBottomLeft(mem, data, 1, 2);
-            Assert.Equal(data, new byte[] { 5, 4, 3, 2, 1 });
+            Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Pfim.Tests
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6});
             Util.FillBottomLeft(mem, data, 2, 2);
-            Assert.Equal(data, new byte[] { 5, 6, 3, 4, 1, 2 });
+            Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
         }
 
         [Fact]
@@ -90,17 +90,17 @@ namespace Pfim.Tests
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4});
             Util.FillBottomLeft(mem, data, 2, padding: 1);
-            Assert.Equal(data, new byte[] { 3, 4, 0, 1, 2, 0 });
+            Assert.Equal(new byte[] { 3, 4, 0, 1, 2, 0 }, data);
         }
 
         [Fact]
         public void fourIsTheMinimumStride() {
-            Assert.Equal(Util.Stride(width: 1, pixelDepth: 32), 4);
+            Assert.Equal(4, Util.Stride(width: 1, pixelDepth: 32));
         }
 
         [Fact]
         public void strideWithPadding() {
-            Assert.Equal(Util.Stride(width: 2, pixelDepth: 24), 8);
+            Assert.Equal(8, Util.Stride(width: 2, pixelDepth: 24));
         }
 
         [Fact]
@@ -113,22 +113,16 @@ namespace Pfim.Tests
             }
 
             var image = Pfim.FromFile(Path.Combine("data", "true-24.tga"));
-            Assert.Equal(image.Data, expected);
+            Assert.Equal(expected, image.Data);
         }
 
         [Fact]
         public void parseTargaCya()
         {
-            //byte[] expected = new byte[64 * 64 * 3];
-            //for (int i = 0; i < expected.Length; i += 3)
-            //{
-            //    expected[i] = 255;
-            //    expected[i + 1] = 176;
-            //    expected[i + 2] = 0;
-            //}
-
             var image = Pfim.FromFile(Path.Combine("data", "CYA.tga"));
-            //Assert.Equal(image.Data, expected);
+            Assert.Equal(209, image.Data[image.Data.Length - 1]);
+            Assert.Equal(96, image.Data[image.Data.Length - 2]);
+            Assert.Equal(72, image.Data[image.Data.Length - 3]);
         }
 
         [Fact]
@@ -142,7 +136,7 @@ namespace Pfim.Tests
             }
 
             var image = Pfim.FromFile(Path.Combine("data", "true-32.tga"));
-            Assert.Equal(image.Data, expected);
+            Assert.Equal(expected, image.Data);
         }
 
         [Fact]
@@ -150,7 +144,7 @@ namespace Pfim.Tests
             byte[] data = new byte[8];
             byte[] stream = new byte[] {129, 2, 4, 6, 8};
             CompressedTarga.RunLength(data, stream, 0, 0, 4);
-            Assert.Equal(data, new byte[] {2, 4, 6, 8, 2, 4, 6, 8});
+            Assert.Equal(new byte[] { 2, 4, 6, 8, 2, 4, 6, 8 }, data);
         }
         
         [Fact]
@@ -158,7 +152,7 @@ namespace Pfim.Tests
             byte[] data = new byte[6];
             byte[] stream = new byte[] {129, 2, 4, 6};
             CompressedTarga.RunLength(data, stream, 0, 0, 3);
-            Assert.Equal(data, new byte[] {2, 4, 6, 2, 4, 6});
+            Assert.Equal(new byte[] { 2, 4, 6, 2, 4, 6 }, data);
         }
 
         [Fact]
@@ -166,7 +160,7 @@ namespace Pfim.Tests
             byte[] data = new byte[18];
             byte[] stream = new byte[] {132, 2, 4, 6, 128, 8, 10, 12};
             CompressedTarga.RunLength(data, stream, 0, 0, 3);
-            Assert.Equal(data, new byte[] {2, 4, 6, 2, 4, 6,2, 4, 6, 2, 4, 6, 2, 4, 6, 0, 0, 0});
+            Assert.Equal(new byte[] { 2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 0, 0, 0 }, data);
         }
 
         [Fact]
@@ -200,7 +194,7 @@ namespace Pfim.Tests
 
             var image = Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
 
-            Assert.Equal(image.Data, data);
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -230,7 +224,7 @@ namespace Pfim.Tests
 
             var image = Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
 
-            Assert.Equal(image.Data, data);
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -277,7 +271,7 @@ namespace Pfim.Tests
                 data[i + 2] = 255;
                 data[i + 3] = 255;
             }
-            Assert.Equal(image.Data, data);
+            Assert.Equal(data, image.Data);
         }
         
         [Fact]
@@ -290,7 +284,7 @@ namespace Pfim.Tests
                 data[i + 2] = 127;
                 data[i + 3] = 255;
             }
-            Assert.Equal(image.Data, data);
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -317,10 +311,10 @@ namespace Pfim.Tests
                 data[i + 3] = 255;
             }
 
-            Assert.Equal(image.Data, data); 
-            Assert.Equal(image.Height, 64);
-            Assert.Equal(image.Width, 64);
-            Assert.Equal(image.Format, ImageFormat.Rgba32);
+            Assert.Equal(data, image.Data); 
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
 
         [Fact]
@@ -333,10 +327,10 @@ namespace Pfim.Tests
                 data[i + 2] = 127;
             }
 
-            Assert.Equal(image.Data, data);
-            Assert.Equal(image.Height, 64);
-            Assert.Equal(image.Width, 64);
-            Assert.Equal(image.Format, ImageFormat.Rgb24);
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
         }
 
         [Fact]
@@ -350,10 +344,10 @@ namespace Pfim.Tests
                 data[i + 3] = 255;
             }
 
-            Assert.Equal(image.Data, data);
-            Assert.Equal(image.Height, 64);
-            Assert.Equal(image.Width, 64);
-            Assert.Equal(image.Format, ImageFormat.Rgba32);
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
 
         [Fact]
@@ -367,10 +361,10 @@ namespace Pfim.Tests
                 data[i + 3] = 255;
             }
 
-            Assert.Equal(image.Data, data);
-            Assert.Equal(image.Height, 64);
-            Assert.Equal(image.Width, 64);
-            Assert.Equal(image.Format, ImageFormat.Rgba32);
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
     }
 }
