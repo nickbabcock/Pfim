@@ -5,7 +5,7 @@ using Pfim;
 using System.IO;
 using System.Linq;
 
-namespace Farmhash.Sharp.Tests
+namespace Pfim.Tests
 {
     public class HashTests
     {
@@ -112,7 +112,7 @@ namespace Farmhash.Sharp.Tests
                 expected[i + 2] = 0;
             }
 
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-24.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-24.tga"));
             Assert.Equal(image.Data, expected);
         }
 
@@ -126,7 +126,7 @@ namespace Farmhash.Sharp.Tests
                 expected[i + 3] = 255;
             }
 
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-32.tga"));
             Assert.Equal(image.Data, expected);
         }
 
@@ -183,7 +183,7 @@ namespace Farmhash.Sharp.Tests
                 data[i+3] = 255;
             }
 
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
 
             Assert.Equal(image.Data, data);
         }
@@ -213,14 +213,14 @@ namespace Farmhash.Sharp.Tests
                 data[i+2] = 255;
             }
 
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
 
             Assert.Equal(image.Data, data);
         }
 
         [Fact]
         public void parseTrueTarga32MixedEncoding() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32-mixed.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-32-mixed.tga"));
             byte[] data = new byte[256];
             for (int i = 0; i < 16 * 4; i+=4) {
                 data[i] = 0;
@@ -267,7 +267,7 @@ namespace Farmhash.Sharp.Tests
         
         [Fact]
         public void parseLarge32TargetImage() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
             byte[] data = new byte[1200 * 1200 * 4];
             for (int i = 0; i < data.Length; i += 4) {
                 data[i] = 0;
@@ -280,7 +280,7 @@ namespace Farmhash.Sharp.Tests
 
         [Fact]
         public void parseTargaTopLeft() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
+            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
             for (int i = 0; i < image.Data.Length; i += 3) {
                 if (!((image.Data[i] == 0 && image.Data[i + 1] == 255 && image.Data[i + 2] == 0) ||
                     (image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255) ||
@@ -293,7 +293,7 @@ namespace Farmhash.Sharp.Tests
 
         [Fact]
         public void parse32BitUncompressedDds() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
+            var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4) {
                 data[i] = 0;
@@ -310,7 +310,7 @@ namespace Farmhash.Sharp.Tests
 
         [Fact]
         public void parseSimpleDxt1() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"));
+            var image = Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"));
             byte[] data = new byte[64 * 64 * 3];
             for (int i = 0; i < data.Length; i += 3) {
                 data[i] = 0;
@@ -326,7 +326,7 @@ namespace Farmhash.Sharp.Tests
 
         [Fact]
         public void parseSimpleDxt3() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"));
+            var image = Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4) {
                 data[i] = 0;
@@ -343,7 +343,7 @@ namespace Farmhash.Sharp.Tests
 
         [Fact]
         public void parseSimpleDxt5() {
-            var image = Pfim.Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"));
+            var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4) {
                 data[i] = 0;
