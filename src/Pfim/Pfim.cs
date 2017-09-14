@@ -10,7 +10,7 @@ namespace Pfim
         public static IImage FromFile(string path)
         {
             if (String.IsNullOrEmpty(path))
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException(nameof(path));
 
             if (!File.Exists(path))
                 throw new FileNotFoundException($"Image does not exist: {Path.GetFullPath(path)}", path);

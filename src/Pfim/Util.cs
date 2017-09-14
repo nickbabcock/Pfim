@@ -118,7 +118,7 @@ namespace Pfim
             int rowsToRead = rowsPerBuffer;
 
             if (rowsPerBuffer == 0)
-                throw new ArgumentOutOfRangeException("rowSize", "Row size must be small enough to fit in the buffer");
+                throw new ArgumentOutOfRangeException(nameof(rowSize), "Row size must be small enough to fit in the buffer");
 
             int workingSize = str.Read(buffer, 0, bufSize);
             do
@@ -149,9 +149,9 @@ namespace Pfim
         public static int Stride(int width, int pixelDepth)
         {
             if (width <= 0)
-                throw new ArgumentException("Width must be greater than zero", "width");
+                throw new ArgumentException("Width must be greater than zero", nameof(width));
             else if (pixelDepth <= 0)
-                throw new ArgumentException("Pixel depth must be greater than zero", "pixelDepth");
+                throw new ArgumentException("Pixel depth must be greater than zero", nameof(pixelDepth));
 
             int bytesPerPixel = (pixelDepth + 7) / 8;
 
