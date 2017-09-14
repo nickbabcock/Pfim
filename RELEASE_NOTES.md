@@ -1,3 +1,8 @@
+### 0.4.0 - Unreleased
+* Released for netstandard 1.3
+* 25% performance improvement on compressed dds images
+* Bugfix in compressed targa decoder
+
 ### 0.3.1 - August 18th 2015
 * Fix pixel depth calculations for compressed dds
 
