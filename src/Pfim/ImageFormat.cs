@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Pfim
+﻿namespace Pfim
 {
     /// <summary>Describes how pixel data is arranged</summary>
     public enum ImageFormat

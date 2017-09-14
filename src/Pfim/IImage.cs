@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Pfim
+﻿namespace Pfim
 {
     /// <summary>
     /// Defines a common interface that all images are decoded into

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Pfim
+﻿namespace Pfim
 {
     internal class Dxt5Dds : CompressedDds
     {
