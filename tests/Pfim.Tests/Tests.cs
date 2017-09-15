@@ -1,112 +1,123 @@
 using System;
-using System.Text;
 using Xunit;
-using Pfim;
 using System.IO;
-using System.Linq;
 
 namespace Pfim.Tests
 {
     public class HashTests
     {
         [Fact]
-        public void translateIdentity() {
-            byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
+        public void TranslateIdentity()
+        {
+            byte[] buf = {1, 2, 3, 4, 5};
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 0);
             Assert.Equal(5, actual);
         }
 
         [Fact]
-        public void translateByteFromStream() {
-            byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
-            var mem = new MemoryStream(new byte[]{ 100 });
+        public void TranslateByteFromStream()
+        {
+            byte[] buf = {1, 2, 3, 4, 5};
+            var mem = new MemoryStream(new byte[] {100});
             var actual = Util.Translate(mem, buf, 1);
             Assert.Equal(5, actual);
-            Assert.Equal(new byte[] { 2, 3, 4, 5, 100 }, buf);
+            Assert.Equal(new byte[] {2, 3, 4, 5, 100}, buf);
         }
 
         [Fact]
-        public void translateByteFromStreamButNoByteToGive() {
-            byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
+        public void TranslateByteFromStreamButNoByteToGive()
+        {
+            byte[] buf = {1, 2, 3, 4, 5};
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 1);
             Assert.Equal(4, actual);
-            Assert.Equal(new byte[] { 2, 3, 4, 5, 5 }, buf);
+            Assert.Equal(new byte[] {2, 3, 4, 5, 5}, buf);
         }
 
         [Fact]
-        public void translateAllButLastByte() {
-            byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
+        public void TranslateAllButLastByte()
+        {
+            byte[] buf = {1, 2, 3, 4, 5};
             var mem = new MemoryStream(new byte[] {100, 99, 98, 97});
             var actual = Util.Translate(mem, buf, 4);
             Assert.Equal(5, actual);
-            Assert.Equal(new byte[] { 5, 100, 99, 98, 97 }, buf);
+            Assert.Equal(new byte[] {5, 100, 99, 98, 97}, buf);
         }
 
         [Fact]
-        public void translateAllButLastByteButNoByteToGive() {
-            byte[] buf = new byte[] { 1, 2, 3, 4, 5 };
+        public void TranslateAllButLastByteButNoByteToGive()
+        {
+            byte[] buf = {1, 2, 3, 4, 5};
             var mem = new MemoryStream();
             var actual = Util.Translate(mem, buf, 4);
             Assert.Equal(1, actual);
-            Assert.Equal(new byte[] { 5, 2, 3, 4, 5 }, buf);
+            Assert.Equal(new byte[] {5, 2, 3, 4, 5}, buf);
         }
 
         [Fact]
-        public void fillButtomLeftSinglePixelRows() {
+        public void FillButtomLeftSinglePixelRows()
+        {
             byte[] data = new byte[5];
-            var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5});
+            var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5});
             Util.FillBottomLeft(mem, data, 1);
-            Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
+            Assert.Equal(new byte[] {5, 4, 3, 2, 1}, data);
         }
 
         [Fact]
-        public void fillButtomLeftDoublePixelRows() {
+        public void FillButtomLeftDoublePixelRows()
+        {
             byte[] data = new byte[6];
-            var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6});
+            var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6});
             Util.FillBottomLeft(mem, data, 2);
-            Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
+            Assert.Equal(new byte[] {5, 6, 3, 4, 1, 2}, data);
         }
 
         [Fact]
-        public void fillButtomLeftAndBufferCantHoldAll() {
+        public void FillButtomLeftAndBufferCantHoldAll()
+        {
             byte[] data = new byte[5];
-            var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5});
+            var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5});
             Util.FillBottomLeft(mem, data, 1, 2);
-            Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
+            Assert.Equal(new byte[] {5, 4, 3, 2, 1}, data);
         }
 
         [Fact]
-        public void fillButtomLeftDoublePixelAndBufferCantHoldAll() {
+        public void FillButtomLeftDoublePixelAndBufferCantHoldAll()
+        {
             byte[] data = new byte[6];
-            var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6});
+            var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6});
             Util.FillBottomLeft(mem, data, 2, 2);
-            Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
+            Assert.Equal(new byte[] {5, 6, 3, 4, 1, 2}, data);
         }
 
         [Fact]
-        public void fillButtomLeftWithPadding() {
+        public void FillButtomLeftWithPadding()
+        {
             byte[] data = new byte[6];
-            var mem = new MemoryStream(new byte[] { 1, 2, 3, 4});
+            var mem = new MemoryStream(new byte[] {1, 2, 3, 4});
             Util.FillBottomLeft(mem, data, 2, padding: 1);
-            Assert.Equal(new byte[] { 3, 4, 0, 1, 2, 0 }, data);
+            Assert.Equal(new byte[] {3, 4, 0, 1, 2, 0}, data);
         }
 
         [Fact]
-        public void fourIsTheMinimumStride() {
+        public void FourIsTheMinimumStride()
+        {
             Assert.Equal(4, Util.Stride(width: 1, pixelDepth: 32));
         }
 
         [Fact]
-        public void strideWithPadding() {
+        public void StrideWithPadding()
+        {
             Assert.Equal(8, Util.Stride(width: 2, pixelDepth: 24));
         }
 
         [Fact]
-        public void parseTargaTrue24SingleColor() {
-            byte[] expected = new byte[64*64*3];
-            for (int i = 0; i < expected.Length; i += 3) {
+        public void ParseTargaTrue24SingleColor()
+        {
+            byte[] expected = new byte[64 * 64 * 3];
+            for (int i = 0; i < expected.Length; i += 3)
+            {
                 expected[i] = 255;
                 expected[i + 1] = 176;
                 expected[i + 2] = 0;
@@ -117,7 +128,7 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTargaCya()
+        public void ParseTargaCya()
         {
             var image = Pfim.FromFile(Path.Combine("data", "CYA.tga"));
             Assert.Equal(209, image.Data[image.Data.Length - 1]);
@@ -126,9 +137,11 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTargaTrue32SingleColor () {
-            byte[] expected = new byte[64 * 64 * 4];  
-            for (int i = 0; i < expected.Length; i += 4) {
+        public void ParseTargaTrue32SingleColor()
+        {
+            byte[] expected = new byte[64 * 64 * 4];
+            for (int i = 0; i < expected.Length; i += 4)
+            {
                 expected[i] = 0;
                 expected[i + 1] = 0;
                 expected[i + 2] = 127;
@@ -140,56 +153,64 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTarga32SingleSmallRunLength () {
+        public void ParseTarga32SingleSmallRunLength()
+        {
             byte[] data = new byte[8];
-            byte[] stream = new byte[] {129, 2, 4, 6, 8};
+            byte[] stream = {129, 2, 4, 6, 8};
             CompressedTarga.RunLength(data, stream, 0, 0, 4);
-            Assert.Equal(new byte[] { 2, 4, 6, 8, 2, 4, 6, 8 }, data);
+            Assert.Equal(new byte[] {2, 4, 6, 8, 2, 4, 6, 8}, data);
         }
-        
+
         [Fact]
-        public void parseTarga24SingleSmallRunLength () {
+        public void ParseTarga24SingleSmallRunLength()
+        {
             byte[] data = new byte[6];
-            byte[] stream = new byte[] {129, 2, 4, 6};
+            byte[] stream = {129, 2, 4, 6};
             CompressedTarga.RunLength(data, stream, 0, 0, 3);
-            Assert.Equal(new byte[] { 2, 4, 6, 2, 4, 6 }, data);
+            Assert.Equal(new byte[] {2, 4, 6, 2, 4, 6}, data);
         }
 
         [Fact]
-        public void parseTarga24RunLength () {
+        public void ParseTarga24RunLength()
+        {
             byte[] data = new byte[18];
-            byte[] stream = new byte[] {132, 2, 4, 6, 128, 8, 10, 12};
+            byte[] stream = {132, 2, 4, 6, 128, 8, 10, 12};
             CompressedTarga.RunLength(data, stream, 0, 0, 3);
-            Assert.Equal(new byte[] { 2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 0, 0, 0 }, data);
+            Assert.Equal(new byte[] {2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 2, 4, 6, 0, 0, 0}, data);
         }
 
         [Fact]
-        public void parseTarga32RunLength () {
+        public void ParseTarga32RunLength()
+        {
             byte[] data = new byte[64 * 4];
             int i = 0;
-            for (; i < 32 * 4; i += 4) {
+            for (; i < 32 * 4; i += 4)
+            {
                 data[i] = 0;
-                data[i+1] = 216;
-                data[i+2] = 255;
-                data[i+3] = 255;
+                data[i + 1] = 216;
+                data[i + 2] = 255;
+                data[i + 3] = 255;
             }
-            for (; i < 32 * 4 + 16 * 4; i += 4) {
+            for (; i < 32 * 4 + 16 * 4; i += 4)
+            {
                 data[i] = 255;
-                data[i+1] = 148;
-                data[i+2] = 0;
-                data[i+3] = 255;
+                data[i + 1] = 148;
+                data[i + 2] = 0;
+                data[i + 3] = 255;
             }
-            for (; i < 32 * 4 + 16 * 4 + 8*4; i += 4) {
+            for (; i < 32 * 4 + 16 * 4 + 8 * 4; i += 4)
+            {
                 data[i] = 0;
-                data[i+1] = 255;
-                data[i+2] = 76;
-                data[i+3] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 76;
+                data[i + 3] = 255;
             }
-            for (; i < 32 * 4 + 16 * 4 + 8*4 + 8*4; i += 4) {
+            for (; i < 32 * 4 + 16 * 4 + 8 * 4 + 8 * 4; i += 4)
+            {
                 data[i] = 0;
-                data[i+1] = 0;
-                data[i+2] = 255;
-                data[i+3] = 255;
+                data[i + 1] = 0;
+                data[i + 2] = 255;
+                data[i + 3] = 255;
             }
 
             var image = Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
@@ -198,28 +219,33 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTarga24TrueRunLength () {
+        public void ParseTarga24TrueRunLength()
+        {
             byte[] data = new byte[64 * 3];
             int i = 0;
-            for (; i < 32 * 3; i += 3) {
+            for (; i < 32 * 3; i += 3)
+            {
                 data[i] = 0;
-                data[i+1] = 216;
-                data[i+2] = 255;
+                data[i + 1] = 216;
+                data[i + 2] = 255;
             }
-            for (; i < 32 * 3 + 16 * 3; i += 3) {
+            for (; i < 32 * 3 + 16 * 3; i += 3)
+            {
                 data[i] = 255;
-                data[i+1] = 148;
-                data[i+2] = 0;
+                data[i + 1] = 148;
+                data[i + 2] = 0;
             }
-            for (; i < 32 * 3 + 16 * 3 + 8*3; i += 3) {
+            for (; i < 32 * 3 + 16 * 3 + 8 * 3; i += 3)
+            {
                 data[i] = 0;
-                data[i+1] = 255;
-                data[i+2] = 76;
+                data[i + 1] = 255;
+                data[i + 2] = 76;
             }
-            for (; i < 32 * 3 + 16 * 3 + 8*3 + 8*3; i += 3) {
+            for (; i < 32 * 3 + 16 * 3 + 8 * 3 + 8 * 3; i += 3)
+            {
                 data[i] = 0;
-                data[i+1] = 0;
-                data[i+2] = 255;
+                data[i + 1] = 0;
+                data[i + 2] = 255;
             }
 
             var image = Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
@@ -228,10 +254,12 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTrueTarga32MixedEncoding() {
+        public void ParseTrueTarga32MixedEncoding()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "true-32-mixed.tga"));
             byte[] data = new byte[256];
-            for (int i = 0; i < 16 * 4; i+=4) {
+            for (int i = 0; i < 16 * 4; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 216;
                 data[i + 2] = 255;
@@ -253,19 +281,22 @@ namespace Pfim.Tests
             Array.Copy(new byte[] {255, 0, 178, 255}, 0, data, 116, 4);
             Array.Copy(new byte[] {220, 0, 255, 255}, 0, data, 120, 4);
             Array.Copy(new byte[] {110, 0, 255, 255}, 0, data, 124, 4);
-            for (int i = 128; i < 192; i+=4) {
+            for (int i = 128; i < 192; i += 4)
+            {
                 data[i] = 255;
                 data[i + 1] = 148;
                 data[i + 2] = 0;
                 data[i + 3] = 255;
             }
-            for (int i = 192; i < 224; i+=4) {
+            for (int i = 192; i < 224; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 255;
                 data[i + 2] = 76;
                 data[i + 3] = 255;
             }
-            for (int i = 224; i < 256; i+=4) {
+            for (int i = 224; i < 256; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 255;
@@ -273,12 +304,14 @@ namespace Pfim.Tests
             }
             Assert.Equal(data, image.Data);
         }
-        
+
         [Fact]
-        public void parseLarge32TargetImage() {
+        public void ParseLarge32TargetImage()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
             byte[] data = new byte[1200 * 1200 * 4];
-            for (int i = 0; i < data.Length; i += 4) {
+            for (int i = 0; i < data.Length; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 51;
                 data[i + 2] = 127;
@@ -288,40 +321,47 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseTargaTopLeft() {
+        public void ParseTargaTopLeft()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
-            for (int i = 0; i < image.Data.Length; i += 3) {
+            for (int i = 0; i < image.Data.Length; i += 3)
+            {
                 if (!((image.Data[i] == 0 && image.Data[i + 1] == 255 && image.Data[i + 2] == 0) ||
-                    (image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255) ||
-                    (image.Data[i] == 255 && image.Data[i + 1] == 255 && image.Data[i + 2] == 255) ||
-                    (image.Data[i] == 255 && image.Data[i + 1] == image.Data[i + 2]))) {
-                    Assert.True(false, $"Did not expect pixel {image.Data[i]} {image.Data[i+1]} {image.Data[i+2]}");
+                      (image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255) ||
+                      (image.Data[i] == 255 && image.Data[i + 1] == 255 && image.Data[i + 2] == 255) ||
+                      (image.Data[i] == 255 && image.Data[i + 1] == image.Data[i + 2])))
+                {
+                    Assert.True(false, $"Did not expect pixel {image.Data[i]} {image.Data[i + 1]} {image.Data[i + 2]}");
                 }
             }
         }
 
         [Fact]
-        public void parse32BitUncompressedDds() {
+        public void Parse32BitUncompressedDds()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
             byte[] data = new byte[64 * 64 * 4];
-            for (int i = 0; i < data.Length; i += 4) {
+            for (int i = 0; i < data.Length; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 127;
                 data[i + 3] = 255;
             }
 
-            Assert.Equal(data, image.Data); 
+            Assert.Equal(data, image.Data);
             Assert.Equal(64, image.Height);
             Assert.Equal(64, image.Width);
             Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
 
         [Fact]
-        public void parseSimpleDxt1() {
+        public void ParseSimpleDxt1()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"));
             byte[] data = new byte[64 * 64 * 3];
-            for (int i = 0; i < data.Length; i += 3) {
+            for (int i = 0; i < data.Length; i += 3)
+            {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 127;
@@ -334,10 +374,12 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseSimpleDxt3() {
+        public void ParseSimpleDxt3()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
-            for (int i = 0; i < data.Length; i += 4) {
+            for (int i = 0; i < data.Length; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 128;
@@ -351,10 +393,12 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void parseSimpleDxt5() {
+        public void ParseSimpleDxt5()
+        {
             var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
-            for (int i = 0; i < data.Length; i += 4) {
+            for (int i = 0; i < data.Length; i += 4)
+            {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 128;
