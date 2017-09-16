@@ -4,5 +4,7 @@ test_script:
   cmd: |
       dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
       msbuild /t:restore
+      nuget restore
+      nuget restore src/Pfim.Viewer
       msbuild Pfim.sln
 
