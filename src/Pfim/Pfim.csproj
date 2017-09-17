@@ -14,8 +14,8 @@
     <PackageProjectUrl>https://nickbabcock.github.io/Pfim/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nickbabcock/Pfim</RepositoryUrl>
     <Major>0</Major>
-    <Minor>3</Minor>
-    <Revision>1</Revision>
+    <Minor>4</Minor>
+    <Revision>0</Revision>
     <AssemblyVersion>$(Major).$(Minor).$(Revision)</AssemblyVersion>
     <AssemblyFileVersion>$(Major).$(Minor).$(Revision)</AssemblyFileVersion>
     <InformationalVersion>$(Major).$(Minor).$(Revision)</InformationalVersion>
