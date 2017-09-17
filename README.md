@@ -3,7 +3,7 @@
 
 # Pfim
 
-[Main documention page](http://nickbabcock.github.io/Pfim/)
+[Main documention page](https://nickbabcock.github.io/Pfim/)
 
 Pfim is an incredibly simple and fast image decoding library with an emphasis
 on being backend and frontend agnostic. This means that you can add Pfim to
@@ -12,9 +12,10 @@ your server, Windows Form, or WPF app!
 Building the library is as easy as
 
 ```
-./build.sh   // linux
-build.cmd    // windows
+dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
 ```
+
+Or hit "Build" in Visual Studio :smile:
 
 ## Developer Resources
 
