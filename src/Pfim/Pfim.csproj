@@ -11,6 +11,7 @@
     <PackageTags>image-decoding</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/nickbabcock/Pfim/master/LICENSE.txt</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://nickbabcock.github.io/Pfim/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nickbabcock/Pfim</RepositoryUrl>
     <Major>0</Major>
     <Minor>3</Minor>
