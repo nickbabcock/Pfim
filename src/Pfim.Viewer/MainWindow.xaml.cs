@@ -93,7 +93,7 @@ namespace Pfim.Viewer
                     break;
 
                 default:
-                    throw new ApplicationException("Format not recognized");
+                    throw new Exception("Format not recognized");
             }
 
             // Create a WPF ImageSource and then set an Image to our variable.
