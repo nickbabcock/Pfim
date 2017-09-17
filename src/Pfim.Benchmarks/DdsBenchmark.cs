@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using FreeImageAPI;
 using ImageMagick;
+using DS = DevILSharp;
 
 namespace Pfim.Benchmarks
 {
@@ -21,11 +22,11 @@ namespace Pfim.Benchmarks
         public void SetupData()
         {
             data = File.ReadAllBytes(Payload);
-            DevILSharp.Bootstrap.Init();
+            DS.Bootstrap.Init();
         }
 
         [Benchmark]
-        public IImage PfimTarga() => Dds.Create(new MemoryStream(data));
+        public IImage Pfim() => Dds.Create(new MemoryStream(data));
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));
@@ -41,9 +42,9 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public int DevILSharpTarga()
+        public int DevILSharp()
         {
-            using (var image = DevILSharp.Image.Load(data, DevILSharp.ImageType.Dds))
+            using (var image = DS.Image.Load(data, DS.ImageType.Dds))
             {
                 return image.Width;
             }
