@@ -12,7 +12,7 @@ namespace Pfim
         public byte[] BottomLeft(Stream str, TargaHeader header)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
-            var data = new byte[header.Width * stride];
+            var data = new byte[header.Height * stride];
             var pixelWidth = header.PixelDepth * header.Width;
             var padding = stride * 8 - pixelWidth;
             Util.FillBottomLeft(str, data, pixelWidth / 8, padding: padding);
@@ -39,7 +39,7 @@ namespace Pfim
             // instead of the traditional rgb, it is bgr
 
             var stride = Util.Stride(header.Width, header.PixelDepth);
-            var data = new byte[header.Width * stride];
+            var data = new byte[header.Height * stride];
             var buffer = new byte[Util.BUFFER_SIZE];
             int dataIndex = 0, bufferIndex = 0;
             int depth = header.PixelDepth / 8;

@@ -258,6 +258,21 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseUncompressedNonSquareTga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "tiny-rect.tga"));
+            byte[] data = new byte[12 * 20 * 4];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                data[i] = 0;
+                data[i + 1] = 216;
+                data[i + 2] = 255;
+                data[i + 3] = 255;
+            }
+            Assert.Equal(data, image.Data);
+        }
+
+        [Fact]
         public void ParseTrueTarga32MixedEncoding()
         {
             var image = Pfim.FromFile(Path.Combine("data", "true-32-mixed.tga"));
