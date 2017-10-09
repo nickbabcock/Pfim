@@ -134,6 +134,10 @@ namespace Pfim.Tests
             Assert.Equal(209, image.Data[image.Data.Length - 1]);
             Assert.Equal(96, image.Data[image.Data.Length - 2]);
             Assert.Equal(72, image.Data[image.Data.Length - 3]);
+
+            Assert.Equal(209, image.Data[2]);
+            Assert.Equal(98, image.Data[1]);
+            Assert.Equal(76, image.Data[0]);
         }
 
         [Fact]

@@ -19,35 +19,24 @@ namespace Pfim
             int bytesPerPixel = header.PixelDepth / 8;
             int fileBufferIndex = 0;
 
+            // Calculate the maximum number of bytes potentially needed from the buffer.
+            // If our buffer doesn't have enough to decode the maximum number of bytes,
+            // fetch another batch of bytes from the stream.
+            int maxRead = bytesPerPixel * 128 + 1;
+
             while (dataIndex >= 0)
             {
                 int colIndex = 0;
-
                 do
                 {
-                    int count;
-                    bool isRunLength = false;
-
-                    // Make sure we have enough information in the file buffer to read the
-                    // next packet of pixel information.
-                    if (fileBufferIndex == workingSize)
+                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == Util.BUFFER_SIZE)
                     {
-                        workingSize = str.Read(data, 0, Util.BUFFER_SIZE);
+                        workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
                         fileBufferIndex = 0;
-                        isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
-                        count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
                     }
-                    else
-                    {
-                        isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
-                        count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
 
-                        if (fileBufferIndex + count > workingSize)
-                        {
-                            workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
-                            fileBufferIndex = 0;
-                        }
-                    }
+                    bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                    int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
 
                     // If the first bit is on, it means that the next packet is run length encoded
                     if (isRunLength)
@@ -61,12 +50,6 @@ namespace Pfim
                     {
                         int bytcount = count * bytesPerPixel;
                         fileBufferIndex++;
-
-                        if (filebuffer.Length - fileBufferIndex - bytcount < 0)
-                        {
-                            workingSize = Util.Translate(str, data, workingSize);
-                            fileBufferIndex = 0;
-                        }
 
                         Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
                         fileBufferIndex += bytcount;
