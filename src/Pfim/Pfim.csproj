@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netstandard1.0;netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Product>Pfim</Product>
@@ -24,7 +24,7 @@
     <Version>$(Major).$(Minor).$(Revision)$(VersionSuffix)</Version>
     <FileVersion>$(Major).$(Minor).$(Revision)</FileVersion>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
   </ItemGroup>
 </Project>

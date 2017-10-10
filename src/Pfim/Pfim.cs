@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETSTANDARD1_3
+using System;
 using System.IO;
 
 namespace Pfim
@@ -32,3 +33,4 @@ namespace Pfim
         }
     }
 }
+#endif
