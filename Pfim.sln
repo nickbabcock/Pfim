@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}"
 EndProject
@@ -19,6 +19,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pfim.Tests", "tests\Pfim.Tests\Pfim.Tests.csproj", "{7F083EDD-C6EF-4DBD-8731-9EFF7BF5138E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pfim.Viewer", "src\Pfim.Viewer\Pfim.Viewer.csproj", "{15DDF47B-5685-475A-BF80-A451B014AD70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pfim.Viewer.Forms", "src\Pfim.Viewer.Forms\Pfim.Viewer.Forms.csproj", "{08E35D10-55CB-48A9-9B52-561C7AE45C66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{15DDF47B-5685-475A-BF80-A451B014AD70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15DDF47B-5685-475A-BF80-A451B014AD70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15DDF47B-5685-475A-BF80-A451B014AD70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E35D10-55CB-48A9-9B52-561C7AE45C66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E35D10-55CB-48A9-9B52-561C7AE45C66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E35D10-55CB-48A9-9B52-561C7AE45C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E35D10-55CB-48A9-9B52-561C7AE45C66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
