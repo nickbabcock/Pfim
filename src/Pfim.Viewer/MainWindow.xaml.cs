@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Ookii.Dialogs.Wpf;
+using Microsoft.Win32;
 
 namespace Pfim.Viewer
 {
@@ -20,7 +17,14 @@ namespace Pfim.Viewer
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var dialog = new VistaFolderBrowserDialog();
+            var dialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "Images  (*.tga;*.dds)|*.tga;*.dds|All files (*.*)|*.*",
+                Title = "Open Files with Pfim"
+
+            };
+
             if (dialog.ShowDialog(this) != true)
             {
                 return;
@@ -30,11 +34,11 @@ namespace Pfim.Viewer
             Progress.Visibility = Visibility.Visible;
             Progress.Value = 0;
             Progress.IsIndeterminate = true;
-            
-            var images = await Task.Run(() => ImageFiles(dialog.SelectedPath));
+
+            var images = dialog.FileNames;
 
             Progress.IsIndeterminate = false;
-            Progress.Maximum = images.Count;
+            Progress.Maximum = images.Length;
 
             foreach (var file in images)
             {
@@ -43,22 +47,6 @@ namespace Pfim.Viewer
                 Progress.Value += 1;
             }
             Progress.Visibility = Visibility.Collapsed;
-        }
-
-        private static List<string> ImageFiles(string path)
-        {
-            return Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
-                .Where(x =>
-                {
-                    switch (Path.GetExtension(x))
-                    {
-                        case ".tga":
-                        case ".dds":
-                            return true;
-                        default:
-                            return false;
-                    }
-                }).ToList();
         }
 
         private static IImage ParseImage(string file)

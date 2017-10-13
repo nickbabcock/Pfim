@@ -22,7 +22,7 @@
                     </Rectangle>
                     <TextBlock Margin="4 0 0 0"
                                VerticalAlignment="Center"
-                               Text="Open Folder" />
+                               Text="Load Files" />
                 </StackPanel>
             </Button>
         </Controls:WindowCommands>
