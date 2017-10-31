@@ -342,13 +342,20 @@ namespace Pfim.Tests
         [Fact]
         public void ParseTargaTopLeft()
         {
+            bool seenBlue = false;
             var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
             for (int i = 0; i < image.Data.Length; i += 3)
             {
+                seenBlue |= image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255;
+                if (image.Data[i] == 255 && image.Data[i + 1] == 4 && image.Data[i + 2] == 4 && !seenBlue)
+                {
+                    Assert.True(false, "Expected to see blue before red (this could mean that the color channels are swapped)");
+                }
+
                 if (!((image.Data[i] == 0 && image.Data[i + 1] == 255 && image.Data[i + 2] == 0) ||
-                      (image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255) ||
+                      (image.Data[i] == 255 && image.Data[i + 1] == 0 && image.Data[i + 2] == 12) ||
                       (image.Data[i] == 255 && image.Data[i + 1] == 255 && image.Data[i + 2] == 255) ||
-                      (image.Data[i] == 255 && image.Data[i + 1] == image.Data[i + 2])))
+                      (image.Data[i + 2] == 255 && image.Data[i + 1] == image.Data[i])))
                 {
                     Assert.True(false, $"Did not expect pixel {image.Data[i]} {image.Data[i + 1]} {image.Data[i + 2]}");
                 }

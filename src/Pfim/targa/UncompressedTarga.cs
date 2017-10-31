@@ -34,43 +34,9 @@ namespace Pfim
         /// <summary>Fills data starting from the top left</summary>
         public byte[] TopLeft(Stream str, TargaHeader header)
         {
-            // This isn't as easy as just reading in the stream. The data is
-            // such that the individual pixel colors have been swapped, so
-            // instead of the traditional rgb, it is bgr
-
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            var buffer = new byte[Util.BUFFER_SIZE];
-            int dataIndex = 0, bufferIndex = 0;
-            int depth = header.PixelDepth / 8;
-
-            int workingSize = str.Read(buffer, 0, Util.BUFFER_SIZE);
-            do
-            {
-                // If there isn't enough data to fill a stride, read more into
-                // buffer
-                if (buffer.Length - bufferIndex < stride)
-                {
-                    workingSize = Util.Translate(str, buffer, bufferIndex);
-                    bufferIndex = 0;
-                }
-
-                var bufferStrides = (workingSize - bufferIndex) / stride;
-                for (int i = 0; i < bufferStrides; i++)
-                {
-                    for (int k = 0; k < header.Width; k++)
-                    {
-                        for (int j = 0; j < depth; j++)
-                        {
-                            data[dataIndex + j] = buffer[bufferIndex + (depth - j - 1)];
-                        }
-                        bufferIndex += depth;
-                        dataIndex += depth;
-                    }
-                }
-
-            } while (workingSize != 0 && dataIndex < data.Length);
-            
+            Util.Fill(str, data);
             return data;
         }
     }
