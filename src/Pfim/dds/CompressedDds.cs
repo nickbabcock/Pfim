@@ -43,7 +43,7 @@ namespace Pfim
                     // set of 16 square pixels Get the next buffer
                     if (workingSize < bytesPerStride)
                     {
-                        bufferSize = workingSize = Util.Translate(stream, streamBuffer, workingSize);
+                        bufferSize = workingSize = Util.Translate(stream, streamBuffer, bIndex);
                         bIndex = 0;
                     }
 

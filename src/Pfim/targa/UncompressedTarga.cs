@@ -51,7 +51,7 @@ namespace Pfim
                 // buffer
                 if (buffer.Length - bufferIndex < stride)
                 {
-                    workingSize = Util.Translate(str, buffer, workingSize);
+                    workingSize = Util.Translate(str, buffer, bufferIndex);
                     bufferIndex = 0;
                 }
 

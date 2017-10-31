@@ -356,6 +356,16 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseLargeTargaTopLeft()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "large-top-left.tga"));
+            foreach (byte bt in image.Data)
+            {
+                Assert.Equal(0, bt);
+            }
+        }
+
+        [Fact]
         public void Parse32BitUncompressedDds()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
