@@ -1,3 +1,6 @@
+### 0.4.3 - October 31st 2017
+* Fix infinite loop on certain large targa and dds images
+
 ### 0.4.2 - October 10th 2017
 * Release .NET Standard 1.0 version that doesn't contain File IO
 
