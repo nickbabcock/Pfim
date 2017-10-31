@@ -8,7 +8,7 @@ namespace Pfim.Benchmarks
 {
     public class TargaBenchmark
     {
-        [Params("true-32-rle-large.tga", "true-24-large.tga", "true-24.tga", "true-32-rle.tga", "rgb24_top_left")]
+        [Params("true-32-rle-large.tga", "true-24-large.tga", "true-24.tga", "true-32-rle.tga", "rgb24_top_left.tga")]
         public string Payload { get; set; }
 
         private byte[] data;
