@@ -10,6 +10,8 @@ used on your linux server, Windows Form, or WPF app!
 See the [main site](https://nickbabcock.github.io/Pfim/) for usage,
 benchmarks against other libraries, and integrations.
 
+## Developer Resources
+
 Building the library is as easy as
 
 ```
@@ -17,8 +19,6 @@ dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
 ```
 
 Or hit "Build" in Visual Studio :smile:
-
-## Developer Resources
 
 - [Targa image specification](http://www.dca.fee.unicamp.br/~martino/disciplinas/ea978/tgaffs.pdf)
 - [Block compression](https://msdn.microsoft.com/en-us/library/bb694531(v=vs.85).aspx) (useful for dds)
