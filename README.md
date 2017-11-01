@@ -3,11 +3,12 @@
 
 # Pfim
 
-[Main documention page](https://nickbabcock.github.io/Pfim/)
+Pfim is a .NET Standard 1.0 compatible Targa (tga) and Direct Draw Surface
+(dds) decoding library with an emphasis on speed and ease of use. Pfim can be
+used on your linux server, Windows Form, or WPF app!
 
-Pfim is an incredibly simple and fast image decoding library with an emphasis
-on being backend and frontend agnostic. This means that you can add Pfim to
-your server, Windows Form, or WPF app!
+See the [main site](https://nickbabcock.github.io/Pfim/) for usage,
+benchmarks against other libraries, and integrations.
 
 Building the library is as easy as
 
