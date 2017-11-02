@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using BenchmarkDotNet.Attributes;
+using DmitryBrant.ImageFormats;
 using FreeImageAPI;
 using ImageMagick;
+using StbSharp;
 using DS = DevILSharp;
 
 namespace Pfim.Benchmarks
@@ -53,5 +55,17 @@ namespace Pfim.Benchmarks
                 return image.Stride;
             }
         }
+
+        [Benchmark]
+        public int ImageFormats()
+        {
+            using (var img = TgaReader.Load(new MemoryStream(data)))
+            {
+                return img.Width;
+            }
+        }
+
+        [Benchmark]
+        public int StbSharp() => Stb.LoadFromMemory(data, Stb.STBI_rgb_alpha).Width;
     }
 }
