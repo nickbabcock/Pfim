@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Pfim.Tests
 {
-    public class HashTests
+    public class PfimTests
     {
         [Fact]
         public void TranslateIdentity()
