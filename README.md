@@ -10,6 +10,22 @@ used on your linux server, Windows Form, or WPF app!
 See the [main site](https://nickbabcock.github.io/Pfim/) for usage,
 benchmarks against other libraries, and integrations.
 
+## Contributing
+
+All contributions are welcome. Here is a quick guideline:
+
+- Does your image fail to parse or look incorrect? File an issue with the image attached.
+- Want Pfim to support more image codecs? Raise an issue to let everyone know you're working on it and then get to work!
+- Have a performance improvement for Pfim? Excellent, run the before and after benchmarks!
+
+```
+dotnet build -c Release -f net46  .\src\Pfim.Benchmarks\Pfim.Benchmarks.csproj
+cd src\Pfim.Benchmarks\bin\Release\net46
+.\Pfim.Benchmarks.exe --pfim
+```
+
+- Know a library to include in the benchmarks? If it is NuGet installable / easily integratable, please raise an issue or pull request! It must run on .NET 4.6.
+
 ## Developer Resources
 
 Building the library is as easy as
