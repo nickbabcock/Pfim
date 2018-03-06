@@ -83,6 +83,7 @@ namespace Pfim
             {
                 switch (header.PixelDepth)
                 {
+                    case 8: return ImageFormat.Rgb8;
                     case 24: return ImageFormat.Rgb24;
                     case 32: return ImageFormat.Rgba32;
                     default: throw new Exception($"Unrecognized pixel depth: {header.PixelDepth}");

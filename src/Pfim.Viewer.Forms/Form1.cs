@@ -39,6 +39,10 @@ namespace Pfim.Viewer.Forms
                     format = PixelFormat.Format32bppArgb;
                     break;
 
+                case ImageFormat.Rgb8:
+                    format = PixelFormat.Format8bppIndexed;
+                    break;
+
                 default:
                     throw new Exception("Format not recognized");
             }
@@ -48,6 +52,16 @@ namespace Pfim.Viewer.Forms
                 fixed (byte* p = image.Data)
                 {
                     var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr) p);
+                    if (format == PixelFormat.Format8bppIndexed)
+                    {
+                        var palette = bitmap.Palette;
+                        for (int i = 0; i < 256; i++)
+                        {
+                            palette.Entries[i] = Color.FromArgb((byte)i, (byte)i, (byte)i);
+                        }
+                        bitmap.Palette = palette;
+                    }
+
                     pictureBox.Image = bitmap;
                 }
             }

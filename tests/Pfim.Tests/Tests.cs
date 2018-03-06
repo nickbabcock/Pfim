@@ -393,6 +393,14 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseGrayscaleTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CBW8.tga"));
+            Assert.Equal(ImageFormat.Rgb8, image.Format);
+            Assert.Equal(76, image.Data[0]);
+        }
+
+        [Fact]
         public void Parse32BitUncompressedDds()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
