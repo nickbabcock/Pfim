@@ -417,6 +417,17 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseTransparentTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "flag_t32.tga"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+            for (int i = 0; i < image.Data.Length; i += 4)
+            {
+                Assert.Equal(0, image.Data[i + 3]);
+            }
+        }
+
+        [Fact]
         public void Parse32BitUncompressedDds()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
