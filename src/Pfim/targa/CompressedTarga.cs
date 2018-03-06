@@ -149,6 +149,13 @@ namespace Pfim
                 {
                     Util.memset(ptr, streamBuffer[streamBufferIndex++], runLength);
                 }
+                else if (colorDepth == 2)
+                {
+                    byte color0 = streamBuffer[streamBufferIndex++];
+                    byte color1 = streamBuffer[streamBufferIndex++];
+                    var comb = color0 | color1 << 8 | color0 << 16 | color1 << 24;
+                    Util.memset((int*)ptr, comb, runLength * 2);
+                }
             }
         }
     }

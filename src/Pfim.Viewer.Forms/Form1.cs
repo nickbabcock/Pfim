@@ -39,6 +39,10 @@ namespace Pfim.Viewer.Forms
                     format = PixelFormat.Format32bppArgb;
                     break;
 
+                case ImageFormat.Rgb16:
+                    format = PixelFormat.Format16bppRgb555;
+                    break;
+
                 case ImageFormat.Rgb8:
                     format = PixelFormat.Format8bppIndexed;
                     break;

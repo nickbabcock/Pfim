@@ -6,6 +6,9 @@
         /// <summary>Red, green, and blue are the same values contained in a single byte</summary>
         Rgb8,
 
+        /// <summary>Red, green, and blue are contained in a two bytes</summary>
+        Rgb16,
+
         /// <summary>Red, green, and blue channels are 8 bits apiece</summary>
         Rgb24,
 

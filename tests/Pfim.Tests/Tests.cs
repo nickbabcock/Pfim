@@ -401,6 +401,15 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void Parse16BitTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CTC16.tga"));
+            Assert.Equal(ImageFormat.Rgb16, image.Format);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(124, image.Data[1]);
+        }
+
+        [Fact]
         public void Parse32BitUncompressedDds()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
