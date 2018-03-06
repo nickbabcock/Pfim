@@ -91,21 +91,17 @@ namespace Pfim
                 ImageId = Encoding.Unicode.GetString(buf, 0, buf.Length);
             }
 
-            //if (HasColorMap)
-            //{
-            //    buf = new byte[PixelDepth / 8];
-            //    str.Read(buf, 0, buf.Length);
-            //    if (PixelDepth / 8 == 3)
-            //    {
-            //        for (int i = 0; i < buf.Length; i += 3)
-            //            ColorMap.Add(Color.FromArgb(buf[i], buf[i + 1], buf[i + 2]));
-            //    }
-            //    else if (PixelDepth / 8 == 4)
-            //    {
-            //        for (int i = 0; i < buf.Length; i += 4)
-            //            ColorMap.Add(Color.FromArgb(buf[i], buf[i + 1], buf[i + 2], buf[i + 3]));
-            //    }
-            //}
+            if (HasColorMap)
+            {
+                if (ColorMapOrigin > ColorMapLength)
+                {
+                    throw new ArgumentException("Color map origin was detected to exceed color map length");
+                }
+
+                var mapBytes = ColorMapDepth / 8;
+                ColorMap = new byte[ColorMapLength * mapBytes];
+                str.Read(ColorMap, ColorMapOrigin * mapBytes, (ColorMapLength - ColorMapOrigin) * mapBytes);
+            }
         }
 
         /// <summary>
@@ -177,6 +173,8 @@ namespace Pfim
         /// written to the file
         /// </summary>
         public string ImageId { get; private set; }
+
+        public byte[] ColorMap { get; private set; }
 
         //public List<Color> ColorMap { get; private set; }
 

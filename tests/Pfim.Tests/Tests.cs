@@ -401,6 +401,13 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void Parse8BitColorMapTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CCM8.tga"));
+            Assert.Equal(ImageFormat.Rgb8, image.Format);
+        }
+
+        [Fact]
         public void Parse16BitTarga()
         {
             var image = Pfim.FromFile(Path.Combine("data", "CTC16.tga"));
