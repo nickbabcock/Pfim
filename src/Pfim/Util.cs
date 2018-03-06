@@ -94,23 +94,20 @@ namespace Pfim
         /// <summary>
         /// Fills a data array starting from the bottom left by reading from a stream.
         /// </summary>
-        /// <param name="str">The stream to read data from.</param>
-        /// <param name="data">The buffer to be filled with stream data.</param>
-        /// <param name="rowSize">The size in bytes of each row.</param>
+        /// <param name="str">The stream to read data from</param>
+        /// <param name="data">The buffer to be filled with stream data</param>
+        /// <param name="rowSize">The size in bytes of each row in the stream</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
-        /// <param name="padding">
-        /// The number of bytes that make up the padding in the stride. rowSize + padding = stride
-        /// </param>
+        /// <param name="stride">The number of bytes that make up a row in the data</param>
         public static void FillBottomLeft(
             Stream str,
             byte[] data,
             int rowSize,
-            int bufSize = BUFFER_SIZE,
-            int padding = 0)
+            int stride,
+            int bufSize = BUFFER_SIZE)
         {
             int bufferIndex = 0;
             byte[] buffer = new byte[bufSize];
-            int stride = rowSize + padding;
             int rowsPerBuffer = Math.Min(bufSize, data.Length) / stride;
             int dataIndex = data.Length - stride;
             int rowsRead = 0;

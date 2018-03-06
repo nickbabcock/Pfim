@@ -96,13 +96,15 @@ namespace Pfim
             int dataIndex, int streamBufferIndex, int colorDepth)
         {
             int runLength = streamBuffer[streamBufferIndex++] - 127;
-            byte color0 = streamBuffer[streamBufferIndex++];
-            byte color1 = streamBuffer[streamBufferIndex++];
-            byte color2 = streamBuffer[streamBufferIndex++];
+
             fixed (byte* ptr = &data[dataIndex])
             {
                 if (colorDepth == 3)
                 {
+                    byte color0 = streamBuffer[streamBufferIndex++];
+                    byte color1 = streamBuffer[streamBufferIndex++];
+                    byte color2 = streamBuffer[streamBufferIndex++];
+
                     // If the color depth is three, we are able to do a unique optimization.
                     // Four pixels in a row is twelve bytes long. Thus we construct three ints
                     // that will contain all orderings of the pixels. So when set the data equal
@@ -136,9 +138,23 @@ namespace Pfim
                 }
                 else if (colorDepth == 4)
                 {
+                    byte color0 = streamBuffer[streamBufferIndex++];
+                    byte color1 = streamBuffer[streamBufferIndex++];
+                    byte color2 = streamBuffer[streamBufferIndex++];
                     byte color3 = streamBuffer[streamBufferIndex++];
                     var comb = (color0 | color1 << 8 | color2 << 16 | color3 << 24);
                     Util.memset((int*)ptr, comb, runLength * 4);
+                }
+                else if (colorDepth == 1)
+                {
+                    Util.memset(ptr, streamBuffer[streamBufferIndex++], runLength);
+                }
+                else if (colorDepth == 2)
+                {
+                    byte color0 = streamBuffer[streamBufferIndex++];
+                    byte color1 = streamBuffer[streamBufferIndex++];
+                    var comb = color0 | color1 << 8 | color0 << 16 | color1 << 24;
+                    Util.memset((int*)ptr, comb, runLength * 2);
                 }
             }
         }

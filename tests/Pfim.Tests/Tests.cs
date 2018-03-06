@@ -60,7 +60,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5});
-            Util.FillBottomLeft(mem, data, 1);
+            Util.FillBottomLeft(mem, data, 1, 1);
             Assert.Equal(new byte[] {5, 4, 3, 2, 1}, data);
         }
 
@@ -69,7 +69,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6});
-            Util.FillBottomLeft(mem, data, 2);
+            Util.FillBottomLeft(mem, data, 2, 2);
             Assert.Equal(new byte[] {5, 6, 3, 4, 1, 2}, data);
         }
 
@@ -78,7 +78,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] {1, 2, 3, 4, 5});
-            Util.FillBottomLeft(mem, data, 1, 2);
+            Util.FillBottomLeft(mem, data, 1, 1);
             Assert.Equal(new byte[] {5, 4, 3, 2, 1}, data);
         }
 
@@ -96,7 +96,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] {1, 2, 3, 4});
-            Util.FillBottomLeft(mem, data, 2, padding: 1);
+            Util.FillBottomLeft(mem, data, 2, 3);
             Assert.Equal(new byte[] {3, 4, 0, 1, 2, 0}, data);
         }
 
@@ -369,6 +369,61 @@ namespace Pfim.Tests
             foreach (byte bt in image.Data)
             {
                 Assert.Equal(0, bt);
+            }
+        }
+
+        [Fact]
+        public void ParseLargeTargaBottomLeft()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "marbles.tga"));
+            Assert.Equal(4264260, image.Data.Length);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(0, image.Data[1]);
+            Assert.Equal(0, image.Data[2]);
+        }
+
+        [Fact]
+        public void ParseMarblesTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "marbles2.tga"));
+            Assert.Equal(100 * 71 * 3, image.Data.Length);
+            Assert.Equal(2, image.Data[0]);
+            Assert.Equal(3, image.Data[1]);
+            Assert.Equal(3, image.Data[2]);
+        }
+
+        [Fact]
+        public void ParseGrayscaleTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CBW8.tga"));
+            Assert.Equal(ImageFormat.Rgb8, image.Format);
+            Assert.Equal(76, image.Data[0]);
+        }
+
+        [Fact]
+        public void Parse8BitColorMapTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CCM8.tga"));
+            Assert.Equal(ImageFormat.Rgb8, image.Format);
+        }
+
+        [Fact]
+        public void Parse16BitTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "CTC16.tga"));
+            Assert.Equal(ImageFormat.Rgb16, image.Format);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(124, image.Data[1]);
+        }
+
+        [Fact]
+        public void ParseTransparentTarga()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "flag_t32.tga"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+            for (int i = 0; i < image.Data.Length; i += 4)
+            {
+                Assert.Equal(0, image.Data[i + 3]);
             }
         }
 
