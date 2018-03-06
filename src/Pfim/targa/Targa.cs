@@ -9,21 +9,15 @@ namespace Pfim
     /// </summary>
     public class Targa : IImage
     {
-        /// <summary>Raw data of the image</summary>
-        private readonly byte[] data;
-
-        /// <summary>Header of the image</summary>
-        private readonly TargaHeader header;
-
         /// <summary>
         /// Constructs a targa image from a targa image and raw data
         /// </summary>
         /// <param name="header">The targa header</param>
         /// <param name="data">The decoded targa data</param>
-        internal Targa(TargaHeader header, byte[] data)
+        private Targa(TargaHeader header, byte[] data)
         {
-            this.header = header;
-            this.data = data;
+            Header = header;
+            Data = data;
         }
 
         /// <summary>
@@ -65,29 +59,31 @@ namespace Pfim
         }
 
         /// <summary>The raw image data</summary>
-        public byte[] Data => data;
+        public byte[] Data { get; }
+
+        public TargaHeader Header { get; }
 
         /// <summary>Width of the image in pixels</summary>
-        public int Width => header.Width;
+        public int Width => Header.Width;
 
         /// <summary>Height of the image in pixels</summary>
-        public int Height => header.Height;
+        public int Height => Header.Height;
 
         /// <summary>The number of bytes that compose one line</summary>
-        public int Stride => Util.Stride(header.Width, header.PixelDepth);
+        public int Stride => Util.Stride(Header.Width, Header.PixelDepth);
 
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format
         {
             get
             {
-                switch (header.PixelDepth)
+                switch (Header.PixelDepth)
                 {
                     case 8: return ImageFormat.Rgb8;
                     case 16: return ImageFormat.Rgb16;
                     case 24: return ImageFormat.Rgb24;
                     case 32: return ImageFormat.Rgba32;
-                    default: throw new Exception($"Unrecognized pixel depth: {header.PixelDepth}");
+                    default: throw new Exception($"Unrecognized pixel depth: {Header.PixelDepth}");
                 }
             }
         }
