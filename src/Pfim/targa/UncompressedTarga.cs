@@ -13,9 +13,8 @@ namespace Pfim
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            var pixelWidth = header.PixelDepth * header.Width;
-            var padding = stride * 8 - pixelWidth;
-            Util.FillBottomLeft(str, data, pixelWidth / 8, padding: padding);
+            var rowBits = header.PixelDepth * header.Width;
+            Util.FillBottomLeft(str, data, rowBits / 8, stride);
             return data;
         }
 
