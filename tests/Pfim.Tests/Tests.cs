@@ -501,5 +501,12 @@ namespace Pfim.Tests
             Assert.Equal(64, image.Width);
             Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
+
+        [Fact]
+        public void ParseDdsWhenHeaderStates64Bits()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "TestVolume_Noise3D.dds"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
     }
 }

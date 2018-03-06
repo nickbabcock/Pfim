@@ -32,7 +32,7 @@ namespace Pfim
         }
 
         /// <summary>Number of bits that compose a pixel</summary>
-        public int BitsPerPixel => header.Depth != 0 ? (int)header.Depth : info.depth;
+        public int BitsPerPixel => info.depth;
 
         /// <summary>Number of bytes that compose a pixel</summary>
         public int BytesPerPixel => BitsPerPixel / 8;
