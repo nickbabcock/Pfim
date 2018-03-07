@@ -201,6 +201,11 @@ namespace Pfim
                 }
 
                 pixelFormat.Size = *workingBufferPtr++;
+                if (pixelFormat.Size != 32)
+                {
+                    throw new Exception($"Expected pixel size to be 32, not: ${pixelFormat.Size}");
+                }
+
                 pixelFormat.Flags = *workingBufferPtr++;
                 pixelFormat.FourCC = (CompressionAlgorithm)(*workingBufferPtr++);
                 pixelFormat.RGBBitCount = *workingBufferPtr++;
