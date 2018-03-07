@@ -174,8 +174,11 @@ namespace Pfim
         {
             byte[] buffer = new byte[SIZE + 4];
             Reserved1 = new uint[11];
-            int bufferSize, workingSize;
-            bufferSize = workingSize = stream.Read(buffer, 0, SIZE + 4);
+            int bufferSize = stream.Read(buffer, 0, SIZE + 4);
+            if (bufferSize != SIZE + 4)
+            {
+                throw new Exception($"Need at least {SIZE + 4} bytes for a valid DDS header");
+            }
 
             fixed (byte* bufferPtr = buffer)
             {
