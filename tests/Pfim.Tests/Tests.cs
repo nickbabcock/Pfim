@@ -508,5 +508,12 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "TestVolume_Noise3D.dds"));
             Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
+
+        [Fact]
+        public void ParseDdsA8B8G8R8()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_A8B8G8R8.dds"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
     }
 }

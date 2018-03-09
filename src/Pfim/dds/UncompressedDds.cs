@@ -37,11 +37,9 @@ namespace Pfim
         /// <summary>Determines if the image is 32bit rgb</summary>
         public bool IsThirtyTwoBitRgba(DdsHeader Header)
         {
-                return (Header.PixelFormat.RGBBitCount == 32) &&
-                    (Header.PixelFormat.RBitMask == 0xff0000) &&
-                    (Header.PixelFormat.GBitMask == 0xff00) &&
-                    (Header.PixelFormat.BBitMask == 0xff) &&
-                    (Header.PixelFormat.ABitMask == 0xff000000U);
+            return Header.PixelFormat.RGBBitCount == 32 &&
+                   Header.PixelFormat.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.AlphaPixels) &&
+                   Header.PixelFormat.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.Rgb);
         }
 
         /// <summary>Determines if the image is 24bit rgb</summary>
