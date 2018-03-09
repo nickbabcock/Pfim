@@ -94,13 +94,13 @@ namespace Pfim
         /// <summary>
         ///     Texture contains alpha data; dwRGBAlphaBitMask contains valid data.
         /// </summary>
-        Alphapixels = 0x1,
+        AlphaPixels = 0x1,
 
         /// <summary>
         ///     Used in some older DDS files for alpha channel only uncompressed data (dwRGBBitCount contains the alpha channel
         ///     bitcount; dwABitMask contains valid data)
         /// </summary>
-        Alpa = 0x2,
+        Alpha = 0x2,
 
         /// <summary>
         ///     Texture contains compressed RGB data; dwFourCC contains valid data.
