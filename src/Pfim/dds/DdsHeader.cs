@@ -87,6 +87,46 @@ namespace Pfim
         Depth = 0x800000
     }
 
+    /// <summary>Values which indicate what type of data is in the surface.</summary>
+    [Flags]
+    internal enum DdsPixelFormatFlags : uint
+    {
+        /// <summary>
+        ///     Texture contains alpha data; dwRGBAlphaBitMask contains valid data.
+        /// </summary>
+        Alphapixels = 0x1,
+
+        /// <summary>
+        ///     Used in some older DDS files for alpha channel only uncompressed data (dwRGBBitCount contains the alpha channel
+        ///     bitcount; dwABitMask contains valid data)
+        /// </summary>
+        Alpa = 0x2,
+
+        /// <summary>
+        ///     Texture contains compressed RGB data; dwFourCC contains valid data.
+        /// </summary>
+        Fourcc = 0x4,
+
+        /// <summary>
+        ///     Texture contains uncompressed RGB data; dwRGBBitCount and the RGB masks (dwRBitMask, dwGBitMask, dwBBitMask)
+        ///     contain valid data.
+        /// </summary>
+        Rgb = 0x40,
+
+        /// <summary>
+        ///     Used in some older DDS files for YUV uncompressed data (dwRGBBitCount contains the YUV bit count; dwRBitMask
+        ///     contains the Y mask, dwGBitMask contains the U mask, dwBBitMask contains the V mask)
+        /// </summary>
+        Yuv = 0x200,
+
+        /// <summary>
+        ///     Used in some older DDS files for single channel color uncompressed data (dwRGBBitCount contains the luminance
+        ///     channel bit count; dwRBitMask contains the channel mask). Can be combined with DDPF_ALPHAPIXELS for a two channel
+        ///     DDS file.
+        /// </summary>
+        Luminance = 0x20000
+    }
+
     /// <summary>
     /// Surface pixel format.
     /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943984(v=vs.85).aspx
@@ -101,7 +141,7 @@ namespace Pfim
         /// <summary>
         /// Values which indicate what type of data is in the surface. 
         /// </summary>
-        public uint Flags;
+        public DdsPixelFormatFlags PixelFormatFlags;
 
         /// <summary>
         /// Four-character codes for specifying compressed or custom formats.
@@ -155,12 +195,12 @@ namespace Pfim
         /// Size of a Direct Draw Header in number of bytes.
         /// This does not include the magic number
         /// </summary>
-        public const int SIZE = 124;
+        private const int SIZE = 124;
 
         /// <summary>
         /// The magic number is the 4 bytes that starts off every Direct Draw Surface file.
         /// </summary>
-        const uint DDS_MAGIC = 542327876;
+        private const uint DDS_MAGIC = 542327876;
 
         DdsPixelFormat pixelFormat;
 
@@ -206,7 +246,7 @@ namespace Pfim
                     throw new Exception($"Expected pixel size to be 32, not: ${pixelFormat.Size}");
                 }
 
-                pixelFormat.Flags = *workingBufferPtr++;
+                pixelFormat.PixelFormatFlags = (DdsPixelFormatFlags)(*workingBufferPtr++);
                 pixelFormat.FourCC = (CompressionAlgorithm)(*workingBufferPtr++);
                 pixelFormat.RGBBitCount = *workingBufferPtr++;
                 pixelFormat.RBitMask = *workingBufferPtr++;
