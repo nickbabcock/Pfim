@@ -411,7 +411,7 @@ namespace Pfim.Tests
         public void Parse16BitTarga()
         {
             var image = Pfim.FromFile(Path.Combine("data", "CTC16.tga"));
-            Assert.Equal(ImageFormat.Rgb16, image.Format);
+            Assert.Equal(ImageFormat.R5g5b5, image.Format);
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(124, image.Data[1]);
         }
@@ -514,6 +514,20 @@ namespace Pfim.Tests
         {
             var image = Pfim.FromFile(Path.Combine("data", "dds_A8B8G8R8.dds"));
             Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsR5g6b5()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_R5G6B5.dds"));
+            Assert.Equal(ImageFormat.R5g6b5, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsA1r5g5b5()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_a1r5g5b5.dds"));
+            Assert.Equal(ImageFormat.A1r5g5b5, image.Format);
         }
     }
 }

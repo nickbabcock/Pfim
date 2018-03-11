@@ -7,7 +7,11 @@
         Rgb8,
 
         /// <summary>Red, green, and blue are contained in a two bytes</summary>
-        Rgb16,
+        R5g5b5,
+
+        R5g6b5,
+
+        A1r5g5b5,
 
         /// <summary>Red, green, and blue channels are 8 bits apiece</summary>
         Rgb24,

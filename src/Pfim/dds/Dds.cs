@@ -56,6 +56,7 @@ namespace Pfim
             {
                 switch (BitsPerPixel)
                 {
+                    case 16: return ImageFormat.R5g5b5;
                     case 24: return ImageFormat.Rgb24;
                     case 32: return ImageFormat.Rgba32;
                     default: throw new Exception($"Unrecognized pixel depth: {BitsPerPixel}");

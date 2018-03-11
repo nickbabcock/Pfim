@@ -54,17 +54,38 @@ namespace Pfim
         /// <summary>Determine image info from header</summary>
         public DdsLoadInfo ImageInfo(DdsHeader header)
         {
+            if (header.PixelFormat.RGBBitCount == 16)
+            {
+                ImageFormat format = sixteenBitImageFormat(header);
+            }
+
             if (IsThirtyTwoBitRgba(header))
                 return loadInfoB8G8R8A8;
             else if (IsTwentyFourBitRgb(header))
                 return loadInfoB8G8R8;
             else if (IsSixteenBitAlphaOne(header))
                 return loadInfoB5G5R5A1;
-            else if (IsSixteenBitAlphaOne(header))
+            else if (IsSixteenBitAlphaZero(header))
                 return loadInfoB5G6R5;
             else if (header.PixelFormat.RGBBitCount == 8)
                 return loadInfoIndex8;
             throw new Exception("Unrecognized format");
+        }
+
+        private static ImageFormat sixteenBitImageFormat(DdsHeader header)
+        {
+            if (header.PixelFormat.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.AlphaPixels))
+            {
+                return ImageFormat.A1r5g5b5;
+            }
+            else if (header.PixelFormat.GBitMask == 0x7e0)
+            {
+                return ImageFormat.R5g6b5;
+            }
+            else
+            {
+                return ImageFormat.R5g5b5;
+            }
         }
 
         /// <summary>Decode data into raw rgb format</summary>
