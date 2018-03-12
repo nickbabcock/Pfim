@@ -11,7 +11,9 @@
 
         R5g6b5,
 
-        A1r5g5b5,
+        R5g5b5a1,
+
+        Rgba16,
 
         /// <summary>Red, green, and blue channels are 8 bits apiece</summary>
         Rgb24,

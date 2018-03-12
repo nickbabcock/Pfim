@@ -50,12 +50,19 @@ namespace Pfim
 
         private static ImageFormat SixteenBitImageFormat(DdsHeader header)
         {
-            if (header.PixelFormat.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.AlphaPixels))
+            var pf = header.PixelFormat;
+
+            if (pf.ABitMask == 0xF000 && pf.RBitMask == 0xF00 && pf.GBitMask == 0xF0 && pf.BBitMask == 0xF)
             {
-                return ImageFormat.A1r5g5b5;
+                return ImageFormat.Rgba16;
             }
 
-            return header.PixelFormat.GBitMask == 0x7e0 ? ImageFormat.R5g6b5 : ImageFormat.R5g5b5;
+            if (pf.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.AlphaPixels))
+            {
+                return ImageFormat.R5g5b5a1;
+            }
+
+            return pf.GBitMask == 0x7e0 ? ImageFormat.R5g6b5 : ImageFormat.R5g5b5;
         }
 
         /// <summary>Decode data into raw rgb format</summary>

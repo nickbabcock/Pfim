@@ -524,10 +524,17 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void ParseDdsA1r5g5b5()
+        public void ParseDdsR5g5b5a1()
         {
             var image = Pfim.FromFile(Path.Combine("data", "dds_a1r5g5b5.dds"));
-            Assert.Equal(ImageFormat.A1r5g5b5, image.Format);
+            Assert.Equal(ImageFormat.R5g5b5a1, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsRgba16()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_A4R4G4B4.dds"));
+            Assert.Equal(ImageFormat.Rgba16, image.Format);
         }
     }
 }
