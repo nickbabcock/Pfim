@@ -56,7 +56,8 @@ namespace Pfim.Viewer.Forms
                     break;
 
                 default:
-                    throw new Exception("Format not recognized");
+                    throw new Exception($"{image.Format} is not recognized for Bitmap on Windows Forms. " +
+                                        "You'd need to write a conversion function to convert the data to known format");
             }
 
             unsafe
