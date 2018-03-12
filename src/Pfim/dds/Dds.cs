@@ -26,13 +26,13 @@ namespace Pfim
         /// <summary>Calculates the number of bytes to hold image data</summary>
         internal static int CalcSize(DdsLoadInfo info, DdsHeader header)
         {
-            int width = (int)Math.Max(info.divSize, header.Width);
-            int height = (int)Math.Max(info.divSize, header.Height);
-            return (int)(width / info.divSize * height / info.divSize * info.blockBytes);
+            int width = (int)Math.Max(info.DivSize, header.Width);
+            int height = (int)Math.Max(info.DivSize, header.Height);
+            return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
         }
 
         /// <summary>Number of bits that compose a pixel</summary>
-        public int BitsPerPixel => header.Depth != 0 ? (int)header.Depth : info.depth;
+        public int BitsPerPixel => info.Depth;
 
         /// <summary>Number of bytes that compose a pixel</summary>
         public int BytesPerPixel => BitsPerPixel / 8;
@@ -50,19 +50,7 @@ namespace Pfim
         public int Height => (int)header.Height;
 
         /// <summary>The format of the raw data</summary>
-        public ImageFormat Format
-        {
-            get
-            {
-                switch (BitsPerPixel)
-                {
-                    case 24: return ImageFormat.Rgb24;
-                    case 32: return ImageFormat.Rgba32;
-                    default: throw new Exception(
-                        "Unrecognized pixel depth: " + BitsPerPixel.ToString());
-                }
-            }
-        }
+        public ImageFormat Format => info.Format;
 
         /// <summary>Create a direct draw image from a stream</summary>
         public static Dds Create(Stream stream)
@@ -94,7 +82,10 @@ namespace Pfim
                     throw new ArgumentException("FourCC: " + header.PixelFormat.FourCC + " not supported.");
             }
 
-            return new Dds(header, decoder.Decode(stream, header), decoder.ImageInfo(header));
+            var imageInfo = decoder.ImageInfo(header);
+            var data = decoder.Decode(stream, header, imageInfo);
+
+            return new Dds(header, data, imageInfo);
         }
     }
 }

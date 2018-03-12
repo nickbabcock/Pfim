@@ -17,7 +17,7 @@ namespace Pfim
         protected abstract byte PixelDepth { get; }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream stream, DdsHeader header)
+        public byte[] Decode(Stream stream, DdsHeader header, DdsLoadInfo imageInfo)
         {
             byte[] data = new byte[header.Width * header.Height * PixelDepth];
             DdsLoadInfo loadInfo = ImageInfo(header);
@@ -28,8 +28,8 @@ namespace Pfim
             uint pixelsLeft = header.Width * header.Height;
 
             // The number of bytes that represent a stride in the image
-            int bytesPerStride = (int)((header.Width / loadInfo.divSize) * loadInfo.blockBytes);
-            int blocksPerStride = (int)(header.Width / loadInfo.divSize);
+            int bytesPerStride = (int)((header.Width / loadInfo.DivSize) * loadInfo.BlockBytes);
+            int blocksPerStride = (int)(header.Width / loadInfo.DivSize);
 
             byte[] streamBuffer = new byte[Util.BUFFER_SIZE];
 
@@ -55,17 +55,17 @@ namespace Pfim
 
                         // Advance to the next block, which is (pixel depth *
                         // divSize) bytes away
-                        dataIndex += loadInfo.divSize * PixelDepth;
+                        dataIndex += loadInfo.DivSize * PixelDepth;
                     }
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    pixelsLeft -= header.Width * loadInfo.divSize;
+                    pixelsLeft -= header.Width * loadInfo.DivSize;
                     workingSize -= bytesPerStride;
 
                     // Jump down to the block that is exactly (divSize - 1)
                     // below the current row we are on
-                    dataIndex += (PixelDepth * (loadInfo.divSize - 1) * header.Width);
+                    dataIndex += (PixelDepth * (loadInfo.DivSize - 1) * header.Width);
                 }
             } while (bufferSize != 0 && pixelsLeft != 0);
 

@@ -9,71 +9,77 @@ namespace Pfim
     /// </summary>
     internal class UncompressedDds : IDecodeDds
     {
-        private static DdsLoadInfo loadInfoB8G8R8A8 = new DdsLoadInfo(false, false, false, 1, 4, 32);
-        private static DdsLoadInfo loadInfoB8G8R8 = new DdsLoadInfo(false, false, false, 1, 3, 32);
-        private static DdsLoadInfo loadInfoB5G5R5A1 = new DdsLoadInfo(false, true, false, 1, 2, 16);
-        private static DdsLoadInfo loadInfoB5G6R5 = new DdsLoadInfo(false, true, false, 1, 2, 16);
-        private static DdsLoadInfo loadInfoIndex8 = new DdsLoadInfo(false, false, true, 1, 1, 8);
-
-        /// <summary>Determines if the image is R5G6R5</summary>
-        public bool IsSixteenBitAlphaZero(DdsHeader Header)
-        {
-            return (Header.PixelFormat.RGBBitCount == 16) &&
-                (Header.PixelFormat.RBitMask == 0x0000f800) &&
-                (Header.PixelFormat.GBitMask == 0x000007e0) &&
-                (Header.PixelFormat.BBitMask == 0x0000001f);
-        }
-
-        /// <summary>Determines if the image is R5G5R5A1</summary>
-        public bool IsSixteenBitAlphaOne(DdsHeader Header)
-        {
-            return (Header.PixelFormat.RGBBitCount == 16) &&
-                (Header.PixelFormat.RBitMask == 0x00007c00) &&
-                (Header.PixelFormat.GBitMask == 0x000003e0) &&
-                (Header.PixelFormat.BBitMask == 0x0000001f) &&
-                (Header.PixelFormat.ABitMask == 0x00008000);
-        }
-
-        /// <summary>Determines if the image is 32bit rgb</summary>
-        public bool IsThirtyTwoBitRgba(DdsHeader Header)
-        {
-                return (Header.PixelFormat.RGBBitCount == 32) &&
-                    (Header.PixelFormat.RBitMask == 0xff0000) &&
-                    (Header.PixelFormat.GBitMask == 0xff00) &&
-                    (Header.PixelFormat.BBitMask == 0xff) &&
-                    (Header.PixelFormat.ABitMask == 0xff000000U);
-        }
-
-        /// <summary>Determines if the image is 24bit rgb</summary>
-        public bool IsTwentyFourBitRgb(DdsHeader Header)
-        {
-            return (Header.PixelFormat.RGBBitCount == 24) &&
-                (Header.PixelFormat.RBitMask == 0xff0000) &&
-                (Header.PixelFormat.GBitMask == 0xff00) &&
-                (Header.PixelFormat.BBitMask == 0xff);
-        }
-
         /// <summary>Determine image info from header</summary>
         public DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            if (IsThirtyTwoBitRgba(header))
-                return loadInfoB8G8R8A8;
-            else if (IsTwentyFourBitRgb(header))
-                return loadInfoB8G8R8;
-            else if (IsSixteenBitAlphaOne(header))
-                return loadInfoB5G5R5A1;
-            else if (IsSixteenBitAlphaOne(header))
-                return loadInfoB5G6R5;
-            else if (header.PixelFormat.RGBBitCount == 8)
-                return loadInfoIndex8;
-            throw new Exception("Unrecognized format");
+            bool rgbSwapped = header.PixelFormat.RBitMask < header.PixelFormat.GBitMask;
+
+            switch (header.PixelFormat.RGBBitCount)
+            {
+                case 8:
+                    return new DdsLoadInfo(false, rgbSwapped, true, 1, 1, 8, ImageFormat.Rgb8);
+                case 16:
+                    ImageFormat format = SixteenBitImageFormat(header);
+                    return new DdsLoadInfo(false, rgbSwapped, false, 1, 2, 16, format);
+                case 24:
+                    return new DdsLoadInfo(false, rgbSwapped, false, 1, 3, 24, ImageFormat.Rgb24);
+                case 32:
+                    return new DdsLoadInfo(false, rgbSwapped, false, 1, 4, 32, ImageFormat.Rgba32);
+                default:
+                    throw new Exception($"Unrecognized rgb bit count: {header.PixelFormat.RGBBitCount}");
+            }
+        }
+
+        private static ImageFormat SixteenBitImageFormat(DdsHeader header)
+        {
+            var pf = header.PixelFormat;
+
+            if (pf.ABitMask == 0xF000 && pf.RBitMask == 0xF00 && pf.GBitMask == 0xF0 && pf.BBitMask == 0xF)
+            {
+                return ImageFormat.Rgba16;
+            }
+
+            if (pf.PixelFormatFlags.HasFlag(DdsPixelFormatFlags.AlphaPixels))
+            {
+                return ImageFormat.R5g5b5a1;
+            }
+
+            return pf.GBitMask == 0x7e0 ? ImageFormat.R5g6b5 : ImageFormat.R5g5b5;
         }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream str, DdsHeader header)
+        public byte[] Decode(Stream str, DdsHeader header, DdsLoadInfo imageInfo)
         {
             byte[] buffer = new byte[Dds.CalcSize(ImageInfo(header), header)];
             Util.Fill(str, buffer);
+
+            // Swap the R and B channels
+            if (imageInfo.Swap)
+            {
+                switch (imageInfo.Format)
+                {
+                    case ImageFormat.Rgba32:
+                        for (int i = 0; i < buffer.Length; i += 4)
+                        {
+                            byte temp = buffer[i];
+                            buffer[i] = buffer[i + 2];
+                            buffer[i + 2] = temp;
+                        }
+                        break;
+                    case ImageFormat.Rgba16:
+                        for (int i = 0; i < buffer.Length; i += 2)
+                        {
+                            byte temp = (byte) (buffer[i] & 0xF);
+                            buffer[i] = (byte) ((buffer[i] & 0xF0) + (buffer[i + 1] & 0XF));
+                            buffer[i + 1] = (byte) ((buffer[i + 1] & 0xF0) + temp);
+                        }
+                        break;
+                    default:
+                        throw new Exception($"Do not know how to swap {imageInfo.Format}");
+                }
+
+            }
+
             return buffer;
         }
     }

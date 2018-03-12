@@ -411,7 +411,7 @@ namespace Pfim.Tests
         public void Parse16BitTarga()
         {
             var image = Pfim.FromFile(Path.Combine("data", "CTC16.tga"));
-            Assert.Equal(ImageFormat.Rgb16, image.Format);
+            Assert.Equal(ImageFormat.R5g5b5, image.Format);
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(124, image.Data[1]);
         }
@@ -500,6 +500,48 @@ namespace Pfim.Tests
             Assert.Equal(64, image.Height);
             Assert.Equal(64, image.Width);
             Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsWhenHeaderStates64Bits()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "TestVolume_Noise3D.dds"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsA8B8G8R8()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_A8B8G8R8.dds"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsR5g6b5()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_R5G6B5.dds"));
+            Assert.Equal(ImageFormat.R5g6b5, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsR5g5b5a1()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_a1r5g5b5.dds"));
+            Assert.Equal(ImageFormat.R5g5b5a1, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsRgba16()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_A4R4G4B4.dds"));
+            Assert.Equal(ImageFormat.Rgba16, image.Format);
+        }
+
+        [Fact]
+        public void ParseDdsRgb24()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_R8G8B8.dds"));
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
         }
     }
 }

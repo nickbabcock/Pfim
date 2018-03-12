@@ -39,8 +39,16 @@ namespace Pfim.Viewer.Forms
                     format = PixelFormat.Format32bppArgb;
                     break;
 
-                case ImageFormat.Rgb16:
+                case ImageFormat.R5g5b5:
                     format = PixelFormat.Format16bppRgb555;
+                    break;
+
+                case ImageFormat.R5g6b5:
+                    format = PixelFormat.Format16bppRgb565;
+                    break;
+
+                case ImageFormat.R5g5b5a1:
+                    format = PixelFormat.Format16bppArgb1555;
                     break;
 
                 case ImageFormat.Rgb8:
@@ -48,7 +56,11 @@ namespace Pfim.Viewer.Forms
                     break;
 
                 default:
-                    throw new Exception("Format not recognized");
+                    var msg = $"{image.Format} is not recognized for Bitmap on Windows Forms. " +
+                               "You'd need to write a conversion function to convert the data to known format";
+                    var caption = "Unrecognized format";
+                    MessageBox.Show(msg, caption, MessageBoxButtons.OK);
+                    return;
             }
 
             unsafe
