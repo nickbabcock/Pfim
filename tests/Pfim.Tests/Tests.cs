@@ -536,5 +536,12 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "dds_A4R4G4B4.dds"));
             Assert.Equal(ImageFormat.Rgba16, image.Format);
         }
+
+        [Fact]
+        public void ParseDdsRgb24()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dds_R8G8B8.dds"));
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Pfim
                     ImageFormat format = SixteenBitImageFormat(header);
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 2, 16, format);
                 case 24:
-                    return new DdsLoadInfo(false, rgbSwapped, false, 1, 3, 32, ImageFormat.Rgba32);
+                    return new DdsLoadInfo(false, rgbSwapped, false, 1, 3, 24, ImageFormat.Rgb24);
                 case 32:
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 4, 32, ImageFormat.Rgba32);
                 default:
