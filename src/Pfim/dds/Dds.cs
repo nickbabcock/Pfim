@@ -82,7 +82,10 @@ namespace Pfim
                     throw new ArgumentException("FourCC: " + header.PixelFormat.FourCC + " not supported.");
             }
 
-            return new Dds(header, decoder.Decode(stream, header), decoder.ImageInfo(header));
+            var imageInfo = decoder.ImageInfo(header);
+            var data = decoder.Decode(stream, header, imageInfo);
+
+            return new Dds(header, data, imageInfo);
         }
     }
 }

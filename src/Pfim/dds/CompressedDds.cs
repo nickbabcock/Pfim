@@ -17,7 +17,7 @@ namespace Pfim
         protected abstract byte PixelDepth { get; }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream stream, DdsHeader header)
+        public byte[] Decode(Stream stream, DdsHeader header, DdsLoadInfo imageInfo)
         {
             byte[] data = new byte[header.Width * header.Height * PixelDepth];
             DdsLoadInfo loadInfo = ImageInfo(header);
