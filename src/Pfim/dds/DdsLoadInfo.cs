@@ -3,9 +3,10 @@
     /// <summary>Contains additional info about the image</summary>
     internal struct DdsLoadInfo
     {
-        internal bool compressed;
-        internal bool swap;
-        internal bool palette;
+        public ImageFormat Format { get; }
+        public bool Compressed { get; }
+        public bool Swap { get; }
+        public bool Palette { get; }
 
         /// <summary>
         /// The length of a block is in pixels.
@@ -13,7 +14,7 @@
         /// encoded in blocks that are divSize by divSize.
         /// Uncompressed DDS do not need this value.
         /// </summary>
-        internal uint divSize;
+        public uint DivSize { get; }
 
         /// <summary>
         /// Number of bytes needed to decode block of pixels
@@ -21,19 +22,20 @@
         /// how many bytes it takes to extract color and alpha information.
         /// Uncompressed DDS do not need this value.
         /// </summary>
-        internal uint blockBytes;
+        public uint BlockBytes { get; }
 
-        internal int depth;
+        public int Depth { get; }
 
         /// <summary>Initialize the load info structure</summary>
-        public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes, int aDepth)
+        public DdsLoadInfo(bool isCompresed, bool isSwap, bool isPalette, uint aDivSize, uint aBlockBytes, int aDepth, ImageFormat format)
         {
-            compressed = isCompresed;
-            swap = isSwap;
-            palette = isPalette;
-            divSize = aDivSize;
-            blockBytes = aBlockBytes;
-            depth = aDepth;
+            Format = format;
+            Compressed = isCompresed;
+            Swap = isSwap;
+            Palette = isPalette;
+            DivSize = aDivSize;
+            BlockBytes = aBlockBytes;
+            Depth = aDepth;
         }
     }
 }

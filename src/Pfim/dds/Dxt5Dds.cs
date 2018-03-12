@@ -2,7 +2,7 @@
 {
     internal class Dxt5Dds : CompressedDds
     {
-        private static DdsLoadInfo loadInfoDXT5 = new DdsLoadInfo(true, false, false, 4, 16, 32);
+        private static DdsLoadInfo loadInfoDXT5 = new DdsLoadInfo(true, false, false, 4, 16, 32, ImageFormat.Rgba32);
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
 
