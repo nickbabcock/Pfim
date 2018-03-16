@@ -13,7 +13,7 @@
     <PackageReference Include="FSharp.Core" Version="4.2.3" />
     <PackageReference Include="ImageFormats" Version="1.0.0" />
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.0.7" />
-    <PackageReference Include="StbSharp" Version="0.4.1.22" />
+    <PackageReference Include="StbSharp" Version="0.6.8.33" />
   </ItemGroup>
 
   <ItemGroup>

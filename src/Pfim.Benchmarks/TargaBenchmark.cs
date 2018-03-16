@@ -66,7 +66,7 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public int StbSharp() => Stb.LoadFromMemory(data, Stb.STBI_rgb_alpha).Width;
+        public int StbSharp() => StbImage.LoadFromMemory(data, StbImage.STBI_rgb_alpha).Width;
 
         [Benchmark]
         public void TgaSharpLib() => TGASharpLib.TGA.FromBytes(data);
