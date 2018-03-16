@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.9" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
     <PackageReference Include="DevILSharp" Version="0.0.13" />
     <PackageReference Include="FreeImage-dotnet-core" Version="4.3.5" />
     <PackageReference Include="FSharp.Core" Version="4.2.3" />
