@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Drawing;
 using System.IO;
 using BenchmarkDotNet.Attributes;
 using DmitryBrant.ImageFormats;
@@ -70,24 +70,9 @@ namespace Pfim.Benchmarks
         [Benchmark]
         public int StbSharp() => StbImage.LoadFromMemory(data, StbImage.STBI_rgb_alpha).Width;
 
+        // TgaSharpLib does not neutrally orient targa images until a conversion to bitmap,
+        // so to make the comparison apples to apples, we flip the image in the benchmark
         [Benchmark]
-        public ushort TgaSharpLib()
-        {
-            // TgaSharpLib does not neutrally orient targa images until a conversion to bitmap,
-            // so to make the comparison apples to apples, we flip the image in the benchmark
-            var tga = TGA.FromBytes(data);
-            switch (tga.Header.ImageSpec.ImageDescriptor.ImageOrigin)
-            {
-                case TgaImgOrigin.BottomLeft:
-                    tga.Flip(false, true);
-                    break;
-                case TgaImgOrigin.TopLeft:
-                    break;
-                default:
-                    throw new Exception("Unexpected orientation");
-            }
-
-            return tga.Height;
-        }
+        public Bitmap TgaSharpLib() => TGA.FromBytes(data).ToBitmap();
     }
 }
