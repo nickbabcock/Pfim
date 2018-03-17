@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
+    <PackageReference Include="CommandLineParser" Version="2.2.1" />
     <PackageReference Include="DevILSharp" Version="0.1.2" />
     <PackageReference Include="FreeImage-dotnet-core" Version="4.3.6" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />

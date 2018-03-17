@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Running;
+using CommandLine;
 
 namespace Pfim.Benchmarks
 {
@@ -10,15 +10,20 @@ namespace Pfim.Benchmarks
     {
         static void Main(string[] args)
         {
-            var runPfimOnly = args.Contains("--pfim");
-            var config = ManualConfig.Union(DefaultConfig.Instance, new BaseConfig());
-            if (runPfimOnly)
+            var result = Parser.Default.ParseArguments<Options>(args);
+            result.WithParsed(options =>
             {
-                config.Add(new NameFilter(x => x.Contains("Pfim")));
-            }
+                var config = ManualConfig.Union(DefaultConfig.Instance, new BaseConfig());
+                if (options.Filter != null)
+                {
+                    var filter = options.Filter.ToUpperInvariant();
+                    config.Add(new NameFilter(x => x.ToUpperInvariant().Contains(filter)));
+                }
 
-            BenchmarkRunner.Run<TargaBenchmark>(config);
-            BenchmarkRunner.Run<DdsBenchmark>(config);
+                BenchmarkRunner.Run<TargaBenchmark>(config);
+                BenchmarkRunner.Run<DdsBenchmark>(config);
+            })
+            .WithNotParsed(errors => Console.WriteLine("Errored"));
         }
     }
 }
