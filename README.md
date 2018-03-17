@@ -21,7 +21,7 @@ All contributions are welcome. Here is a quick guideline:
 ```
 dotnet build -c Release -f net46  .\src\Pfim.Benchmarks\Pfim.Benchmarks.csproj
 cd src\Pfim.Benchmarks\bin\Release\net46
-.\Pfim.Benchmarks.exe --pfim
+.\Pfim.Benchmarks.exe --filter=pfim
 ```
 
 - Know a library to include in the benchmarks? If it is NuGet installable / easily integratable, please raise an issue or pull request! It must run on .NET 4.6.
