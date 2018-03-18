@@ -7,7 +7,7 @@
   * R5g6b5
   * R5g5b5
 * Bug fixes for currently supported dds images
-* Initial implementation for interpretting tga color maps
+* Initial implementation for interpreting tga color maps
 * Support for 16bit R5g5b5 tga images
 * Support for 8bit tga images
 * Fix bad calculation of tga strides
