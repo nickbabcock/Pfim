@@ -1,3 +1,17 @@
+### 0.5.0 - Unreleased
+
+* Support for 24bit rgb dds images
+* Support for additional 16bit dds images
+  * Rgba16 (each channel is 4 bits)
+  * R5g5b5a1
+  * R5g6b5
+  * R5g5b5
+* Bug fixes for currently supported dds images
+* Initial implementation for interpretting tga color maps
+* Support for 16bit R5g5b5 tga images
+* Support for 8bit tga images
+* Fix bad calculation of tga strides
+
 ### 0.4.4 - October 31st 2017
 * Fix red and blue color swap for TopLeft encoded targa images
 * 20x performance improvement for TopLeft encoded targa images
