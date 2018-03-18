@@ -37,4 +37,4 @@ ggplot(df, aes(Method, Payload)) +
   ylab("Image Decoded") +
   geom_text(aes(label = ifelse(is.na(Relative), "NA", format(round(Relative, 2), digits = 3)))) +
   ggtitle("Image Decoding with Relative Throughput",
-          subtitle = "For Targa and Direct Draw Surface Images on the .NET platform")
+          subtitle = "For Targa and Direct Draw Surface Images on the .NET platform. (Blue = Highest Throughput)")
