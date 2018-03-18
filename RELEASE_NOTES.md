@@ -1,4 +1,4 @@
-### 0.5.0 - Unreleased
+### 0.5.0 - March 18th 2018
 
 * Support for 24bit rgb dds images
 * Support for additional 16bit dds images
