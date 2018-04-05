@@ -72,6 +72,8 @@ namespace Pfim
         /// <summary>The number of bytes that compose one line</summary>
         public int Stride => Util.Stride(Header.Width, Header.PixelDepth);
 
+        public int BitsPerPixel => Header.PixelDepth;
+
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format
         {

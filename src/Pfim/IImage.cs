@@ -17,6 +17,9 @@
         /// <summary>The number of bytes that compose one line</summary>
         int Stride { get; }
 
+        /// <summary>The number of bits that compose a pixel</summary>
+        int BitsPerPixel { get; }
+
         /// <summary>The format of the raw data</summary>
         ImageFormat Format { get; }
     }

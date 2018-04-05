@@ -31,7 +31,6 @@ namespace Pfim
             return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
         }
 
-        /// <summary>Number of bits that compose a pixel</summary>
         public int BitsPerPixel => info.Depth;
 
         /// <summary>Number of bytes that compose a pixel</summary>
