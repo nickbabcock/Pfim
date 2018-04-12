@@ -1,3 +1,7 @@
+### Unreleased
+
+* Expose `BitsPerPixel` in `IImage`
+
 ### 0.5.0 - March 18th 2018
 
 * Support for 24bit rgb dds images
