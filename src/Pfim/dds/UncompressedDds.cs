@@ -9,12 +9,26 @@ namespace Pfim
     /// </summary>
     internal class UncompressedDds : IDecodeDds
     {
+        private readonly uint? _bitsPerPixel;
+        private readonly bool? _rgbSwapped;
+
+        internal UncompressedDds(uint bitsPerPixel, bool rgbSwapped)
+        {
+            _bitsPerPixel = bitsPerPixel;
+            _rgbSwapped = rgbSwapped;
+        }
+
+        internal UncompressedDds()
+        {
+            
+        }
+
         /// <summary>Determine image info from header</summary>
         public DdsLoadInfo ImageInfo(DdsHeader header)
         {
-            bool rgbSwapped = header.PixelFormat.RBitMask < header.PixelFormat.GBitMask;
+            bool rgbSwapped = _rgbSwapped ?? header.PixelFormat.RBitMask < header.PixelFormat.GBitMask;
 
-            switch (header.PixelFormat.RGBBitCount)
+            switch (_bitsPerPixel ?? header.PixelFormat.RGBBitCount)
             {
                 case 8:
                     return new DdsLoadInfo(false, rgbSwapped, true, 1, 1, 8, ImageFormat.Rgb8);

@@ -39,7 +39,9 @@ namespace Pfim
         /// <summary>
         /// <see cref="Dxt5Dds"/>. Also known as BC5
         /// </summary>
-        D3DFMT_DXT5 = 894720068
+        D3DFMT_DXT5 = 894720068,
+
+        DX10 = 808540228
     }
 
     /// <summary>Flags to indicate which members contain valid data.</summary>
@@ -306,7 +308,11 @@ namespace Pfim
         /// <summary>
         /// The pixel format 
         /// </summary>
-        public DdsPixelFormat PixelFormat => pixelFormat;
+        public DdsPixelFormat PixelFormat
+        {
+            get => pixelFormat;
+            set => pixelFormat = value;
+        }
 
         /// <summary>
         /// Specifies the complexity of the surfaces stored.

@@ -16,11 +16,12 @@ namespace Pfim
         /// Instantiates a direct draw surface image from a header, the data,
         /// and additional info.
         /// </summary>
-        internal Dds(DdsHeader header, byte[] data, DdsLoadInfo info)
+        internal Dds(DdsHeader header, DdsHeaderDxt10 header10, byte[] data, DdsLoadInfo info)
         {
             this.header = header;
             this.data = data;
             this.info = info;
+            Header10 = header10;
         }
 
         /// <summary>Calculates the number of bytes to hold image data</summary>
@@ -30,6 +31,8 @@ namespace Pfim
             int height = (int)Math.Max(info.DivSize, header.Height);
             return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
         }
+
+        public DdsHeaderDxt10 Header10 { get; }
 
         public int BitsPerPixel => info.Depth;
 
@@ -55,6 +58,7 @@ namespace Pfim
         public static Dds Create(Stream stream)
         {
             DdsHeader header = new DdsHeader(stream);
+            DdsHeaderDxt10 header10 = null;
             IDecodeDds decoder;
             switch (header.PixelFormat.FourCC)
             {
@@ -77,14 +81,19 @@ namespace Pfim
                     decoder = new UncompressedDds();
                     break;
 
+                case CompressionAlgorithm.DX10:
+                    header10 = new DdsHeaderDxt10(stream);
+                    decoder = header10.NewDecoder();
+                    break;
+
                 default:
-                    throw new ArgumentException("FourCC: " + header.PixelFormat.FourCC + " not supported.");
+                    throw new ArgumentException($"FourCC: {header.PixelFormat.FourCC} not supported.");
             }
 
             var imageInfo = decoder.ImageInfo(header);
             var data = decoder.Decode(stream, header, imageInfo);
 
-            return new Dds(header, data, imageInfo);
+            return new Dds(header, header10, data, imageInfo);
         }
     }
 }

@@ -543,5 +543,19 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "dds_R8G8B8.dds"));
             Assert.Equal(ImageFormat.Rgb24, image.Format);
         }
+
+        [Fact]
+        public void ParseWoseBc1Unorm()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM.DDS"));
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+        }
+
+        [Fact]
+        public void ParseWoseR8G8B8A8UnormSrgb()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "wose_R8G8B8A8_UNORM_SRGB.DDS"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Exporters.Csv;
 using BenchmarkDotNet.Jobs;
@@ -22,6 +23,7 @@ namespace Pfim.Benchmarks
                     TimeUnit = BenchmarkDotNet.Horology.TimeUnit.Nanosecond
                 }));
 
+            Add(MemoryDiagnoser.Default);
             Add(StatisticColumn.Mean);
             Add(StatisticColumn.StdErr);
             Add(StatisticColumn.StdDev);
