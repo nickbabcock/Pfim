@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using System.IO;
+using static Farmhash.Sharp.Farmhash;
 
 namespace Pfim.Tests
 {
@@ -559,13 +560,13 @@ namespace Pfim.Tests
         }
 
         [Theory]
-        [InlineData("dds_R8G8B8.dds")]
-        [InlineData("32-bit-uncompressed.dds")]
-        [InlineData("dxt1-simple.dds")]
-        [InlineData("dxt3-simple.dds")]
-        [InlineData("dxt5-simple.dds")]
-        [InlineData("dds_a1r5g5b5.dds")]
-        public void TestDdsMemoryEquivalent(string path)
+        [InlineData("dds_R8G8B8.dds", 15689659543140148858)]
+        [InlineData("32-bit-uncompressed.dds", 384849195824287496)]
+        [InlineData("dxt1-simple.dds", 5120779151507657162)]
+        [InlineData("dxt3-simple.dds", 7251159020976695665)]
+        [InlineData("dxt5-simple.dds", 14792367831326096320)]
+        [InlineData("dds_a1r5g5b5.dds", 296240031898447077)]
+        public void TestDdsMemoryEquivalent(string path, ulong hash)
         {
             var data = File.ReadAllBytes(Path.Combine("data", path));
             var image = Pfim.FromFile(Path.Combine("data", path));
@@ -575,29 +576,30 @@ namespace Pfim.Tests
         }
 
         [Theory]
-        [InlineData("true-24.tga")]
-        [InlineData("CYA.tga")]
-        [InlineData("true-32.tga")]
-        [InlineData("true-32-rle.tga")]
-        [InlineData("true-32-rle-large.tga")]
-        [InlineData("true-24-rle.tga")]
-        [InlineData("tiny-rect.tga")]
-        [InlineData("true-32-mixed.tga")]
-        [InlineData("rgb24_top_left.tga")]
-        [InlineData("large-top-left.tga")]
-        [InlineData("marbles.tga")]
-        [InlineData("marbles2.tga")]
-        [InlineData("CBW8.tga")]
-        [InlineData("CCM8.tga")]
-        [InlineData("CTC16.tga")]
-        [InlineData("flag_t32.tga")]
-        public void TestTargaMemoryEquivalent(string path)
+        [InlineData("true-24.tga", 6721785183395989508)]
+        [InlineData("CYA.tga", 15216053119461519564)]
+        [InlineData("true-32.tga", 6194453706835520152)]
+        [InlineData("true-32-rle.tga", 12378637466499535005)]
+        [InlineData("true-32-rle-large.tga", 1018434115970595758)]
+        [InlineData("true-24-rle.tga", 3634332855012535703)]
+        [InlineData("tiny-rect.tga", 10515294190697599352)]
+        [InlineData("true-32-mixed.tga", 11106503608441470562)]
+        [InlineData("rgb24_top_left.tga", 13812820441044914689)]
+        [InlineData("large-top-left.tga", 6247443778177354729)]
+        [InlineData("marbles.tga", 2384540082298368449)]
+        [InlineData("marbles2.tga", 15370272868289352194)]
+        [InlineData("CBW8.tga", 5106377858478282324)]
+        [InlineData("CCM8.tga", 8817818310059804977)]
+        [InlineData("CTC16.tga", 5514589175564965158)]
+        [InlineData("flag_t32.tga", 16318719987689144124)]
+        public void TestTargaMemoryEquivalent(string path, ulong hash)
         {
             var data = File.ReadAllBytes(Path.Combine("data", path));
             var image = Pfim.FromFile(Path.Combine("data", path));
             var image2 = Targa.Create(data, new PfimConfig());
             Assert.Equal(image.Format, image2.Format);
             Assert.Equal(image.Data, image2.Data);
+            Assert.Equal(Hash64(data, data.Length), hash);
         }
     }
 }
