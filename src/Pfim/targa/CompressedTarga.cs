@@ -9,13 +9,13 @@ namespace Pfim
     public class CompressedTarga : IDecodeTarga
     {
         /// <summary>Fills data starting from the bottom left</summary>
-        public byte[] BottomLeft(Stream str, TargaHeader header)
+        public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            byte[] filebuffer = new byte[Util.BUFFER_SIZE];
+            byte[] filebuffer = new byte[config.BufferSize];
             int dataIndex = data.Length - stride;
-            int workingSize = str.Read(filebuffer, 0, Util.BUFFER_SIZE);
+            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
             int bytesPerPixel = header.PixelDepth / 8;
             int fileBufferIndex = 0;
 
@@ -29,7 +29,7 @@ namespace Pfim
                 int colIndex = 0;
                 do
                 {
-                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == Util.BUFFER_SIZE)
+                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == config.BufferSize)
                     {
                         workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
                         fileBufferIndex = 0;
@@ -64,19 +64,19 @@ namespace Pfim
         }
 
         /// <summary>Not implemented</summary>
-        public byte[] BottomRight(Stream str, TargaHeader header)
+        public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>Not implemented</summary>
-        public byte[] TopRight(Stream str, TargaHeader header)
+        public byte[] TopRight(Stream str, TargaHeader header, PfimConfig config)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>Not implemented</summary>
-        public byte[] TopLeft(Stream str, TargaHeader header)
+        public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             throw new NotImplementedException();
         }

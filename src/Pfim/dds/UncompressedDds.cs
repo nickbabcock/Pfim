@@ -62,7 +62,7 @@ namespace Pfim
         }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream str, DdsHeader header, DdsLoadInfo imageInfo)
+        public byte[] Decode(Stream str, DdsHeader header, DdsLoadInfo imageInfo, PfimConfig config)
         {
             byte[] buffer = new byte[Dds.CalcSize(ImageInfo(header), header)];
             Util.Fill(str, buffer);
@@ -91,7 +91,6 @@ namespace Pfim
                     default:
                         throw new Exception($"Do not know how to swap {imageInfo.Format}");
                 }
-
             }
 
             return buffer;

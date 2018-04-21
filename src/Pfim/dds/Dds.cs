@@ -55,7 +55,7 @@ namespace Pfim
         public ImageFormat Format => info.Format;
 
         /// <summary>Create a direct draw image from a stream</summary>
-        public static Dds Create(Stream stream)
+        public static Dds Create(Stream stream, PfimConfig config)
         {
             DdsHeader header = new DdsHeader(stream);
             DdsHeaderDxt10 header10 = null;
@@ -91,7 +91,7 @@ namespace Pfim
             }
 
             var imageInfo = decoder.ImageInfo(header);
-            var data = decoder.Decode(stream, header, imageInfo);
+            var data = decoder.Decode(stream, header, imageInfo, config);
 
             return new Dds(header, header10, data, imageInfo);
         }

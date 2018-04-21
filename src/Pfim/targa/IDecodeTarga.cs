@@ -10,15 +10,15 @@ namespace Pfim
     internal interface IDecodeTarga
     {
         /// <summary>Decode pixels starting at bottom left</summary>
-        byte[] BottomLeft(Stream str, TargaHeader header);
+        byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config);
 
         /// <summary>Decode pixels starting at bottom right</summary>
-        byte[] BottomRight(Stream str, TargaHeader header);
+        byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config);
 
         /// <summary>Decode pixels starting at top right</summary>
-        byte[] TopRight(Stream str, TargaHeader header);
+        byte[] TopRight(Stream str, TargaHeader header, PfimConfig config);
 
         /// <summary>Decode pixels starting at top left</summary>
-        byte[] TopLeft(Stream str, TargaHeader header);
+        byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config);
     }
 }

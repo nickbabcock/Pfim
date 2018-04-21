@@ -9,33 +9,33 @@ namespace Pfim
     public class UncompressedTarga : IDecodeTarga
     {
         /// <summary>Fills data starting from the bottom left</summary>
-        public byte[] BottomLeft(Stream str, TargaHeader header)
+        public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
             var rowBits = header.PixelDepth * header.Width;
-            Util.FillBottomLeft(str, data, rowBits / 8, stride);
+            Util.FillBottomLeft(str, data, rowBits / 8, stride, config.BufferSize);
             return data;
         }
 
         /// <summary>Not implemented</summary>
-        public byte[] BottomRight(Stream str, TargaHeader header)
+        public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>Not implemented</summary>
-        public byte[] TopRight(Stream str, TargaHeader header)
+        public byte[] TopRight(Stream str, TargaHeader header, PfimConfig config)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>Fills data starting from the top left</summary>
-        public byte[] TopLeft(Stream str, TargaHeader header)
+        public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            Util.Fill(str, data);
+            Util.Fill(str, data, config.BufferSize);
             return data;
         }
     }

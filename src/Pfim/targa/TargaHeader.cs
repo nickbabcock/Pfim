@@ -67,7 +67,9 @@ namespace Pfim
         {
             byte[] buf = new byte[18];
             if (str.Read(buf, 0, 18) != 18)
+            {
                 throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
+            }
 
             IDLength = buf[0];
             HasColorMap = buf[1] == 1;

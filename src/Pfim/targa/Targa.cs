@@ -26,7 +26,7 @@ namespace Pfim
         /// </summary>
         /// <param name="str">Stream to read the targa image from</param>
         /// <returns>A targa image</returns>
-        public static Targa Create(Stream str)
+        public static Targa Create(Stream str, PfimConfig config)
         {
             var header = new TargaHeader(str);
             var targa = (header.IsCompressed) ? (IDecodeTarga)(new CompressedTarga())
@@ -36,19 +36,19 @@ namespace Pfim
             switch (header.Orientation)
             {
                 case TargaHeader.TargaOrientation.BottomLeft:
-                    data = targa.BottomLeft(str, header);
+                    data = targa.BottomLeft(str, header, config);
                     break;
 
                 case TargaHeader.TargaOrientation.BottomRight:
-                    data = targa.BottomRight(str, header);
+                    data = targa.BottomRight(str, header, config);
                     break;
 
                 case TargaHeader.TargaOrientation.TopRight:
-                    data = targa.TopRight(str, header);
+                    data = targa.TopRight(str, header, config);
                     break;
 
                 case TargaHeader.TargaOrientation.TopLeft:
-                    data = targa.TopLeft(str, header);
+                    data = targa.TopLeft(str, header, config);
                     break;
 
                 default:

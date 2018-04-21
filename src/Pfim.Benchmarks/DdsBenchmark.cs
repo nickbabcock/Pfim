@@ -13,6 +13,8 @@ namespace Pfim.Benchmarks
 
         private byte[] data;
 
+        private readonly PfimConfig _pfimConfig = new PfimConfig();
+
         [GlobalSetup]
         public void SetupData()
         {
@@ -21,7 +23,7 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public IImage Pfim() => Dds.Create(new MemoryStream(data));
+        public IImage Pfim() => Dds.Create(new MemoryStream(data), _pfimConfig);
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));

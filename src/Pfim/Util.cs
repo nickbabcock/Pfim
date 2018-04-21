@@ -11,7 +11,7 @@ namespace Pfim
         /// <summary>
         /// Buffer size to read data from
         /// </summary>
-        public const int BUFFER_SIZE = 0x8000;
+        private const int BUFFER_SIZE = 0x8000;
 
         /// <summary>
         /// Takes all the bytes at and after an index and moves them to the front and fills the rest

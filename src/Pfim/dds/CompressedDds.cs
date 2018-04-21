@@ -17,7 +17,7 @@ namespace Pfim
         protected abstract byte PixelDepth { get; }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream stream, DdsHeader header, DdsLoadInfo imageInfo)
+        public byte[] Decode(Stream stream, DdsHeader header, DdsLoadInfo imageInfo, PfimConfig config)
         {
             byte[] data = new byte[header.Width * header.Height * PixelDepth];
             DdsLoadInfo loadInfo = ImageInfo(header);
@@ -31,11 +31,11 @@ namespace Pfim
             int bytesPerStride = (int)((header.Width / loadInfo.DivSize) * loadInfo.BlockBytes);
             int blocksPerStride = (int)(header.Width / loadInfo.DivSize);
 
-            byte[] streamBuffer = new byte[Util.BUFFER_SIZE];
+            byte[] streamBuffer = new byte[config.BufferSize];
 
             do
             {
-                bufferSize = workingSize = stream.Read(streamBuffer, 0, Util.BUFFER_SIZE);
+                bufferSize = workingSize = stream.Read(streamBuffer, 0, config.BufferSize);
                 int bIndex = 0;
                 while (workingSize > 0 && pixelsLeft > 0)
                 {
