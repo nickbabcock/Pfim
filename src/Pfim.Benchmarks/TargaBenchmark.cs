@@ -27,7 +27,7 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public IImage Pfim() => Targa.Create(new MemoryStream(data), _pfimConfig);
+        public IImage Pfim() => Targa.Create(data, _pfimConfig);
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));

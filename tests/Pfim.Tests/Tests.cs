@@ -220,6 +220,10 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
 
             Assert.Equal(data, image.Data);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "true-32-rle.tga"));
+            image = Targa.Create(mem, new PfimConfig());
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -255,6 +259,10 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
 
             Assert.Equal(data, image.Data);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "true-24-rle.tga"));
+            image = Targa.Create(mem, new PfimConfig());
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -269,6 +277,10 @@ namespace Pfim.Tests
                 data[i + 2] = 255;
                 data[i + 3] = 255;
             }
+            Assert.Equal(data, image.Data);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "tiny-rect.tga"));
+            image = Targa.Create(mem, new PfimConfig());
             Assert.Equal(data, image.Data);
         }
 
@@ -322,6 +334,10 @@ namespace Pfim.Tests
                 data[i + 3] = 255;
             }
             Assert.Equal(data, image.Data);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "true-32-mixed.tga"));
+            image = Targa.Create(mem, new PfimConfig());
+            Assert.Equal(data, image.Data);
         }
 
         [Fact]
@@ -336,6 +352,10 @@ namespace Pfim.Tests
                 data[i + 2] = 127;
                 data[i + 3] = 255;
             }
+            Assert.Equal(data, image.Data);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "true-32-rle-large.tga"));
+            image = Targa.Create(mem, new PfimConfig());
             Assert.Equal(data, image.Data);
         }
 
@@ -370,6 +390,13 @@ namespace Pfim.Tests
             {
                 Assert.Equal(0, bt);
             }
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "large-top-left.tga"));
+            image = Targa.Create(mem, new PfimConfig());
+            foreach (byte bt in image.Data)
+            {
+                Assert.Equal(0, bt);
+            }
         }
 
         [Fact]
@@ -380,12 +407,26 @@ namespace Pfim.Tests
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(0, image.Data[1]);
             Assert.Equal(0, image.Data[2]);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "marbles.tga"));
+            image = Targa.Create(mem, new PfimConfig());
+            Assert.Equal(4264260, image.Data.Length);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(0, image.Data[1]);
+            Assert.Equal(0, image.Data[2]);
         }
 
         [Fact]
         public void ParseMarblesTarga()
         {
             var image = Pfim.FromFile(Path.Combine("data", "marbles2.tga"));
+            Assert.Equal(100 * 71 * 3, image.Data.Length);
+            Assert.Equal(2, image.Data[0]);
+            Assert.Equal(3, image.Data[1]);
+            Assert.Equal(3, image.Data[2]);
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "marbles2.tga"));
+            image = Targa.Create(mem, new PfimConfig());
             Assert.Equal(100 * 71 * 3, image.Data.Length);
             Assert.Equal(2, image.Data[0]);
             Assert.Equal(3, image.Data[1]);
@@ -420,6 +461,14 @@ namespace Pfim.Tests
         public void ParseTransparentTarga()
         {
             var image = Pfim.FromFile(Path.Combine("data", "flag_t32.tga"));
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+            for (int i = 0; i < image.Data.Length; i += 4)
+            {
+                Assert.Equal(0, image.Data[i + 3]);
+            }
+
+            var mem = File.ReadAllBytes(Path.Combine("data", "flag_t32.tga"));
+            image = Targa.Create(mem, new PfimConfig());
             Assert.Equal(ImageFormat.Rgba32, image.Format);
             for (int i = 0; i < image.Data.Length; i += 4)
             {

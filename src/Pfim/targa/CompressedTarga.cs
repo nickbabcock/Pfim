@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Pfim
 {
@@ -8,11 +9,82 @@ namespace Pfim
     /// </summary>
     public class CompressedTarga : IDecodeTarga
     {
+        unsafe byte[] FastPass(byte[] data, ArraySegment<byte> arr, TargaHeader header, int stride, long arrPosition)
+        {
+            int bytesPerPixel = header.PixelDepth / 8;
+
+            fixed (byte* startDataPtr = data)
+            fixed (byte* fixedInputPtr = &arr.Array[arrPosition])
+            {
+                byte* endSentinal = startDataPtr + data.Length;
+                byte* dataPtr = endSentinal - stride;
+                byte* inputPtr = fixedInputPtr;
+                while (dataPtr >= startDataPtr)
+                {
+                    int pixelIndex = 0;
+                    do
+                    {
+                        bool isRunLength = (*inputPtr & 128) != 0;
+                        if (isRunLength)
+                        {
+                            var run = *inputPtr++ - 127;
+
+                            if (bytesPerPixel == 3)
+                            {
+                                RunLength3(dataPtr, run, *inputPtr++, *inputPtr++, *inputPtr++);
+                            }
+                            else if (bytesPerPixel == 4)
+                            {
+                                byte color0 = *inputPtr++;
+                                byte color1 = *inputPtr++;
+                                byte color2 = *inputPtr++;
+                                byte color3 = *inputPtr++;
+                                var comb = (color0 | color1 << 8 | color2 << 16 | color3 << 24);
+                                Util.memset((int*)dataPtr, comb, run * 4);
+                            }
+                            else if (bytesPerPixel == 1)
+                            {
+                                Util.memset(dataPtr, *inputPtr++, run);
+                            }
+                            else if (bytesPerPixel == 2)
+                            {
+                                byte color0 = *inputPtr++;
+                                byte color1 = *inputPtr++;
+                                var comb = color0 | color1 << 8 | color0 << 16 | color1 << 24;
+                                Util.memset((int*)dataPtr, comb, run * 2);
+                            }
+
+                            dataPtr += run * bytesPerPixel;
+                            pixelIndex += run;
+                        }
+                        else
+                        {
+                            int pixels = *inputPtr++ + 1;
+                            int bytes = pixels * bytesPerPixel;
+                            Buffer.MemoryCopy(inputPtr, dataPtr, endSentinal - dataPtr, bytes);
+                            dataPtr += bytes;
+                            pixelIndex += pixels;
+                            inputPtr += bytes;
+                        }
+                    } while (pixelIndex < header.Width);
+                    dataPtr -= bytesPerPixel * header.Width + stride;
+                }
+            }
+
+            return data;
+        }
+
         /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
+
+            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                return FastPass(data, arr, header, stride, s.Position);
+            }
+
             byte[] filebuffer = new byte[config.BufferSize];
             int dataIndex = data.Length - stride;
             int workingSize = str.Read(filebuffer, 0, config.BufferSize);
@@ -81,6 +153,41 @@ namespace Pfim
             throw new NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void RunLength3(byte* dataPtr, int runLength, byte color0, byte color1, byte color2)
+        {
+            // If the color depth is three, we are able to do a unique optimization.
+            // Four pixels in a row is twelve bytes long. Thus we construct three ints
+            // that will contain all orderings of the pixels. So when set the data equal
+            // to one of these ints, we are really placing 1 (1/3) pixels. We are safe
+            // using this method because the specification states that run length
+            // packets cannot span more than one stride.
+            int* workingptr = (int*)dataPtr;
+            int size = 3 * runLength;
+            int comb = (color0 | (color1 << 8) | (color2 << 16) | (color0 << 24));
+            int comb1 = (color1 | (color2 << 8) | (color0 << 16) | (color1 << 24));
+            int comb2 = (color2 | (color0 << 8) | (color1 << 16) | (color2 << 24));
+
+            if (size > 12)
+            {
+                do
+                {
+                    *workingptr++ = comb;
+                    *workingptr++ = comb1;
+                    *workingptr++ = comb2;
+                } while ((size -= 12) >= 12);
+            }
+
+            byte* byteWorkingPtr = (byte*)workingptr;
+            while (size > 0)
+            {
+                *byteWorkingPtr++ = color0;
+                *byteWorkingPtr++ = color1;
+                *byteWorkingPtr++ = color2;
+                size -= 3;
+            }
+        }
+
         /// <summary>
         /// Compressed Targa images contain Run Length Packets of length 1 + <paramref name="colorDepth"/>.
         /// The first byte contains how long many pixels are encoded in the packet and the following bytes
@@ -104,37 +211,7 @@ namespace Pfim
                     byte color0 = streamBuffer[streamBufferIndex++];
                     byte color1 = streamBuffer[streamBufferIndex++];
                     byte color2 = streamBuffer[streamBufferIndex++];
-
-                    // If the color depth is three, we are able to do a unique optimization.
-                    // Four pixels in a row is twelve bytes long. Thus we construct three ints
-                    // that will contain all orderings of the pixels. So when set the data equal
-                    // to one of these ints, we are really placing 1 (1/3) pixels. We are safe
-                    // using this method because the specification states that run length
-                    // packets cannot span more than one stride.
-                    int* workingptr = (int*)ptr;
-                    int size = 3 * runLength;
-                    int comb = (color0 | (color1 << 8) | (color2 << 16) | (color0 << 24));
-                    int comb1 = (color1 | (color2 << 8) | (color0 << 16) | (color1 << 24));
-                    int comb2 = (color2 | (color0 << 8) | (color1 << 16) | (color2 << 24));
-
-                    if (size > 12)
-                    {
-                        do
-                        {
-                            *workingptr++ = comb;
-                            *workingptr++ = comb1;
-                            *workingptr++ = comb2;
-                        } while ((size -= 12) >= 12);
-                    }
-
-                    byte* byteWorkingPtr = (byte*)workingptr;
-                    while (size > 0)
-                    {
-                        *byteWorkingPtr++ = color0;
-                        *byteWorkingPtr++ = color1;
-                        *byteWorkingPtr++ = color2;
-                        size -= 3;
-                    }
+                    RunLength3(ptr, runLength, color0, color1, color2);
                 }
                 else if (colorDepth == 4)
                 {
