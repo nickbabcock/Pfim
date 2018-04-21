@@ -31,6 +31,35 @@ namespace Pfim
             int bytesPerStride = (int)((header.Width / loadInfo.DivSize) * loadInfo.BlockBytes);
             int blocksPerStride = (int)(header.Width / loadInfo.DivSize);
 
+            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                var memBuffer = arr.Array;
+                int bIndex = (int) s.Position;
+                while (pixelsLeft > 0)
+                {
+                    // Now that we have enough pixels to fill a stride (and
+                    // this includes the normally 4 pixels below the stride)
+                    for (uint i = 0; i < blocksPerStride; i++)
+                    {
+                        bIndex = Decode(memBuffer, data, bIndex, dataIndex, header.Width);
+
+                        // Advance to the next block, which is (pixel depth *
+                        // divSize) bytes away
+                        dataIndex += loadInfo.DivSize * PixelDepth;
+                    }
+
+                    // Each decoded block is divSize by divSize so pixels left
+                    // is Width * multiplied by block height
+                    pixelsLeft -= header.Width * loadInfo.DivSize;
+
+                    // Jump down to the block that is exactly (divSize - 1)
+                    // below the current row we are on
+                    dataIndex += (PixelDepth * (loadInfo.DivSize - 1) * header.Width);
+                }
+
+                return data;
+            }
+
             byte[] streamBuffer = new byte[config.BufferSize];
 
             do
