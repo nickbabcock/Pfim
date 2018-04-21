@@ -8,7 +8,9 @@
 
         protected override byte PixelDepth => PIXEL_DEPTH;
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        private readonly Color888[] colors = new Color888[4];
+
+        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             /* 
              * Strategy for decompression:
@@ -29,8 +31,6 @@
 
             ushort color1 = (stream[streamIndex++]);
             color1 |= (ushort)(stream[streamIndex++] << 8);
-
-            var colors = new Color888[4];
 
             // Extract R5G6B5 (in that order)
             colors[0].r = (byte)((color0 & 0x1f));

@@ -6,7 +6,8 @@
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
 
-        private byte[] alpha = new byte[8];
+        private readonly byte[] alpha = new byte[8];
+        private readonly Color888[] colors = new Color888[4];
 
         private int extractAlpha(byte[] workingFilePtr, int bIndex)
         {
@@ -32,7 +33,7 @@
 
         protected override byte PixelDepth => PIXEL_DEPTH;
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             streamIndex = extractAlpha(stream, streamIndex);
 
@@ -49,8 +50,6 @@
 
             ushort color1 = (stream[streamIndex++]);
             color1 |= (ushort)(stream[streamIndex++] << 8);
-
-            var colors = new Color888[4];
 
             // Extract R5G6B5 (in that order)
             colors[0].r = (byte)((color0 & 0x1f));
