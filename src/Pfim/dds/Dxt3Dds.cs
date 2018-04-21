@@ -10,7 +10,7 @@
 
         private readonly Color888[] colors = new Color888[4];
 
-        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             /* 
              * Strategy for decompression:

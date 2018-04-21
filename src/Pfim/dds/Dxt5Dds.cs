@@ -33,7 +33,7 @@
 
         protected override byte PixelDepth => PIXEL_DEPTH;
 
-        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
             streamIndex = extractAlpha(stream, streamIndex);
 
