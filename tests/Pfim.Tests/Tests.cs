@@ -606,5 +606,21 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "wose_R8G8B8A8_UNORM_SRGB.DDS"));
             Assert.Equal(ImageFormat.Rgba32, image.Format);
         }
+
+        [Theory]
+        [InlineData("dds_R8G8B8.dds")]
+        [InlineData("32-bit-uncompressed.dds")]
+        [InlineData("dxt1-simple.dds")]
+        [InlineData("dxt3-simple.dds")]
+        [InlineData("dxt5-simple.dds")]
+        [InlineData("dds_a1r5g5b5.dds")]
+        public void TestDdsMemoryEquivalent(string path)
+        {
+            var data = File.ReadAllBytes(Path.Combine("data", path));
+            var image = Pfim.FromFile(Path.Combine("data", path));
+            var image2 = Dds.Create(data, new PfimConfig());
+            Assert.Equal(image.Format, image2.Format);
+            Assert.Equal(image.Data, image2.Data);
+        }
     }
 }

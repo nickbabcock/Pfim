@@ -23,7 +23,7 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public IImage Pfim() => Dds.Create(new MemoryStream(data), _pfimConfig);
+        public IImage Pfim() => Dds.Create(data, _pfimConfig);
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));

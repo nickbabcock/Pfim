@@ -64,8 +64,16 @@ namespace Pfim
         /// <summary>Decode data into raw rgb format</summary>
         public byte[] Decode(Stream str, DdsHeader header, DdsLoadInfo imageInfo, PfimConfig config)
         {
-            byte[] buffer = new byte[Dds.CalcSize(ImageInfo(header), header)];
-            Util.Fill(str, buffer);
+            byte[] data = new byte[Dds.CalcSize(ImageInfo(header), header)];
+
+            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, data.Length);
+            }
+            else
+            {
+                Util.Fill(str, data, config.BufferSize);
+            }
 
             // Swap the R and B channels
             if (imageInfo.Swap)
@@ -73,19 +81,19 @@ namespace Pfim
                 switch (imageInfo.Format)
                 {
                     case ImageFormat.Rgba32:
-                        for (int i = 0; i < buffer.Length; i += 4)
+                        for (int i = 0; i < data.Length; i += 4)
                         {
-                            byte temp = buffer[i];
-                            buffer[i] = buffer[i + 2];
-                            buffer[i + 2] = temp;
+                            byte temp = data[i];
+                            data[i] = data[i + 2];
+                            data[i + 2] = temp;
                         }
                         break;
                     case ImageFormat.Rgba16:
-                        for (int i = 0; i < buffer.Length; i += 2)
+                        for (int i = 0; i < data.Length; i += 2)
                         {
-                            byte temp = (byte) (buffer[i] & 0xF);
-                            buffer[i] = (byte) ((buffer[i] & 0xF0) + (buffer[i + 1] & 0XF));
-                            buffer[i + 1] = (byte) ((buffer[i + 1] & 0xF0) + temp);
+                            byte temp = (byte) (data[i] & 0xF);
+                            data[i] = (byte) ((data[i] & 0xF0) + (data[i + 1] & 0XF));
+                            data[i + 1] = (byte) ((data[i + 1] & 0xF0) + temp);
                         }
                         break;
                     default:
@@ -93,7 +101,7 @@ namespace Pfim
                 }
             }
 
-            return buffer;
+            return data;
         }
     }
 }

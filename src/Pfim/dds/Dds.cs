@@ -54,6 +54,12 @@ namespace Pfim
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format => info.Format;
 
+        public static Dds Create(byte[] data, PfimConfig config)
+        {
+            var mem = new MemoryStream(data, 0, data.Length, false, true);
+            return Create(mem, config);
+        }
+
         /// <summary>Create a direct draw image from a stream</summary>
         public static Dds Create(Stream stream, PfimConfig config)
         {
