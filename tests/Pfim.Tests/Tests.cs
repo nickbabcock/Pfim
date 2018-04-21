@@ -573,6 +573,7 @@ namespace Pfim.Tests
             var image2 = Dds.Create(data, new PfimConfig());
             Assert.Equal(image.Format, image2.Format);
             Assert.Equal(image.Data, image2.Data);
+            Assert.Equal(Hash64(data, data.Length), hash);
         }
 
         [Theory]
