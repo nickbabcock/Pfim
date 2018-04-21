@@ -20,7 +20,8 @@ namespace Pfim.Benchmarks
                 new BenchmarkDotNet.Reports.SummaryStyle
                 {
                     PrintUnitsInContent = false,
-                    TimeUnit = BenchmarkDotNet.Horology.TimeUnit.Nanosecond
+                    TimeUnit = BenchmarkDotNet.Horology.TimeUnit.Nanosecond,
+                    SizeUnit = SizeUnit.B
                 }));
 
             Add(MemoryDiagnoser.Default);
