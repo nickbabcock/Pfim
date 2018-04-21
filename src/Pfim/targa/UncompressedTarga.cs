@@ -14,7 +14,21 @@ namespace Pfim
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
             var rowBits = header.PixelDepth * header.Width;
-            Util.FillBottomLeft(str, data, rowBits / 8, stride, config.BufferSize);
+
+            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                int dataIndex = data.Length - stride;
+                int rowBytes = rowBits / 8;
+                int totalRows = data.Length / rowBytes;
+                for (int i = 0; i < totalRows; i++, dataIndex -= stride)
+                {
+                    Buffer.BlockCopy(arr.Array, (int) (s.Position + i * rowBytes), data, dataIndex, rowBytes);
+                }
+            }
+            else
+            {
+                Util.FillBottomLeft(str, data, rowBits / 8, stride, config.BufferSize);
+            }
             return data;
         }
 
@@ -35,7 +49,14 @@ namespace Pfim
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            Util.Fill(str, data, config.BufferSize);
+            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                Buffer.BlockCopy(arr.Array, (int) s.Position, data, 0, data.Length);
+            }
+            else
+            {
+                Util.Fill(str, data, config.BufferSize);
+            }
             return data;
         }
     }
