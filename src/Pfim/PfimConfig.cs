@@ -4,7 +4,7 @@
     {
         public PfimConfig(
             int bufferSize = 0x8000,
-            ImageFormat? targetFormat = null,
+            TargetFormat targetFormat = TargetFormat.Native,
             bool decompress = true)
         {
             BufferSize = bufferSize;
@@ -13,7 +13,7 @@
         }
 
         public int BufferSize { get; }
-        public ImageFormat? TargetFormat { get; }
+        public TargetFormat TargetFormat { get; }
         public bool Decompress { get; }
 
         public override bool Equals(object obj)
