@@ -7,7 +7,7 @@
 
         private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, DIV_SIZE, 8, 24, ImageFormat.Rgb24);
 
-        protected override byte PixelDepth => 3;
+        protected override byte PixelDepth => PIXEL_DEPTH;
 
         private readonly Color888[] colors = new Color888[4];
 

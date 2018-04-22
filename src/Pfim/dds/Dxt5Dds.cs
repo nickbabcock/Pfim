@@ -9,7 +9,7 @@
         private readonly byte[] alpha = new byte[8];
         private readonly Color888[] colors = new Color888[4];
 
-        private int extractAlpha(byte[] workingFilePtr, int bIndex)
+        private int ExtractAlpha(byte[] workingFilePtr, int bIndex)
         {
             byte alpha0;
             byte alpha1;
@@ -35,7 +35,7 @@
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
-            streamIndex = extractAlpha(stream, streamIndex);
+            streamIndex = ExtractAlpha(stream, streamIndex);
 
             ulong alphaCodes = stream[streamIndex++];
             alphaCodes |= ((ulong)stream[streamIndex++] << 8);
@@ -74,11 +74,9 @@
             colors[3].g = (byte)((colors[0].g + 2 * colors[1].g) / 3);
             colors[3].b = (byte)((colors[0].b + 2 * colors[1].b) / 3);
 
-            byte rowVal = 0;
             for (int alphaShift = 0; alphaShift < 48; alphaShift += 12)
             {
-                rowVal = stream[streamIndex++];
-
+                byte rowVal = stream[streamIndex++];
                 for (int j = 0; j < 4; j++)
                 {
                     // 3 bits determine alpha index to use
