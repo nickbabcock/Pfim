@@ -1,10 +1,18 @@
 ﻿namespace Pfim
 {
-    internal class Dxt3Dds : CompressedDds
+    public class Dxt3Dds : CompressedDds
     {
         const byte PIXEL_DEPTH = 4;
         const byte DIV_SIZE = 4;
         private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16, 32, ImageFormat.Rgba32);
+
+        protected override byte CompressedBytesPerBlock => 16;
+        public override int BitsPerPixel => PIXEL_DEPTH * 8;
+        public override ImageFormat Format => ImageFormat.Rgba32;
+
+        public Dxt3Dds(DdsHeader header) : base(header)
+        {
+        }
 
         protected override byte PixelDepth => PIXEL_DEPTH;
 

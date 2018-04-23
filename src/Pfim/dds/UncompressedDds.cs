@@ -7,46 +7,61 @@ namespace Pfim
     /// A DirectDraw Surface that is not compressed.  
     /// Thus what is in the input stream gets directly translated to the image buffer.
     /// </summary>
-    internal class UncompressedDds : IDecodeDds
+    public class UncompressedDds : Dds
     {
         private readonly uint? _bitsPerPixel;
         private readonly bool? _rgbSwapped;
+        private ImageFormat _format;
 
-        internal UncompressedDds(uint bitsPerPixel, bool rgbSwapped)
+        internal UncompressedDds(DdsHeader header, uint bitsPerPixel, bool rgbSwapped) : base(header)
         {
             _bitsPerPixel = bitsPerPixel;
             _rgbSwapped = rgbSwapped;
         }
 
-        internal UncompressedDds()
+        internal UncompressedDds(DdsHeader header) : base(header)
         {
             
         }
 
-        /// <summary>Determine image info from header</summary>
-        public DdsLoadInfo ImageInfo(DdsHeader header)
-        {
-            bool rgbSwapped = _rgbSwapped ?? header.PixelFormat.RBitMask < header.PixelFormat.GBitMask;
+        public override int BitsPerPixel => ImageInfo().Depth;
 
-            switch (_bitsPerPixel ?? header.PixelFormat.RGBBitCount)
+        public override ImageFormat Format => _format;
+
+        public override bool Compressed => false;
+        public override void Decompress()
+        {
+        }
+
+        protected override void Decode(Stream stream, PfimConfig config)
+        {
+            Data = Decode(stream, ImageInfo(), config);
+        }
+
+        /// <summary>Determine image info from header</summary>
+        public DdsLoadInfo ImageInfo()
+        {
+            bool rgbSwapped = _rgbSwapped ?? Header.PixelFormat.RBitMask < Header.PixelFormat.GBitMask;
+
+            switch (_bitsPerPixel ?? Header.PixelFormat.RGBBitCount)
             {
                 case 8:
                     return new DdsLoadInfo(false, rgbSwapped, true, 1, 1, 8, ImageFormat.Rgb8);
                 case 16:
-                    ImageFormat format = SixteenBitImageFormat(header);
+                    ImageFormat format = SixteenBitImageFormat();
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 2, 16, format);
                 case 24:
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 3, 24, ImageFormat.Rgb24);
                 case 32:
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 4, 32, ImageFormat.Rgba32);
                 default:
-                    throw new Exception($"Unrecognized rgb bit count: {header.PixelFormat.RGBBitCount}");
+                    throw new Exception($"Unrecognized rgb bit count: {Header.PixelFormat.RGBBitCount}");
             }
         }
 
-        private static ImageFormat SixteenBitImageFormat(DdsHeader header)
+        private ImageFormat SixteenBitImageFormat()
         {
-            var pf = header.PixelFormat;
+            var pf = Header.PixelFormat;
 
             if (pf.ABitMask == 0xF000 && pf.RBitMask == 0xF00 && pf.GBitMask == 0xF0 && pf.BBitMask == 0xF)
             {
@@ -62,9 +77,11 @@ namespace Pfim
         }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream str, DdsHeader header, DdsLoadInfo imageInfo, PfimConfig config)
+        public byte[] Decode(Stream str, DdsLoadInfo imageInfo, PfimConfig config)
         {
-            byte[] data = new byte[Dds.CalcSize(ImageInfo(header), header)];
+            _format = imageInfo.Format;
+
+            byte[] data = new byte[Dds.CalcSize(imageInfo, Header)];
 
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {

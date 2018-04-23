@@ -1,7 +1,7 @@
 ﻿namespace Pfim
 {
     /// <summary>Contains additional info about the image</summary>
-    internal struct DdsLoadInfo
+    public struct DdsLoadInfo
     {
         public ImageFormat Format { get; }
         public bool Compressed { get; }

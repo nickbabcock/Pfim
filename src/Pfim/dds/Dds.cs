@@ -6,22 +6,15 @@ namespace Pfim
     /// <summary>
     /// Class that represents direct draw surfaces
     /// </summary>
-    public class Dds : IImage
+    public abstract class Dds : IImage
     {
-        private readonly DdsHeader header;
-        private readonly DdsLoadInfo info;
-        private readonly byte[] data;
-
         /// <summary>
         /// Instantiates a direct draw surface image from a header, the data,
         /// and additional info.
         /// </summary>
-        internal Dds(DdsHeader header, DdsHeaderDxt10 header10, byte[] data, DdsLoadInfo info)
+        protected Dds(DdsHeader header)
         {
-            this.header = header;
-            this.data = data;
-            this.info = info;
-            Header10 = header10;
+            Header = header;
         }
 
         /// <summary>Calculates the number of bytes to hold image data</summary>
@@ -32,27 +25,16 @@ namespace Pfim
             return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
         }
 
-        public DdsHeaderDxt10 Header10 { get; }
-
-        public int BitsPerPixel => info.Depth;
-
-        /// <summary>Number of bytes that compose a pixel</summary>
+        public DdsHeader Header { get; }
+        public abstract int BitsPerPixel { get; }
         public int BytesPerPixel => BitsPerPixel / 8;
-
-        /// <summary>The number of bytes that compose one line</summary>
-        public int Stride => (int)(4 * ((header.Width * BytesPerPixel + 3) / 4));
-
-        /// <summary>The raw image data</summary>
-        public byte[] Data => data;
-
-        /// <summary>Width of the image in pixels</summary>
-        public int Width => (int)header.Width;
-
-        /// <summary>Height of the image in pixels</summary>
-        public int Height => (int)header.Height;
-
-        /// <summary>The format of the raw data</summary>
-        public ImageFormat Format => info.Format;
+        public int Stride => (int)(4 * ((Header.Width * BytesPerPixel + 3) / 4));
+        public virtual byte[] Data { get; protected set; }
+        public int Width => (int)Header.Width;
+        public int Height => (int)Header.Height;
+        public abstract ImageFormat Format { get; }
+        public abstract bool Compressed { get; }
+        public abstract void Decompress();
 
         public static Dds Create(byte[] data, PfimConfig config)
         {
@@ -64,42 +46,41 @@ namespace Pfim
         public static Dds Create(Stream stream, PfimConfig config)
         {
             DdsHeader header = new DdsHeader(stream);
-            DdsHeaderDxt10 header10 = null;
-            IDecodeDds decoder;
+            Dds dds;
             switch (header.PixelFormat.FourCC)
             {
                 case CompressionAlgorithm.D3DFMT_DXT1:
-                    decoder = new Dxt1Dds();
+                    dds = new Dxt1Dds(header);
                     break;
 
                 case CompressionAlgorithm.D3DFMT_DXT2:
                 case CompressionAlgorithm.D3DFMT_DXT4:
                     throw new ArgumentException("Cannot support DXT2 or DXT4");
                 case CompressionAlgorithm.D3DFMT_DXT3:
-                    decoder = new Dxt3Dds();
+                    dds = new Dxt3Dds(header);
                     break;
 
                 case CompressionAlgorithm.D3DFMT_DXT5:
-                    decoder = new Dxt5Dds();
+                    dds = new Dxt5Dds(header);
                     break;
 
                 case CompressionAlgorithm.None:
-                    decoder = new UncompressedDds();
+                    dds = new UncompressedDds(header);
                     break;
 
                 case CompressionAlgorithm.DX10:
-                    header10 = new DdsHeaderDxt10(stream);
-                    decoder = header10.NewDecoder();
+                    var header10 = new DdsHeaderDxt10(stream);
+                    dds = header10.NewDecoder(header);
                     break;
 
                 default:
                     throw new ArgumentException($"FourCC: {header.PixelFormat.FourCC} not supported.");
             }
 
-            var imageInfo = decoder.ImageInfo(header);
-            var data = decoder.Decode(stream, header, imageInfo, config);
-
-            return new Dds(header, header10, data, imageInfo);
+            dds.Decode(stream, config);
+            return dds;
         }
+
+        protected abstract void Decode(Stream stream, PfimConfig config);
     }
 }

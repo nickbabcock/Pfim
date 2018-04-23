@@ -22,5 +22,11 @@
 
         /// <summary>The format of the raw data</summary>
         ImageFormat Format { get; }
+
+        /// <summary>If the image format is compressed</summary>
+        bool Compressed { get; }
+
+        /// <summary>Decompress the image. Will have no effect if not compressed</summary>
+        void Decompress();
     }
 }

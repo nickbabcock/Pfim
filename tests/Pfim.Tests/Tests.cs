@@ -577,6 +577,24 @@ namespace Pfim.Tests
         }
 
         [Theory]
+        [InlineData("dxt1-simple.dds")]
+        [InlineData("dxt3-simple.dds")]
+        [InlineData("dxt5-simple.dds")]
+        public void TestDdsCompression(string path)
+        {
+            var data = File.ReadAllBytes(Path.Combine("data", path));
+            var image = Dds.Create(data, new PfimConfig());
+            var image2 = Dds.Create(data, new PfimConfig(decompress: false));
+
+            Assert.False(image.Compressed);
+            Assert.True(image2.Compressed);
+            Assert.NotEqual(image.Data, image2.Data);
+            Assert.Equal(image.Format, image2.Format);
+            image2.Decompress();
+            Assert.Equal(image.Data, image2.Data);
+        }
+
+        [Theory]
         [InlineData("true-24.tga", 6721785183395989508)]
         [InlineData("CYA.tga", 15216053119461519564)]
         [InlineData("true-32.tga", 6194453706835520152)]

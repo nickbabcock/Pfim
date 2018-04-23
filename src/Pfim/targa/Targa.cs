@@ -26,6 +26,12 @@ namespace Pfim
             return Create(mem, config);
         }
 
+        public bool Compressed => false;
+        public void Decompress()
+        {
+            // Never compressed
+        }
+
         /// <summary>
         /// Creates a targa image from a given stream. The type of targa is determined from the
         /// targa header, which is assumed to be a part of the stream

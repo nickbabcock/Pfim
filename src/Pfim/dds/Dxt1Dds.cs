@@ -1,13 +1,20 @@
 ﻿namespace Pfim
 {
-    internal class Dxt1Dds : CompressedDds
+    public class Dxt1Dds : CompressedDds
     {
         const int PIXEL_DEPTH = 3;
         const int DIV_SIZE = 4;
 
         private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, DIV_SIZE, 8, 24, ImageFormat.Rgb24);
 
+        public Dxt1Dds(DdsHeader header) : base(header)
+        {
+        }
+
         protected override byte PixelDepth => PIXEL_DEPTH;
+        protected override byte CompressedBytesPerBlock => 8;
+        public override ImageFormat Format => ImageFormat.Rgb24;
+        public override int BitsPerPixel => 8 * PIXEL_DEPTH;
 
         private readonly Color888[] colors = new Color888[4];
 
@@ -59,14 +66,13 @@
             }
 
 
-            byte rowVal = 0;
             for (int i = 0; i < 4; i++)
             {
                 // Every 2 bit is a code [0-3] and represent what color the
                 // current pixel is
 
                 // Read in a byte and thus 4 colors
-                rowVal = stream[streamIndex++];
+                byte rowVal = stream[streamIndex++];
                 for (int j = 0; j < 8; j += 2)
                 {
                     // Extract code by shifting the row byte so that we can
@@ -84,7 +90,6 @@
             // Reset position to start of block
             return streamIndex;
         }
-
         public override DdsLoadInfo ImageInfo(DdsHeader header)
         {
             return DXT1LoadInfo;

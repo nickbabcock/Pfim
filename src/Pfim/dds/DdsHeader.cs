@@ -9,7 +9,7 @@ namespace Pfim
     /// representation of itself. So a DXT1 image is encoded as "1TXD" so the
     /// enum represents these values directly
     /// </summary>
-    internal enum CompressionAlgorithm : uint
+    public enum CompressionAlgorithm : uint
     {
         /// <summary>
         /// No compression was used in the image.
@@ -46,7 +46,7 @@ namespace Pfim
 
     /// <summary>Flags to indicate which members contain valid data.</summary>
     [Flags]
-    internal enum DdsFlags : uint
+    public enum DdsFlags : uint
     {
         /// <summary>
         /// Required in every .dds file.
@@ -91,7 +91,7 @@ namespace Pfim
 
     /// <summary>Values which indicate what type of data is in the surface.</summary>
     [Flags]
-    internal enum DdsPixelFormatFlags : uint
+    public enum DdsPixelFormatFlags : uint
     {
         /// <summary>
         ///     Texture contains alpha data; dwRGBAlphaBitMask contains valid data.
@@ -133,7 +133,7 @@ namespace Pfim
     /// Surface pixel format.
     /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943984(v=vs.85).aspx
     /// </summary>
-    internal struct DdsPixelFormat
+    public struct DdsPixelFormat
     {
         /// <summary>
         /// Structure size; set to 32 (bytes).
@@ -191,7 +191,7 @@ namespace Pfim
     /// The header that accompanies all direct draw images
     /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943982(v=vs.85).aspx
     /// </summary>
-    internal class DdsHeader
+    public class DdsHeader
     {
         /// <summary>
         /// Size of a Direct Draw Header in number of bytes.

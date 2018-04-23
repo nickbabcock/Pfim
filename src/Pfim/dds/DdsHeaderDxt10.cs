@@ -33,24 +33,24 @@ namespace Pfim
             }
         }
 
-        internal IDecodeDds NewDecoder()
+        internal Dds NewDecoder(DdsHeader header)
         {
             switch (DxgiFormat)
             {
                 case DxgiFormat.BC1_TYPELESS:
                 case DxgiFormat.BC1_UNORM_SRGB:
                 case DxgiFormat.BC1_UNORM:
-                    return new Dxt1Dds();
+                    return new Dxt1Dds(header);
 
                 case DxgiFormat.BC3_TYPELESS:
                 case DxgiFormat.BC3_UNORM:
                 case DxgiFormat.BC3_UNORM_SRGB:
-                    return new Dxt3Dds();
+                    return new Dxt3Dds(header);
 
                 case DxgiFormat.BC5_SNORM:
                 case DxgiFormat.BC5_TYPELESS:
                 case DxgiFormat.BC5_UNORM:
-                    return new Dxt5Dds();
+                    return new Dxt5Dds(header);
 
                 case DxgiFormat.R8G8B8A8_TYPELESS:
                 case DxgiFormat.R8G8B8A8_UNORM:
@@ -58,11 +58,11 @@ namespace Pfim
                 case DxgiFormat.R8G8B8A8_UINT:
                 case DxgiFormat.R8G8B8A8_SNORM:
                 case DxgiFormat.R8G8B8A8_SINT:
-                    return new UncompressedDds(32, true);
+                    return new UncompressedDds(header, 32, true);
                 case DxgiFormat.B8G8R8A8_TYPELESS:
                 case DxgiFormat.B8G8R8A8_UNORM:
                 case DxgiFormat.B8G8R8A8_UNORM_SRGB:
-                    return new UncompressedDds(32, false);
+                    return new UncompressedDds(header, 32, false);
 
                 case DxgiFormat.UNKNOWN:
                 case DxgiFormat.R32G32B32A32_TYPELESS:
