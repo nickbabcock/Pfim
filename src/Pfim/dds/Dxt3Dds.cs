@@ -2,20 +2,18 @@
 {
     public class Dxt3Dds : CompressedDds
     {
-        const byte PIXEL_DEPTH = 4;
-        const byte DIV_SIZE = 4;
-        private static DdsLoadInfo loadInfoDXT3 = new DdsLoadInfo(true, false, false, 4, 16, 32, ImageFormat.Rgba32);
+        private const byte PIXEL_DEPTH = 4;
+        private const byte DIV_SIZE = 4;
 
+        protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 16;
+        protected override byte PixelDepth => PIXEL_DEPTH;
         public override int BitsPerPixel => PIXEL_DEPTH * 8;
         public override ImageFormat Format => ImageFormat.Rgba32;
 
         public Dxt3Dds(DdsHeader header) : base(header)
         {
         }
-
-        public override DdsLoadInfo ImageInfo() => loadInfoDXT3;
-        protected override byte PixelDepth => PIXEL_DEPTH;
 
         private readonly Color888[] colors = new Color888[4];
 

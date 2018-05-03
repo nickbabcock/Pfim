@@ -2,22 +2,20 @@
 {
     public class Dxt5Dds : CompressedDds
     {
-        private static DdsLoadInfo loadInfoDXT5 = new DdsLoadInfo(true, false, false, 4, 16, 32, ImageFormat.Rgba32);
-        const byte PIXEL_DEPTH = 4;
-        const byte DIV_SIZE = 4;
+        private const byte PIXEL_DEPTH = 4;
+        private const byte DIV_SIZE = 4;
 
         private readonly byte[] alpha = new byte[8];
         private readonly Color888[] colors = new Color888[4];
 
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
         public override ImageFormat Format => ImageFormat.Rgba32;
+        protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 16;
 
         public Dxt5Dds(DdsHeader header) : base(header)
         {
         }
-
-        public override DdsLoadInfo ImageInfo() => loadInfoDXT5;
 
         private int ExtractAlpha(byte[] workingFilePtr, int bIndex)
         {

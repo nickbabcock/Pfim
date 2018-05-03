@@ -2,19 +2,16 @@
 {
     public class Dxt1Dds : CompressedDds
     {
-        const int PIXEL_DEPTH = 3;
-        const int DIV_SIZE = 4;
-
-        private static DdsLoadInfo DXT1LoadInfo = new DdsLoadInfo(true, false, false, DIV_SIZE, 8, 24, ImageFormat.Rgb24);
+        private const int PIXEL_DEPTH = 3;
+        private const int DIV_SIZE = 4;
 
         public Dxt1Dds(DdsHeader header) : base(header)
         {
         }
 
         protected override byte PixelDepth => PIXEL_DEPTH;
+        protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 8;
-
-        public override DdsLoadInfo ImageInfo() => DXT1LoadInfo;
         public override ImageFormat Format => ImageFormat.Rgb24;
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
 

@@ -15,14 +15,25 @@ namespace Pfim
         {
         }
 
-        /// <summary>Determine image info from header</summary>
-        public abstract DdsLoadInfo ImageInfo();
-
         /// <summary>Uncompress a given block</summary>
         protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width);
 
         /// <summary>Number of bytes for a pixel in the decoded data</summary>
         protected abstract byte PixelDepth { get; }
+
+        /// <summary>
+        /// The length of a block is in pixels. This mainly affects compressed
+        /// images as they are encoded in blocks that are divSize by divSize.
+        /// Uncompressed DDS do not need this value.
+        /// </summary>
+        protected abstract byte DivSize { get; }
+
+        /// <summary>
+        /// Number of bytes needed to decode block of pixels that is divSize
+        /// by divSize.  This takes into account how many bytes it takes to
+        /// extract color and alpha information. Uncompressed DDS do not need
+        /// this value.
+        /// </summary>
         protected abstract byte CompressedBytesPerBlock { get; }
         public override bool Compressed => _compressed;
 
@@ -30,16 +41,16 @@ namespace Pfim
         public byte[] DataDecode(Stream stream, PfimConfig config)
         {
             byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
-            DdsLoadInfo loadInfo = ImageInfo();
             uint dataIndex = 0;
 
             int bufferSize;
             int workingSize;
             uint pixelsLeft = Header.Width * Header.Height;
+            uint divSize = DivSize;
 
             // The number of bytes that represent a stride in the image
-            int bytesPerStride = (int)((Header.Width / loadInfo.DivSize) * loadInfo.BlockBytes);
-            int blocksPerStride = (int)(Header.Width / loadInfo.DivSize);
+            int bytesPerStride = (int)((Header.Width / divSize) * CompressedBytesPerBlock);
+            int blocksPerStride = (int)(Header.Width / divSize);
 
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
             {
@@ -55,16 +66,16 @@ namespace Pfim
 
                         // Advance to the next block, which is (pixel depth *
                         // divSize) bytes away
-                        dataIndex += loadInfo.DivSize * PixelDepth;
+                        dataIndex += divSize * PixelDepth;
                     }
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    pixelsLeft -= Header.Width * loadInfo.DivSize;
+                    pixelsLeft -= Header.Width * divSize;
 
                     // Jump down to the block that is exactly (divSize - 1)
                     // below the current row we are on
-                    dataIndex += (PixelDepth * (loadInfo.DivSize - 1) * Header.Width);
+                    dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
                 }
 
                 return data;
@@ -94,17 +105,17 @@ namespace Pfim
 
                         // Advance to the next block, which is (pixel depth *
                         // divSize) bytes away
-                        dataIndex += loadInfo.DivSize * PixelDepth;
+                        dataIndex += divSize * PixelDepth;
                     }
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    pixelsLeft -= Header.Width * loadInfo.DivSize;
+                    pixelsLeft -= Header.Width * divSize;
                     workingSize -= bytesPerStride;
 
                     // Jump down to the block that is exactly (divSize - 1)
                     // below the current row we are on
-                    dataIndex += (PixelDepth * (loadInfo.DivSize - 1) * Header.Width);
+                    dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
                 }
             } while (bufferSize != 0 && pixelsLeft != 0);
 
@@ -120,9 +131,9 @@ namespace Pfim
             }
             else
             {
-                var loadInfo = ImageInfo();
-                int blocksPerStride = (int)(Header.Width / loadInfo.DivSize);
-                Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / loadInfo.DivSize)];
+
+                int blocksPerStride = (int)(Header.Width / DivSize);
+                Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize)];
                 _compressed = true;
                 if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
                 {
