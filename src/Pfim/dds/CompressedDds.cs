@@ -16,7 +16,7 @@ namespace Pfim
         }
 
         /// <summary>Determine image info from header</summary>
-        public abstract DdsLoadInfo ImageInfo(DdsHeader header);
+        public abstract DdsLoadInfo ImageInfo();
 
         /// <summary>Uncompress a given block</summary>
         protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width);
@@ -30,7 +30,7 @@ namespace Pfim
         public byte[] DataDecode(Stream stream, PfimConfig config)
         {
             byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
-            DdsLoadInfo loadInfo = ImageInfo(Header);
+            DdsLoadInfo loadInfo = ImageInfo();
             uint dataIndex = 0;
 
             int bufferSize;
@@ -120,7 +120,7 @@ namespace Pfim
             }
             else
             {
-                var loadInfo = ImageInfo(Header);
+                var loadInfo = ImageInfo();
                 int blocksPerStride = (int)(Header.Width / loadInfo.DivSize);
                 Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / loadInfo.DivSize)];
                 _compressed = true;

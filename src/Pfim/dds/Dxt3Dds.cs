@@ -14,6 +14,7 @@
         {
         }
 
+        public override DdsLoadInfo ImageInfo() => loadInfoDXT3;
         protected override byte PixelDepth => PIXEL_DEPTH;
 
         private readonly Color888[] colors = new Color888[4];
@@ -65,15 +66,13 @@
             colors[3].g = (byte)((colors[0].g + 2 * colors[1].g) / 3);
             colors[3].b = (byte)((colors[0].b + 2 * colors[1].b) / 3);
 
-            byte rowVal = 0;
-            ushort rowAlpha;
             for (int i = 0; i < 4; i++)
             {
-                rowVal = stream[streamIndex++];
+                byte rowVal = stream[streamIndex++];
 
                 // Each row of rgb values have 4 alpha values that  are
                 // encoded in 4 bits
-                rowAlpha = stream[alphaPtr++];
+                ushort rowAlpha = stream[alphaPtr++];
                 rowAlpha |= (ushort)(stream[alphaPtr++] << 8);
 
                 for (int j = 0; j < 8; j += 2)
@@ -89,11 +88,6 @@
                 dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
             }
             return streamIndex;
-        }
-
-        public override DdsLoadInfo ImageInfo(DdsHeader header)
-        {
-            return loadInfoDXT3;
         }
     }
 }

@@ -13,6 +13,8 @@
 
         protected override byte PixelDepth => PIXEL_DEPTH;
         protected override byte CompressedBytesPerBlock => 8;
+
+        public override DdsLoadInfo ImageInfo() => DXT1LoadInfo;
         public override ImageFormat Format => ImageFormat.Rgb24;
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
 
@@ -89,10 +91,6 @@
 
             // Reset position to start of block
             return streamIndex;
-        }
-        public override DdsLoadInfo ImageInfo(DdsHeader header)
-        {
-            return DXT1LoadInfo;
         }
     }
 }

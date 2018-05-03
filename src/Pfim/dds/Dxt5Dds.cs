@@ -17,6 +17,8 @@
         {
         }
 
+        public override DdsLoadInfo ImageInfo() => loadInfoDXT5;
+
         private int ExtractAlpha(byte[] workingFilePtr, int bIndex)
         {
             byte alpha0;
@@ -98,11 +100,6 @@
                 dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
             }
             return streamIndex;
-        }
-
-        public override DdsLoadInfo ImageInfo(DdsHeader header)
-        {
-            return loadInfoDXT5;
         }
     }
 }
