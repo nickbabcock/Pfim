@@ -37,54 +37,33 @@ namespace Pfim
         protected abstract byte CompressedBytesPerBlock { get; }
         public override bool Compressed => _compressed;
 
+        private int BytesPerStride => BlocksPerStride * CompressedBytesPerBlock;
+        private int BlocksPerStride => (int) (Header.Width / DivSize);
+
         /// <summary>Decode data into raw rgb format</summary>
         public byte[] DataDecode(Stream stream, PfimConfig config)
         {
+            // If we are decoding in memory data, decode stream from that instead of
+            // an intermediate buffer
+            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                return InMemoryDecode(arr.Array, (int)s.Position);
+            }
+
             byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
             uint dataIndex = 0;
 
             int bufferSize;
-            int workingSize;
             uint pixelsLeft = Header.Width * Header.Height;
             uint divSize = DivSize;
 
-            // The number of bytes that represent a stride in the image
-            int bytesPerStride = (int)((Header.Width / divSize) * CompressedBytesPerBlock);
-            int blocksPerStride = (int)(Header.Width / divSize);
-
-            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
-            {
-                var memBuffer = arr.Array;
-                int bIndex = (int) s.Position;
-                while (pixelsLeft > 0)
-                {
-                    // Now that we have enough pixels to fill a stride (and
-                    // this includes the normally 4 pixels below the stride)
-                    for (uint i = 0; i < blocksPerStride; i++)
-                    {
-                        bIndex = Decode(memBuffer, data, bIndex, dataIndex, Header.Width);
-
-                        // Advance to the next block, which is (pixel depth *
-                        // divSize) bytes away
-                        dataIndex += divSize * PixelDepth;
-                    }
-
-                    // Each decoded block is divSize by divSize so pixels left
-                    // is Width * multiplied by block height
-                    pixelsLeft -= Header.Width * divSize;
-
-                    // Jump down to the block that is exactly (divSize - 1)
-                    // below the current row we are on
-                    dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
-                }
-
-                return data;
-            }
-
             byte[] streamBuffer = new byte[config.BufferSize];
+            int bytesPerStride = BytesPerStride;
+            int blocksPerStride = BlocksPerStride;
 
             do
             {
+                int workingSize;
                 bufferSize = workingSize = stream.Read(streamBuffer, 0, config.BufferSize);
                 int bIndex = 0;
                 while (workingSize > 0 && pixelsLeft > 0)
@@ -122,6 +101,31 @@ namespace Pfim
             return data;
         }
 
+        private byte[] InMemoryDecode(byte[] memBuffer, int bIndex)
+        {
+            byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
+            uint dataIndex = 0;
+            uint divSize = DivSize;
+            int blocksPerStride = BlocksPerStride;
+            uint pixelsLeft = Header.Width * Header.Height;
+
+            // Same implementation as the stream based decoding, just a little bit
+            // more straightforward.
+            while (pixelsLeft > 0)
+            {
+                for (uint i = 0; i < blocksPerStride; i++)
+                {
+                    bIndex = Decode(memBuffer, data, bIndex, dataIndex, Header.Width);
+                    dataIndex += divSize * PixelDepth;
+                }
+
+                pixelsLeft -= Header.Width * divSize;
+                dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
+            }
+
+            return data;
+        }
+
         protected override void Decode(Stream stream, PfimConfig config)
         {
             _config = config;
@@ -154,8 +158,7 @@ namespace Pfim
                 return;
             }
 
-            var mem = new MemoryStream(Data, 0, Data.Length, false, true);
-            Data = DataDecode(mem, _config);
+            Data = InMemoryDecode(Data, 0);
             _compressed = false;
         }
     }
