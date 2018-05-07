@@ -35,7 +35,7 @@ namespace Pfim
 
         protected override void Decode(Stream stream, PfimConfig config)
         {
-            Data = Decode(stream, ImageInfo(), config);
+            Data = DataDecode(stream, config);
         }
 
         /// <summary>Determine image info from header</summary>
@@ -77,8 +77,9 @@ namespace Pfim
         }
 
         /// <summary>Decode data into raw rgb format</summary>
-        public byte[] Decode(Stream str, DdsLoadInfo imageInfo, PfimConfig config)
+        private byte[] DataDecode(Stream str, PfimConfig config)
         {
+            var imageInfo = ImageInfo();
             _format = imageInfo.Format;
 
             byte[] data = new byte[Dds.CalcSize(imageInfo, Header)];
