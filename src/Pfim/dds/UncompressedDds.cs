@@ -76,13 +76,21 @@ namespace Pfim
             return pf.GBitMask == 0x7e0 ? ImageFormat.R5g6b5 : ImageFormat.R5g5b5;
         }
 
+        /// <summary>Calculates the number of bytes to hold image data</summary>
+        private int CalcSize(DdsLoadInfo info)
+        {
+            int width = (int)Math.Max(info.DivSize, Header.Width);
+            int height = (int)Math.Max(info.DivSize, Header.Height);
+            return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
+        }
+
         /// <summary>Decode data into raw rgb format</summary>
         private byte[] DataDecode(Stream str, PfimConfig config)
         {
             var imageInfo = ImageInfo();
             _format = imageInfo.Format;
 
-            byte[] data = new byte[Dds.CalcSize(imageInfo, Header)];
+            byte[] data = new byte[CalcSize(imageInfo)];
 
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {

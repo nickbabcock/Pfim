@@ -17,14 +17,6 @@ namespace Pfim
             Header = header;
         }
 
-        /// <summary>Calculates the number of bytes to hold image data</summary>
-        internal static int CalcSize(DdsLoadInfo info, DdsHeader header)
-        {
-            int width = (int)Math.Max(info.DivSize, header.Width);
-            int height = (int)Math.Max(info.DivSize, header.Height);
-            return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
-        }
-
         public DdsHeader Header { get; }
         public abstract int BitsPerPixel { get; }
         public int BytesPerPixel => BitsPerPixel / 8;
