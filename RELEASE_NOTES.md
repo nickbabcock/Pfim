@@ -1,6 +1,12 @@
-### Unreleased
+### 0.5.1
 
 * Expose `BitsPerPixel` in `IImage`
+* Add configuration to the decoding process via `PfimConfig`:
+  * Configurable buffer size for chunk decoding
+  * Allow opt-out of DDS BC decompression to allow for GPU offload.
+* Optimize fast path for decoding `byte[]` data
+* Latency of decoding BC DDS images decreased by 10%
+* Highly experimental decoding of DX10 images.
 
 ### 0.5.0 - March 18th 2018
 
