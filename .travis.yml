@@ -3,8 +3,8 @@ mono: none
 sudo: false
 matrix:
   include:
-    - dotnet: 1.0
-    - dotnet: 1.1
-    - dotnet: 2.0
+    - dotnet: 1.0.4
+    - dotnet: 1.1.9
+    - dotnet: 2.0.3
 script: 
   - dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
