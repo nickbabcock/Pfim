@@ -30,8 +30,7 @@ namespace Pfim
 
         public static Dds Create(byte[] data, PfimConfig config)
         {
-            var mem = new MemoryStream(data, 0, data.Length, false, true);
-            return Create(mem, config);
+            return Create(Util.CreateExposed(data), config);
         }
 
         /// <summary>Create a direct draw image from a stream</summary>

@@ -14,7 +14,13 @@ namespace Pfim
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
             var rowBits = header.PixelDepth * header.Width;
+            InnerBottomLeft(str, config, data, stride, rowBits);
+            return data;
+        }
 
+#if NETSTANDARD1_3
+        private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int stride, int rowBits)
+        {
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 int dataIndex = data.Length - stride;
@@ -29,8 +35,13 @@ namespace Pfim
             {
                 Util.FillBottomLeft(str, data, rowBits / 8, stride, config.BufferSize);
             }
-            return data;
         }
+#else
+       private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int stride, int rowBits)
+        {
+            Util.FillBottomLeft(str, data, rowBits / 8, stride, config.BufferSize);
+        }
+#endif
 
         /// <summary>Not implemented</summary>
         public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
@@ -49,6 +60,13 @@ namespace Pfim
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
+            InnerTopLeft(str, config, data);
+            return data;
+        }
+
+#if NETSTANDARD1_3
+        private static void InnerTopLeft(Stream str, PfimConfig config, byte[] data)
+        {
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 Buffer.BlockCopy(arr.Array, (int) s.Position, data, 0, data.Length);
@@ -57,7 +75,12 @@ namespace Pfim
             {
                 Util.Fill(str, data, config.BufferSize);
             }
-            return data;
         }
+#else
+        private static void InnerTopLeft(Stream str, PfimConfig config, byte[] data)
+        {
+            Util.Fill(str, data, config.BufferSize);
+        }
+#endif
     }
 }

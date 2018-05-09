@@ -13,6 +13,18 @@ namespace Pfim
         /// </summary>
         private const int BUFFER_SIZE = 0x8000;
 
+#if NETSTANDARD1_3
+        internal static MemoryStream CreateExposed(byte[] data)
+        {
+            return new MemoryStream(data, 0, data.Length, false, true);
+        }
+#else
+        internal static MemoryStream CreateExposed(byte[] data)
+        {
+            return new MemoryStream(data, 0, data.Length);
+        }
+#endif
+
         /// <summary>
         /// Takes all the bytes at and after an index and moves them to the front and fills the rest
         /// of the buffer with information from the stream.

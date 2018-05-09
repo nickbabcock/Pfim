@@ -92,14 +92,7 @@ namespace Pfim
 
             byte[] data = new byte[CalcSize(imageInfo)];
 
-            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
-            {
-                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, data.Length);
-            }
-            else
-            {
-                Util.Fill(str, data, config.BufferSize);
-            }
+            InnerDecode(str, config, data);
 
             // Swap the R and B channels
             if (imageInfo.Swap)
@@ -120,6 +113,7 @@ namespace Pfim
                             byte temp = (byte) (data[i] & 0xF);
                             data[i] = (byte) ((data[i] & 0xF0) + (data[i + 1] & 0XF));
                             data[i + 1] = (byte) ((data[i + 1] & 0xF0) + temp);
+
                         }
                         break;
                     default:
@@ -129,5 +123,24 @@ namespace Pfim
 
             return data;
         }
+
+#if NETSTANDARD1_3
+        private static void InnerDecode(Stream str, PfimConfig config, byte[] data)
+        {
+            if (str is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                Buffer.BlockCopy(arr.Array, (int) s.Position, data, 0, data.Length);
+            }
+            else
+            {
+                Util.Fill(str, data, config.BufferSize);
+            }
+        }
+#else
+        private static void InnerDecode(Stream str, PfimConfig config, byte[] data)
+        {
+             Util.Fill(str, data, config.BufferSize);
+        }
+#endif
     }
 }

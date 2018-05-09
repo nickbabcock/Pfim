@@ -43,12 +43,14 @@ namespace Pfim
         /// <summary>Decode data into raw rgb format</summary>
         public byte[] DataDecode(Stream stream, PfimConfig config)
         {
+#if NETSTANDARD1_3
             // If we are decoding in memory data, decode stream from that instead of
             // an intermediate buffer
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 return InMemoryDecode(arr.Array, (int)s.Position);
             }
+#endif
 
             byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
             uint dataIndex = 0;
@@ -139,17 +141,28 @@ namespace Pfim
                 int blocksPerStride = (int)(Header.Width / DivSize);
                 Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize)];
                 _compressed = true;
-                if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
-                {
-                    Buffer.BlockCopy(arr.Array, (int) s.Position, Data, 0, Data.Length);
-                }
-                else
-                {
-                    Util.Fill(stream, Data, config.BufferSize);
-                }
+                InnerDecompress(stream, config);
             }
-
         }
+
+#if NETSTANDARD1_3
+        private void InnerDecompress(Stream stream, PfimConfig config)
+        {
+            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                Buffer.BlockCopy(arr.Array, (int) s.Position, Data, 0, Data.Length);
+            }
+            else
+            {
+                Util.Fill(stream, Data, config.BufferSize);
+            }
+        }
+#else
+        private void InnerDecompress(Stream stream, PfimConfig config)
+        {
+            Util.Fill(stream, Data, config.BufferSize);
+        }
+#endif
 
         public override void Decompress()
         {

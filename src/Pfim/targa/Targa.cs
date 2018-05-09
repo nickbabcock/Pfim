@@ -22,8 +22,7 @@ namespace Pfim
 
         public static Targa Create(byte[] data, PfimConfig config)
         {
-            var mem = new MemoryStream(data, 0, data.Length, false, true);
-            return Create(mem, config);
+            return Create(Util.CreateExposed(data), config);
         }
 
         public bool Compressed => false;
