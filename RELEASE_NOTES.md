@@ -1,4 +1,4 @@
-### 0.5.1
+### 0.5.1 - May 8th 2018
 
 * Expose `BitsPerPixel` in `IImage`
 * Add configuration to the decoding process via `PfimConfig`:
