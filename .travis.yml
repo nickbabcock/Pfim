@@ -1,9 +1,10 @@
 language: csharp
 mono: none
-dotnet:
-  - 2.0
-  - 1.1
-  - 1.0
-sudo: false  # use the new container-based Travis infrastructure 
+sudo: false
+matrix:
+  include:
+    - dotnet: 1.0
+    - dotnet: 1.1
+    - dotnet: 2.0
 script: 
   - dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
