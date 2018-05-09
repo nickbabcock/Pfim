@@ -4,7 +4,10 @@ sudo: false
 matrix:
   include:
     - dotnet: 1.0.4
+      env: CORE_APP=netcoreapp1.0
     - dotnet: 1.1.9
+      env: CORE_APP=netcoreapp1.1
     - dotnet: 2.0.3
+      env: CORE_APP=netcoreapp2.0
 script: 
-  - dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
+  - dotnet test -f $CORE_APP tests/Pfim.Tests/Pfim.Tests.csproj
