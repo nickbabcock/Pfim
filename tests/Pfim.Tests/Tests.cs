@@ -553,6 +553,15 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseWoseBc1Snorm()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM_SRGB.DDS"));
+            Assert.IsAssignableFrom<Dds>(image);
+            var dds = (Dds) image;
+            Assert.Equal(DxgiFormat.BC1_UNORM_SRGB, dds.Header10?.DxgiFormat);
+        }
+
+        [Fact]
         public void ParseWoseR8G8B8A8UnormSrgb()
         {
             var image = Pfim.FromFile(Path.Combine("data", "wose_R8G8B8A8_UNORM_SRGB.DDS"));

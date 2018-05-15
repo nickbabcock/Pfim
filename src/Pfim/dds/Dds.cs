@@ -27,6 +27,7 @@ namespace Pfim
         public abstract ImageFormat Format { get; }
         public abstract bool Compressed { get; }
         public abstract void Decompress();
+        public DdsHeaderDxt10 Header10 { get; private set; }
 
         public static Dds Create(byte[] data, PfimConfig config)
         {
@@ -62,6 +63,7 @@ namespace Pfim
                 case CompressionAlgorithm.DX10:
                     var header10 = new DdsHeaderDxt10(stream);
                     dds = header10.NewDecoder(header);
+                    dds.Header10 = header10;
                     break;
 
                 default:
