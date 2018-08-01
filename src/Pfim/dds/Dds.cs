@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Pfim.dds;
 
 namespace Pfim
 {
@@ -64,6 +65,10 @@ namespace Pfim
                     var header10 = new DdsHeaderDxt10(stream);
                     dds = header10.NewDecoder(header);
                     dds.Header10 = header10;
+                    break;
+
+                case CompressionAlgorithm.ATI2:
+                    dds = new Bc5Dds(header);
                     break;
 
                 default:

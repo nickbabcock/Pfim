@@ -137,7 +137,6 @@ namespace Pfim
             }
             else
             {
-
                 int blocksPerStride = (int)(Header.Width / DivSize);
                 Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize)];
                 _compressed = true;

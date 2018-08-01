@@ -1,4 +1,6 @@
-﻿namespace Pfim
+﻿using Pfim.dds;
+
+namespace Pfim
 {
     public class Dxt5Dds : CompressedDds
     {
@@ -17,33 +19,11 @@
         {
         }
 
-        private int ExtractAlpha(byte[] workingFilePtr, int bIndex)
-        {
-            byte alpha0;
-            byte alpha1;
-            alpha[0] = alpha0 = workingFilePtr[bIndex++];
-            alpha[1] = alpha1 = workingFilePtr[bIndex++];
-
-            if (alpha0 > alpha1)
-            {
-                for (int i = 1; i < 7; i++)
-                    alpha[1 + i] = (byte)(((7 - i) * alpha0 + i * alpha1) / 7);
-            }
-            else
-            {
-                for (int i = 1; i < 5; ++i)
-                    alpha[1 + i] = (byte)(((5 - i) * alpha0 + i * alpha1) / 5);
-                alpha[6] = 0;
-                alpha[7] = 255;
-            }
-            return bIndex;
-        }
-
         protected override byte PixelDepth => PIXEL_DEPTH;
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
         {
-            streamIndex = ExtractAlpha(stream, streamIndex);
+            streamIndex = Bc5Dds.ExtractGradient(alpha, stream, streamIndex);
 
             ulong alphaCodes = stream[streamIndex++];
             alphaCodes |= ((ulong)stream[streamIndex++] << 8);

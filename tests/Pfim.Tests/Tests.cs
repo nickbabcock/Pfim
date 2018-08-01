@@ -504,6 +504,16 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseDdsAti2()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "Antenna_Metal_0_Normal.dds"));
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(128, image.Data[1]);
+            Assert.Equal(126, image.Data[2]);
+        }
+
+        [Fact]
         public void ParseDdsWhenHeaderStates64Bits()
         {
             var image = Pfim.FromFile(Path.Combine("data", "TestVolume_Noise3D.dds"));
@@ -589,6 +599,7 @@ namespace Pfim.Tests
         [InlineData("dxt1-simple.dds")]
         [InlineData("dxt3-simple.dds")]
         [InlineData("dxt5-simple.dds")]
+        [InlineData("Antenna_Metal_0_Normal.dds")]
         public void TestDdsCompression(string path)
         {
             var data = File.ReadAllBytes(Path.Combine("data", path));

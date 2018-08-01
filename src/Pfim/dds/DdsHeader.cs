@@ -41,7 +41,9 @@ namespace Pfim
         /// </summary>
         D3DFMT_DXT5 = 894720068,
 
-        DX10 = 808540228
+        DX10 = 808540228,
+
+        ATI2 = 843666497
     }
 
     /// <summary>Flags to indicate which members contain valid data.</summary>
