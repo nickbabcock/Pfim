@@ -89,13 +89,33 @@ namespace Pfim
                 buffer[length - i - 1] = value;
         }
 
+
+#if NETSTANDARD1_3
+        public static void Fill(Stream stream, byte[] data, int bufSize = BUFFER_SIZE)
+        {
+            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
+            {
+                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, data.Length);
+            }
+            else
+            {
+                InnerFill(stream, data, bufSize);
+            }
+        }
+#else
+        public static void Fill(Stream stream, byte[] data, int bufSize = BUFFER_SIZE)
+        {
+            InnerFill(stream, data, bufSize);
+        }
+#endif
+
         /// <summary>
         /// Fills the buffer all the way up with info from the stream
         /// </summary>
         /// <param name="str">Stream that will be used to fill the buffer</param>
         /// <param name="buf">Buffer that will house the information from the stream</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
-        public static void Fill(Stream str, byte[] buf, int bufSize = BUFFER_SIZE)
+        private static void InnerFill(Stream str, byte[] buf, int bufSize = BUFFER_SIZE)
         {
             int bufPosition = 0;
             for (int i = buf.Length / bufSize; i > 0; i--)

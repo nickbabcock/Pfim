@@ -153,28 +153,9 @@ namespace Pfim
 
                 Data = new byte[totalSize];
                 _compressed = true;
-                InnerDecompress(stream, config);
-            }
-        }
-
-#if NETSTANDARD1_3
-        private void InnerDecompress(Stream stream, PfimConfig config)
-        {
-            if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
-            {
-                Buffer.BlockCopy(arr.Array, (int) s.Position, Data, 0, Data.Length);
-            }
-            else
-            {
                 Util.Fill(stream, Data, config.BufferSize);
             }
         }
-#else
-        private void InnerDecompress(Stream stream, PfimConfig config)
-        {
-            Util.Fill(stream, Data, config.BufferSize);
-        }
-#endif
 
         public override void Decompress()
         {
