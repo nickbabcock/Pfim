@@ -514,6 +514,13 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseDdsAti2Compressed()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "Antenna_Metal_0_Normal.dds"), new PfimConfig(decompress: false));
+            Assert.Equal(5592432, image.Data.Length);
+        }
+
+        [Fact]
         public void ParseDdsWhenHeaderStates64Bits()
         {
             var image = Pfim.FromFile(Path.Combine("data", "TestVolume_Noise3D.dds"));

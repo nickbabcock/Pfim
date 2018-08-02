@@ -138,7 +138,20 @@ namespace Pfim
             else
             {
                 int blocksPerStride = (int)(Header.Width / DivSize);
-                Data = new byte[blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize)];
+                long totalSize = blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize);
+
+                var width = (int) Header.Width;
+                var height = (int) Header.Height;
+                for (int i = 1; i < Header.MipMapCout; i++)
+                {
+                    width = (int)Math.Pow(2, Math.Floor(Math.Log(width - 1, 2)));
+                    height = (int)Math.Pow(2, Math.Floor(Math.Log(height - 1, 2)));
+                    var widthBlocks = Math.Max(DivSize, width) / DivSize;
+                    var heightBlocks = Math.Max(DivSize, height) / DivSize;
+                    totalSize += widthBlocks * heightBlocks * CompressedBytesPerBlock;
+                }
+
+                Data = new byte[totalSize];
                 _compressed = true;
                 InnerDecompress(stream, config);
             }
