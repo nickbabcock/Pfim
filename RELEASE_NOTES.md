@@ -1,3 +1,8 @@
+### 0.5.2 - August 2nd 2018
+
+* Include Mipmap data as part of `IImage::Data` for DDS images that skipped decoding
+* Recognize and decode ATI2 dds images
+
 ### 0.5.1 - May 8th 2018
 
 * Expose `BitsPerPixel` in `IImage`
