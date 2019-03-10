@@ -154,7 +154,58 @@ namespace Pfim
         /// <summary>Not implemented</summary>
         public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
-            throw new NotImplementedException();
+            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var data = new byte[header.Height * stride];
+
+            byte[] filebuffer = new byte[config.BufferSize];
+            int dataIndex = 0;
+            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+            int bytesPerPixel = header.PixelDepth / 8;
+            int fileBufferIndex = 0;
+
+            // Calculate the maximum number of bytes potentially needed from the buffer.
+            // If our buffer doesn't have enough to decode the maximum number of bytes,
+            // fetch another batch of bytes from the stream.
+            int maxRead = bytesPerPixel * 128 + 1;
+
+            while (dataIndex >= 0)
+            {
+                int colIndex = 0;
+                do
+                {
+                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == config.BufferSize)
+                    {
+                        workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
+                        fileBufferIndex = 0;
+                    }
+
+                    bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                    int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
+
+                    // If the first bit is on, it means that the next packet is run length encoded
+                    if (isRunLength)
+                    {
+                        RunLength(data, filebuffer, dataIndex, fileBufferIndex, bytesPerPixel);
+                        dataIndex += (filebuffer[fileBufferIndex] - 127) * bytesPerPixel;
+                        colIndex += filebuffer[fileBufferIndex] - 127;
+                        fileBufferIndex += count;
+                    }
+                    else
+                    {
+                        int bytcount = count * bytesPerPixel;
+                        fileBufferIndex++;
+
+                        Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
+                        fileBufferIndex += bytcount;
+                        colIndex += count;
+                        dataIndex += bytcount;
+                    }
+                } while (colIndex < header.Width);
+
+                dataIndex = ((dataIndex / stride) + 1) * stride;
+            }
+
+            return data;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

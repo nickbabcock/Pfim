@@ -364,6 +364,23 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseTargaTopLeftColorMap()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"));
+            Assert.Equal(8, image.BitsPerPixel);
+            Assert.Equal(4096, image.Data.Length);
+            Assert.NotEqual(ImageFormat.Rgb24, image.Format);
+            image.ApplyColorMap();
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+            Assert.Equal(255, image.Data[0]);
+            Assert.Equal(255, image.Data[1]);
+            Assert.Equal(255, image.Data[2]);
+            Assert.Equal(255, image.Data[3]);
+            Assert.Equal(255, image.Data[4]);
+            Assert.Equal(255, image.Data[5]);
+        }
+
+        [Fact]
         public void ParseLargeTargaTopLeft()
         {
             var image = Pfim.FromFile(Path.Combine("data", "large-top-left.tga"));

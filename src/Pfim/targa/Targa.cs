@@ -69,10 +69,50 @@ namespace Pfim
             return new Targa(header, data);
         }
 
-        /// <summary>The raw image data</summary>
-        public byte[] Data { get; }
+        public void ApplyColorMap()
+        {
+            // Check targa header field 2 and 3 as "it is best to check Field 3, Image Type, 
+            // to make sure you have a file which can use the data stored in the Color Map Field.
+            // Otherwise ignore theinformation"
+            if (!Header.HasColorMap || 
+                (Header.ImageType != TargaHeader.TargaImageType.RunLengthColorMap &&
+                Header.ImageType != TargaHeader.TargaImageType.UncompressedColorMap)) {
+                return;
+            }
 
-        public TargaHeader Header { get; }
+            var currentDepthBytes = BitsPerPixel / 8;
+            var colorMapDepthBytes = Header.ColorMapDepth / 8;
+            var newData = new byte[colorMapDepthBytes * Data.Length];
+            switch (Header.ColorMapDepth)
+            {
+                case 16:
+                case 24:
+                case 32:
+                    for (int i = 0; i < Data.Length; i += currentDepthBytes)
+                    {
+                        var colorMapIndex = Data[i] * colorMapDepthBytes;
+                        for (int j = 0; j < colorMapDepthBytes; j++)
+                        {
+                            newData[i * colorMapDepthBytes + j] = Header.ColorMap[colorMapIndex + j];
+                        }
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException($"Unrecognized color map depth {Header.ColorMapDepth}");
+            }
+
+            Data = newData;
+            Header.PixelDepth = (byte)Header.ColorMapDepth;
+            Header.ColorMap = new byte[] { };
+            Header.ColorMapLength = 0;
+            Header.HasColorMap = false;
+            Header.ColorMapDepth = 0;
+        }
+
+        /// <summary>The raw image data</summary>
+        public byte[] Data { get; private set; }
+
+        public TargaHeader Header { get; private set; }
 
         /// <summary>Width of the image in pixels</summary>
         public int Width => Header.Width;

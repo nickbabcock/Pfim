@@ -115,27 +115,27 @@ namespace Pfim
         /// <summary>
         /// This field indicates the type of color map (if any) included with the image.
         /// </summary>
-        public bool HasColorMap { get; private set; }
+        public bool HasColorMap { get; internal set; }
 
         /// <summary>
         /// Type of the targa image
         /// </summary>
-        public TargaImageType ImageType { get; private set; }
+        public TargaImageType ImageType { get; internal set; }
 
         /// <summary>
         /// Index of the first color map entry.
         /// </summary>
-        public short ColorMapOrigin { get; private set; }
+        public short ColorMapOrigin { get; internal set; }
 
         /// <summary>
         /// Total number of color map entries included
         /// </summary>
-        public short ColorMapLength { get; private set; }
+        public short ColorMapLength { get; internal set; }
 
         /// <summary>
         /// Establishes the number of bits per entry. Typically 15, 16, 24 or 32-bit values are used.
         /// </summary>
-        public short ColorMapDepth { get; private set; }
+        public short ColorMapDepth { get; internal set; }
 
         /// <summary>
         /// These bytes specify the absolute horizontal coordinate for the lower left corner of the image.
@@ -160,7 +160,7 @@ namespace Pfim
         /// <summary>
         /// Number of bits per pixel. This number includes the Attribute or Alpha channel bits
         /// </summary>
-        public byte PixelDepth { get; private set; }
+        public byte PixelDepth { get; internal set; }
 
         /// <summary>
         /// Order in which pixel data is transferred from the file to the screen
@@ -176,7 +176,7 @@ namespace Pfim
         /// </summary>
         public string ImageId { get; private set; }
 
-        public byte[] ColorMap { get; private set; }
+        public byte[] ColorMap { get; internal set; }
 
         //public List<Color> ColorMap { get; private set; }
 
