@@ -80,5 +80,10 @@ namespace Pfim
         }
 
         protected abstract void Decode(Stream stream, PfimConfig config);
+
+        public void ApplyColorMap()
+        {
+            return;
+        }
     }
 }

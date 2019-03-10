@@ -27,6 +27,7 @@ namespace Pfim.Viewer.Forms
             }
 
             var image = Pfim.FromFile(dialog.FileName);
+            image.ApplyColorMap();
 
             PixelFormat format;
             switch (image.Format)
