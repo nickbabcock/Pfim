@@ -60,8 +60,29 @@ namespace Pfim
         {
             var stride = Util.Stride(header.Width, header.PixelDepth);
             var data = new byte[header.Height * stride];
-            InnerTopLeft(str, config, data);
+
+            // If an image stride doesn't need any padding, we can
+            // use an optimization where we can just copy the whole stream
+            // into pixel data
+            if (stride == header.Width * (header.PixelDepth / 8))
+            {
+                InnerTopLeft(str, config, data);
+            }
+            else
+            {
+                StrideTopLeft(str, config, header, data);
+            }
             return data;
+        }
+
+        private void StrideTopLeft(Stream str, PfimConfig config, TargaHeader header, byte[] data)
+        {
+            var pixelDepthBytes = header.PixelDepth / 8;
+            var stride = Util.Stride(header.Width, header.PixelDepth);
+            for (int scanLine = 0; scanLine < header.Height; scanLine++)
+            {
+                str.Read(data, scanLine * stride, header.Width * pixelDepthBytes);
+            }
         }
 
         private static void InnerTopLeft(Stream str, PfimConfig config, byte[] data)

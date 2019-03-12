@@ -381,6 +381,14 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseTargaTopLeftStride()
+        {
+            var data = File.ReadAllBytes(Path.Combine("data", "DSCN1910_24bpp_uncompressed_10_2.tga"));
+            var image = Targa.Create(data, new PfimConfig());
+            Assert.Equal(461, image.Width);
+        }
+
+        [Fact]
         public void ParseLargeTargaTopLeft()
         {
             var image = Pfim.FromFile(Path.Combine("data", "large-top-left.tga"));
