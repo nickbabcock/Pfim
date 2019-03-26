@@ -15,7 +15,7 @@
         protected override byte DivSize => 4;
         protected override byte CompressedBytesPerBlock => 16;
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             streamIndex = ExtractGradient(_firstGradient, stream, streamIndex);
             ulong firstCodes = stream[streamIndex++];
@@ -44,7 +44,7 @@
                     data[dataIndex++] = _secondGradient[secondIndex];
                     data[dataIndex++] = _firstGradient[firstIndex];
                 }
-                dataIndex += PixelDepth * (width - DivSize);
+                dataIndex += PixelDepth * (stride - DivSize);
             }
 
             return streamIndex;

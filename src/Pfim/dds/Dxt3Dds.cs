@@ -17,7 +17,7 @@
 
         private readonly Color888[] colors = new Color888[4];
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             /* 
              * Strategy for decompression:
@@ -83,7 +83,7 @@
                     data[dataIndex++] = col.b;
                     data[dataIndex++] = currentAlpha;
                 }
-                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
+                dataIndex += PIXEL_DEPTH * (stride - DIV_SIZE);
             }
             return streamIndex;
         }

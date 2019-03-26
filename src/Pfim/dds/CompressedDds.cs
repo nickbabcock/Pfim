@@ -15,8 +15,8 @@ namespace Pfim
         {
         }
 
-        /// <summary>Uncompress a given block</summary>
-        protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width);
+        /// <summary>Decompress a given block</summary>
+        protected abstract int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride);
 
         /// <summary>Number of bytes for a pixel in the decoded data</summary>
         protected abstract byte PixelDepth { get; }
@@ -38,7 +38,7 @@ namespace Pfim
         public override bool Compressed => _compressed;
 
         private int BytesPerStride => BlocksPerStride * CompressedBytesPerBlock;
-        private int BlocksPerStride => (int) (Header.Width / DivSize);
+        private int BlocksPerStride => Util.Stride((int)Header.Width, PixelDepth) / DivSize;
 
         /// <summary>Decode data into raw rgb format</summary>
         public byte[] DataDecode(Stream stream, PfimConfig config)
@@ -52,12 +52,16 @@ namespace Pfim
             }
 #endif
 
-            byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
-            uint dataIndex = 0;
+            var strideBytes = BlocksPerStride * DivSize * PixelDepth;
+            var stride = Util.Stride((int) Header.Width, PixelDepth);
+            var heightBlocks = Util.Stride((int) Header.Height, PixelDepth) / DivSize;
+            var len = BlocksPerStride * heightBlocks * DivSize * DivSize * PixelDepth;
+            byte[] data = new byte[len];
+            int pixelsLeft = len;
+            int dataIndex = 0;
 
             int bufferSize;
-            uint pixelsLeft = Header.Width * Header.Height;
-            uint divSize = DivSize;
+            int divSize = DivSize;
 
             byte[] streamBuffer = new byte[config.BufferSize];
             int bytesPerStride = BytesPerStride;
@@ -78,11 +82,13 @@ namespace Pfim
                         bIndex = 0;
                     }
 
+                    var origDataIndex = dataIndex;
+
                     // Now that we have enough pixels to fill a stride (and
                     // this includes the normally 4 pixels below the stride)
                     for (uint i = 0; i < blocksPerStride; i++)
                     {
-                        bIndex = Decode(streamBuffer, data, bIndex, dataIndex, Header.Width);
+                        bIndex = Decode(streamBuffer, data, bIndex, (uint)dataIndex, (uint)stride);
 
                         // Advance to the next block, which is (pixel depth *
                         // divSize) bytes away
@@ -91,38 +97,51 @@ namespace Pfim
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    pixelsLeft -= Header.Width * divSize;
+                    //pixelsLeft -= Header.Width * divSize;
                     workingSize -= bytesPerStride;
+
+                    var filled = strideBytes * divSize;
+                    pixelsLeft -= filled;
 
                     // Jump down to the block that is exactly (divSize - 1)
                     // below the current row we are on
-                    dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
+                    dataIndex = origDataIndex + filled;
                 }
-            } while (bufferSize != 0 && pixelsLeft != 0);
+            } while (bufferSize != 0 && pixelsLeft > 0);
 
             return data;
         }
 
         private byte[] InMemoryDecode(byte[] memBuffer, int bIndex)
         {
-            byte[] data = new byte[Header.Width * Header.Height * PixelDepth];
-            uint dataIndex = 0;
-            uint divSize = DivSize;
+            var stride = Util.Stride((int)Header.Width, PixelDepth);
+            var strideBytes = BlocksPerStride * DivSize * PixelDepth;
+            var heightBlocks = Util.Stride((int)Header.Height, PixelDepth) / DivSize;
+            var len = BlocksPerStride * heightBlocks * DivSize * DivSize * PixelDepth;
+            byte[] data = new byte[len];
+            var pixelsLeft = len;
+            int dataIndex = 0;
+            int divSize = DivSize;
             int blocksPerStride = BlocksPerStride;
-            uint pixelsLeft = Header.Width * Header.Height;
 
             // Same implementation as the stream based decoding, just a little bit
             // more straightforward.
             while (pixelsLeft > 0)
             {
+                var origDataIndex = dataIndex;
+
                 for (uint i = 0; i < blocksPerStride; i++)
                 {
-                    bIndex = Decode(memBuffer, data, bIndex, dataIndex, Header.Width);
+                    bIndex = Decode(memBuffer, data, bIndex, (uint)dataIndex, (uint)stride);
                     dataIndex += divSize * PixelDepth;
                 }
 
-                pixelsLeft -= Header.Width * divSize;
-                dataIndex += (PixelDepth * (divSize - 1) * Header.Width);
+                var filled = strideBytes * divSize;
+                pixelsLeft -= filled;
+
+                // Jump down to the block that is exactly (divSize - 1)
+                // below the current row we are on
+                dataIndex = origDataIndex + filled;
             }
 
             return data;
@@ -137,8 +156,7 @@ namespace Pfim
             }
             else
             {
-                int blocksPerStride = (int)(Header.Width / DivSize);
-                long totalSize = blocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize);
+                long totalSize = BlocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize);
 
                 var width = (int) Header.Width;
                 var height = (int) Header.Height;

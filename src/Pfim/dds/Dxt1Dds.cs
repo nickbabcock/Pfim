@@ -17,7 +17,7 @@
 
         private readonly Color888[] colors = new Color888[4];
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             // Colors are stored in a pair of 16 bits
             ushort color0 = stream[streamIndex++];
@@ -83,7 +83,7 @@
                 }
 
                 // Jump down a row and start at the beginning of the row
-                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
+                dataIndex += PIXEL_DEPTH * (stride - DIV_SIZE);
             }
 
             // Reset position to start of block
