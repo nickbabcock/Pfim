@@ -160,7 +160,7 @@ namespace Pfim
 
                 var width = (int) Header.Width;
                 var height = (int) Header.Height;
-                for (int i = 1; i < Header.MipMapCout; i++)
+                for (int i = 1; i < Header.MipMapCount; i++)
                 {
                     width = (int)Math.Pow(2, Math.Floor(Math.Log(width - 1, 2)));
                     height = (int)Math.Pow(2, Math.Floor(Math.Log(height - 1, 2)));

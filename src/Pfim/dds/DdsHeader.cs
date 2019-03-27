@@ -236,7 +236,7 @@ namespace Pfim
                 Width = *workingBufferPtr++;
                 PitchOrLinearSize = *workingBufferPtr++;
                 Depth = *workingBufferPtr++;
-                MipMapCout = *workingBufferPtr++;
+                MipMapCount = *workingBufferPtr++;
                 fixed (uint* reservedPtr = Reserved1)
                 {
                     uint* workingReservedPtr = reservedPtr;
@@ -300,7 +300,7 @@ namespace Pfim
         /// <summary>
         /// Number of mipmap levels, otherwise unused.
         /// </summary>
-        public uint MipMapCout { get; private set; }
+        public uint MipMapCount { get; private set; }
 
         /// <summary>
         /// Unused
