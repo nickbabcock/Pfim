@@ -21,7 +21,7 @@ namespace Pfim
 
         protected override byte PixelDepth => PIXEL_DEPTH;
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint width)
+        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             streamIndex = Bc5Dds.ExtractGradient(alpha, stream, streamIndex);
 
@@ -75,7 +75,7 @@ namespace Pfim
                     data[dataIndex++] = col.b;
                     data[dataIndex++] = alpha[alphaIndex];
                 }
-                dataIndex += PIXEL_DEPTH * (width - DIV_SIZE);
+                dataIndex += PIXEL_DEPTH * (stride - DIV_SIZE);
             }
             return streamIndex;
         }
