@@ -109,6 +109,14 @@ namespace Pfim
         }
 #endif
 
+        public static void InnerFillUnaligned(Stream str, byte[] buf, int width, int stride, int bufSize = BUFFER_SIZE)
+        {
+            for (int i = 0; i < buf.Length; i += stride)
+            {
+                str.Read(buf, i, width);
+            }
+        }
+
         /// <summary>
         /// Fills the buffer all the way up with info from the stream
         /// </summary>

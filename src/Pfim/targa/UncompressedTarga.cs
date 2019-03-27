@@ -77,12 +77,8 @@ namespace Pfim
 
         private void StrideTopLeft(Stream str, PfimConfig config, TargaHeader header, byte[] data)
         {
-            var pixelDepthBytes = header.PixelDepth / 8;
             var stride = Util.Stride(header.Width, header.PixelDepth);
-            for (int scanLine = 0; scanLine < header.Height; scanLine++)
-            {
-                str.Read(data, scanLine * stride, header.Width * pixelDepthBytes);
-            }
+            Util.InnerFillUnaligned(str, data, header.Width, stride, config.BufferSize);
         }
 
         private static void InnerTopLeft(Stream str, PfimConfig config, byte[] data)
