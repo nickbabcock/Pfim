@@ -581,6 +581,21 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseSimpleDxt51x1()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple-1x1.dds"));
+            Assert.Equal(16, image.Stride);
+            Assert.Equal(0, image.Data[0]);
+            Assert.Equal(0, image.Data[1]);
+            Assert.Equal(128, image.Data[2]);
+            Assert.Equal(255, image.Data[3]);
+            Assert.Equal(64, image.Data.Length);
+            Assert.Equal(1, image.Height);
+            Assert.Equal(1, image.Width);
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+        }
+
+        [Fact]
         public void ParseDdsAti2()
         {
             var image = Pfim.FromFile(Path.Combine("data", "Antenna_Metal_0_Normal.dds"));
@@ -669,6 +684,7 @@ namespace Pfim.Tests
         [InlineData("dxt3-simple.dds", 7251159020976695665)]
         [InlineData("dxt5-simple.dds", 14792367831326096320)]
         [InlineData("dxt5-simple-odd.dds", 13220849538121078156)]
+        [InlineData("dxt5-simple-1x1.dds", 7311315792273335369)]
         [InlineData("dds_a1r5g5b5.dds", 296240031898447077)]
         public void TestDdsMemoryEquivalent(string path, ulong hash)
         {
@@ -684,6 +700,8 @@ namespace Pfim.Tests
         [InlineData("dxt1-simple.dds")]
         [InlineData("dxt3-simple.dds")]
         [InlineData("dxt5-simple.dds")]
+        [InlineData("dxt5-simple-odd.dds")]
+        [InlineData("dxt5-simple-1x1.dds")]
         [InlineData("Antenna_Metal_0_Normal.dds")]
         public void TestDdsCompression(string path)
         {

@@ -97,7 +97,6 @@ namespace Pfim
 
                     // Each decoded block is divSize by divSize so pixels left
                     // is Width * multiplied by block height
-                    //pixelsLeft -= Header.Width * divSize;
                     workingSize -= bytesPerStride;
 
                     var filled = strideBytes * divSize;
@@ -156,11 +155,11 @@ namespace Pfim
             }
             else
             {
-                long totalSize = BlocksPerStride * CompressedBytesPerBlock * (Header.Height / DivSize);
+                long totalSize = BlocksPerStride * CompressedBytesPerBlock * (Util.Stride((int)Header.Height, PixelDepth) / DivSize);
 
                 var width = (int) Header.Width;
                 var height = (int) Header.Height;
-                for (int i = 1; i < Header.MipMapCout; i++)
+                for (int i = 1; i < Header.MipMapCount; i++)
                 {
                     width = (int)Math.Pow(2, Math.Floor(Math.Log(width - 1, 2)));
                     height = (int)Math.Pow(2, Math.Floor(Math.Log(height - 1, 2)));
