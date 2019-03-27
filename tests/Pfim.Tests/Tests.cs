@@ -555,6 +555,32 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseSimpleUncompressedOdd()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
+            Assert.Equal(32, image.Stride);
+            Assert.Equal(0, image.Data[8 * 5 * 4]);
+            Assert.Equal(0, image.Data[8 * 5 * 4 + 1]);
+            Assert.Equal(128, image.Data[8 * 5 * 4 + 2]);
+            Assert.Equal(255, image.Data[8 * 5 * 4 + 3]);
+            Assert.Equal(image.Data.Length, 8 * 9 * 4);
+            Assert.Equal(9, image.Height);
+            Assert.Equal(5, image.Width);
+            Assert.Equal(ImageFormat.Rgba32, image.Format);
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8)]);
+                    Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 1]);
+                    Assert.Equal(128, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 2]);
+                    Assert.Equal(255, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 3]);
+                }
+            }
+        }
+
+        [Fact]
         public void ParseDdsAti2()
         {
             var image = Pfim.FromFile(Path.Combine("data", "Antenna_Metal_0_Normal.dds"));

@@ -79,7 +79,7 @@ namespace Pfim
         /// <summary>Calculates the number of bytes to hold image data</summary>
         private int CalcSize(DdsLoadInfo info)
         {
-            int width = (int)Math.Max(info.DivSize, Header.Width);
+            int width = (int)Math.Max(info.DivSize, Util.Stride((int)Header.Width, BytesPerPixel));
             int height = (int)Math.Max(info.DivSize, Header.Height);
             return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
         }
@@ -92,7 +92,15 @@ namespace Pfim
 
             byte[] data = new byte[CalcSize(imageInfo)];
 
-            Util.Fill(str, data, config.BufferSize);
+            var stride = Util.Stride((int) Header.Width, BytesPerPixel);
+            if (Header.Width == stride)
+            {
+                Util.Fill(str, data, config.BufferSize);
+            }
+            else
+            {
+                Util.InnerFillUnaligned(str, data, (int)Header.Width * BytesPerPixel, stride * BytesPerPixel, config.BufferSize);
+            }
 
             // Swap the R and B channels
             if (imageInfo.Swap)
