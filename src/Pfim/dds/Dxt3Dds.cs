@@ -7,7 +7,7 @@
 
         protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 16;
-        protected override byte PixelDepth => PIXEL_DEPTH;
+        protected override byte PixelDepthBytes => PIXEL_DEPTH;
         public override int BitsPerPixel => PIXEL_DEPTH * 8;
         public override ImageFormat Format => ImageFormat.Rgba32;
 

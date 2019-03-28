@@ -11,9 +11,9 @@ namespace Pfim
         /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
-            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var data = new byte[header.Height * stride];
-            var rowBits = header.PixelDepth * header.Width;
+            var rowBits = header.PixelDepthBits * header.Width;
             InnerBottomLeft(str, config, data, stride, rowBits);
             return data;
         }
@@ -58,13 +58,13 @@ namespace Pfim
         /// <summary>Fills data starting from the top left</summary>
         public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
-            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var data = new byte[header.Height * stride];
 
             // If an image stride doesn't need any padding, we can
             // use an optimization where we can just copy the whole stream
             // into pixel data
-            if (stride == header.Width * (header.PixelDepth / 8))
+            if (stride == header.Width * (header.PixelDepthBits / 8))
             {
                 InnerTopLeft(str, config, data);
             }
@@ -77,8 +77,9 @@ namespace Pfim
 
         private void StrideTopLeft(Stream str, PfimConfig config, TargaHeader header, byte[] data)
         {
-            var stride = Util.Stride(header.Width, header.PixelDepth);
-            Util.InnerFillUnaligned(str, data, header.Width, stride, config.BufferSize);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
+            var width = header.Width * header.PixelDepthBytes;
+            Util.InnerFillUnaligned(str, data, width, stride, config.BufferSize);
         }
 
         private static void InnerTopLeft(Stream str, PfimConfig config, byte[] data)
