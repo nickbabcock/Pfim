@@ -43,16 +43,14 @@ namespace Pfim
         }
 #endif
 
-        /// <summary>Not implemented</summary>
         public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
         {
-            throw new NotImplementedException();
+            return BottomLeft(str, header, config);
         }
 
-        /// <summary>Not implemented</summary>
         public byte[] TopRight(Stream str, TargaHeader header, PfimConfig config)
         {
-            throw new NotImplementedException();
+            return BottomLeft(str, header, config);
         }
 
         /// <summary>Fills data starting from the top left</summary>
