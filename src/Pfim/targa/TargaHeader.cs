@@ -76,12 +76,12 @@ namespace Pfim
             ImageType = (TargaImageType)buf[2];
             ColorMapOrigin = BitConverter.ToInt16(buf, 3);
             ColorMapLength = BitConverter.ToInt16(buf, 5);
-            ColorMapDepth = buf[7];
+            ColorMapDepthBits = buf[7];
             XOrigin = BitConverter.ToInt16(buf, 8);
             YOrigin = BitConverter.ToInt16(buf, 10);
             Width = BitConverter.ToInt16(buf, 12);
             Height = BitConverter.ToInt16(buf, 14);
-            PixelDepth = buf[16];
+            PixelDepthBits = buf[16];
 
             // Extract the bits in place 4 and 5 for orientation
             Orientation = (TargaOrientation)((buf[17] >> 4) & 3);
@@ -100,7 +100,7 @@ namespace Pfim
                     throw new ArgumentException("Color map origin was detected to exceed color map length");
                 }
 
-                var mapBytes = ColorMapDepth / 8;
+                var mapBytes = ColorMapDepthBytes;
                 ColorMap = new byte[ColorMapLength * mapBytes];
                 str.Read(ColorMap, ColorMapOrigin * mapBytes, (ColorMapLength - ColorMapOrigin) * mapBytes);
             }
@@ -135,7 +135,12 @@ namespace Pfim
         /// <summary>
         /// Establishes the number of bits per entry. Typically 15, 16, 24 or 32-bit values are used.
         /// </summary>
-        public short ColorMapDepth { get; internal set; }
+        public short ColorMapDepthBits { get; internal set; }
+
+        /// <summary>
+        /// Number of whole bytes per pixel.
+        /// </summary>
+        public byte ColorMapDepthBytes => (byte)(ColorMapDepthBits / 8);
 
         /// <summary>
         /// These bytes specify the absolute horizontal coordinate for the lower left corner of the image.
@@ -160,7 +165,12 @@ namespace Pfim
         /// <summary>
         /// Number of bits per pixel. This number includes the Attribute or Alpha channel bits
         /// </summary>
-        public byte PixelDepth { get; internal set; }
+        public byte PixelDepthBits { get; internal set; }
+
+        /// <summary>
+        /// Number of whole bytes per pixel. This number includes Alpha channel bits
+        /// </summary>
+        public byte PixelDepthBytes => (byte)(PixelDepthBits / 8);
 
         /// <summary>
         /// Order in which pixel data is transferred from the file to the screen

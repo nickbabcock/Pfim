@@ -101,16 +101,12 @@ namespace Pfim.Tests
             Assert.Equal(new byte[] {3, 4, 0, 1, 2, 0}, data);
         }
 
-        [Fact]
-        public void FourIsTheMinimumStride()
+        [Theory]
+        [InlineData(4, 1, 32)]
+        [InlineData(8, 2, 24)]
+        public void TestStride(int expected, int widthBytes, int pixelDepthBits)
         {
-            Assert.Equal(4, Util.Stride(width: 1, pixelDepth: 32));
-        }
-
-        [Fact]
-        public void StrideWithPadding()
-        {
-            Assert.Equal(8, Util.Stride(width: 2, pixelDepth: 24));
+            Assert.Equal(expected, Util.Stride(width: widthBytes, pixelDepth: pixelDepthBits));
         }
 
         [Fact]
@@ -381,11 +377,22 @@ namespace Pfim.Tests
         }
 
         [Fact]
-        public void ParseTargaTopLeftStride()
+        public void ParseTargaTopLeftRleStride()
         {
             var data = File.ReadAllBytes(Path.Combine("data", "DSCN1910_24bpp_uncompressed_10_2.tga"));
             var image = Targa.Create(data, new PfimConfig());
             Assert.Equal(461, image.Width);
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+        }
+
+        [Fact]
+        public void ParseTargaTopLeftStride()
+        {
+            var data = File.ReadAllBytes(Path.Combine("data", "DSCN1910_24bpp_uncompressed_10_3.tga"));
+            var image = Targa.Create(data, new PfimConfig());
+            Assert.Equal(461, image.Width);
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+            Assert.True(image.Data[460 * 3] != 0 && image.Data[461 * 3 + 1] != 0 && image.Data[461 * 3 + 2] != 0);
         }
 
         [Fact]
@@ -558,12 +565,8 @@ namespace Pfim.Tests
         public void ParseSimpleUncompressedOdd()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
-            Assert.Equal(32, image.Stride);
-            Assert.Equal(0, image.Data[8 * 5 * 4]);
-            Assert.Equal(0, image.Data[8 * 5 * 4 + 1]);
-            Assert.Equal(128, image.Data[8 * 5 * 4 + 2]);
-            Assert.Equal(255, image.Data[8 * 5 * 4 + 3]);
-            Assert.Equal(image.Data.Length, 8 * 9 * 4);
+            Assert.Equal(20, image.Stride);
+            Assert.Equal(image.Data.Length, 5 * 9 * 4);
             Assert.Equal(9, image.Height);
             Assert.Equal(5, image.Width);
             Assert.Equal(ImageFormat.Rgba32, image.Format);
@@ -576,6 +579,27 @@ namespace Pfim.Tests
                     Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 1]);
                     Assert.Equal(128, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 2]);
                     Assert.Equal(255, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 3]);
+                }
+            }
+        }
+
+        [Fact]
+        public void Parse24bitUncompressedOdd()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "24-bit-uncompressed-odd.dds"));
+            Assert.Equal(4, image.Stride);
+            Assert.Equal(12, image.Data.Length);
+            Assert.Equal(3, image.Height);
+            Assert.Equal(1, image.Width);
+            Assert.Equal(ImageFormat.Rgb24, image.Format);
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 1; j++)
+                {
+                    Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 0]);
+                    Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 1]);
+                    Assert.Equal(128, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 2]);
                 }
             }
         }

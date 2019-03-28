@@ -12,7 +12,7 @@ namespace Pfim
 #if NETSTANDARD1_3
         unsafe byte[] FastPass(byte[] data, ArraySegment<byte> arr, TargaHeader header, int stride, long arrPosition)
         {
-            int bytesPerPixel = header.PixelDepth / 8;
+            int bytesPerPixel = header.PixelDepthBytes;
 
             fixed (byte* startDataPtr = data)
             fixed (byte* fixedInputPtr = &arr.Array[arrPosition])
@@ -79,7 +79,7 @@ namespace Pfim
         /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
-            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var data = new byte[header.Height * stride];
 
 #if NETSTANDARD1_3
@@ -92,7 +92,7 @@ namespace Pfim
             byte[] filebuffer = new byte[config.BufferSize];
             int dataIndex = data.Length - stride;
             int workingSize = str.Read(filebuffer, 0, config.BufferSize);
-            int bytesPerPixel = header.PixelDepth / 8;
+            int bytesPerPixel = header.PixelDepthBytes;
             int fileBufferIndex = 0;
 
             // Calculate the maximum number of bytes potentially needed from the buffer.
@@ -154,13 +154,13 @@ namespace Pfim
         /// <summary>Not implemented</summary>
         public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
-            var stride = Util.Stride(header.Width, header.PixelDepth);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var data = new byte[header.Height * stride];
 
             byte[] filebuffer = new byte[config.BufferSize];
             int dataIndex = 0;
             int workingSize = str.Read(filebuffer, 0, config.BufferSize);
-            int bytesPerPixel = header.PixelDepth / 8;
+            int bytesPerPixel = header.PixelDepthBytes;
             int fileBufferIndex = 0;
 
             // Calculate the maximum number of bytes potentially needed from the buffer.

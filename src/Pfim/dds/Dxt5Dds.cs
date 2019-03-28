@@ -19,7 +19,7 @@ namespace Pfim
         {
         }
 
-        protected override byte PixelDepth => PIXEL_DEPTH;
+        protected override byte PixelDepthBytes => PIXEL_DEPTH;
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {

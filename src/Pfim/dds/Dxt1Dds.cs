@@ -9,7 +9,7 @@
         {
         }
 
-        protected override byte PixelDepth => PIXEL_DEPTH;
+        protected override byte PixelDepthBytes => PIXEL_DEPTH;
         protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 8;
         public override ImageFormat Format => ImageFormat.Rgb24;

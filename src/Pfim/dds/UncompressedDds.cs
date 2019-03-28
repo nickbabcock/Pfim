@@ -25,9 +25,7 @@ namespace Pfim
         }
 
         public override int BitsPerPixel => ImageInfo().Depth;
-
         public override ImageFormat Format => _format;
-
         public override bool Compressed => false;
         public override void Decompress()
         {
@@ -79,9 +77,10 @@ namespace Pfim
         /// <summary>Calculates the number of bytes to hold image data</summary>
         private int CalcSize(DdsLoadInfo info)
         {
-            int width = (int)Math.Max(info.DivSize, Util.Stride((int)Header.Width, BytesPerPixel));
+            var widthBytes = Util.Stride((int) Header.Width, BitsPerPixel);
+            int width = (int)Math.Max(info.DivSize * BytesPerPixel, widthBytes);
             int height = (int)Math.Max(info.DivSize, Header.Height);
-            return (int)(width / info.DivSize * height / info.DivSize * info.BlockBytes);
+            return (int)(width * (height / info.DivSize));
         }
 
         /// <summary>Decode data into raw rgb format</summary>
@@ -92,14 +91,14 @@ namespace Pfim
 
             byte[] data = new byte[CalcSize(imageInfo)];
 
-            var stride = Util.Stride((int) Header.Width, BytesPerPixel);
-            if (Header.Width == stride)
+            var stride = Util.Stride((int) Header.Width, BitsPerPixel);
+            if (Header.Width * BytesPerPixel == stride)
             {
                 Util.Fill(str, data, config.BufferSize);
             }
             else
             {
-                Util.InnerFillUnaligned(str, data, (int)Header.Width * BytesPerPixel, stride * BytesPerPixel, config.BufferSize);
+                Util.InnerFillUnaligned(str, data, (int)Header.Width * BytesPerPixel, stride, config.BufferSize);
             }
 
             // Swap the R and B channels

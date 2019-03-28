@@ -9,9 +9,9 @@
         {
         }
 
-        public override int BitsPerPixel => PixelDepth * 8;
+        public override int BitsPerPixel => PixelDepthBytes * 8;
         public override ImageFormat Format => ImageFormat.Rgb24;
-        protected override byte PixelDepth => 3;
+        protected override byte PixelDepthBytes => 3;
         protected override byte DivSize => 4;
         protected override byte CompressedBytesPerBlock => 16;
 
@@ -44,7 +44,7 @@
                     data[dataIndex++] = _secondGradient[secondIndex];
                     data[dataIndex++] = _firstGradient[firstIndex];
                 }
-                dataIndex += PixelDepth * (stride - DivSize);
+                dataIndex += PixelDepthBytes * (stride - DivSize);
             }
 
             return streamIndex;

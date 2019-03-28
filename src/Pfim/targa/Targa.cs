@@ -80,10 +80,10 @@ namespace Pfim
                 return;
             }
 
-            var currentDepthBytes = BitsPerPixel / 8;
-            var colorMapDepthBytes = Header.ColorMapDepth / 8;
+            var currentDepthBytes = Header.PixelDepthBytes;
+            var colorMapDepthBytes = Header.ColorMapDepthBytes;
             var newData = new byte[colorMapDepthBytes * Data.Length];
-            switch (Header.ColorMapDepth)
+            switch (Header.ColorMapDepthBits)
             {
                 case 16:
                 case 24:
@@ -98,15 +98,15 @@ namespace Pfim
                     }
                     break;
                 default:
-                    throw new NotImplementedException($"Unrecognized color map depth {Header.ColorMapDepth}");
+                    throw new NotImplementedException($"Unrecognized color map depth {Header.ColorMapDepthBits}");
             }
 
             Data = newData;
-            Header.PixelDepth = (byte)Header.ColorMapDepth;
+            Header.PixelDepthBits = (byte)Header.ColorMapDepthBits;
             Header.ColorMap = new byte[] { };
             Header.ColorMapLength = 0;
             Header.HasColorMap = false;
-            Header.ColorMapDepth = 0;
+            Header.ColorMapDepthBits = 0;
         }
 
         /// <summary>The raw image data</summary>
@@ -121,22 +121,22 @@ namespace Pfim
         public int Height => Header.Height;
 
         /// <summary>The number of bytes that compose one line</summary>
-        public int Stride => Util.Stride(Header.Width, Header.PixelDepth);
+        public int Stride => Util.Stride(Header.Width, Header.PixelDepthBits);
 
-        public int BitsPerPixel => Header.PixelDepth;
+        public int BitsPerPixel => Header.PixelDepthBits;
 
         /// <summary>The format of the raw data</summary>
         public ImageFormat Format
         {
             get
             {
-                switch (Header.PixelDepth)
+                switch (Header.PixelDepthBits)
                 {
                     case 8: return ImageFormat.Rgb8;
                     case 16: return ImageFormat.R5g5b5;
                     case 24: return ImageFormat.Rgb24;
                     case 32: return ImageFormat.Rgba32;
-                    default: throw new Exception($"Unrecognized pixel depth: {Header.PixelDepth}");
+                    default: throw new Exception($"Unrecognized pixel depth: {Header.PixelDepthBits}");
                 }
             }
         }

@@ -21,7 +21,7 @@ namespace Pfim
         public DdsHeader Header { get; }
         public abstract int BitsPerPixel { get; }
         public int BytesPerPixel => BitsPerPixel / 8;
-        public int Stride => Util.Stride((int)Header.Width, BytesPerPixel) * BytesPerPixel;
+        public virtual int Stride => Util.Stride((int)Header.Width, BitsPerPixel);
         public virtual byte[] Data { get; protected set; }
         public int Width => (int)Header.Width;
         public int Height => (int)Header.Height;
