@@ -750,6 +750,7 @@ namespace Pfim.Tests
         [InlineData("true-24-rle.tga", 3634332855012535703)]
         [InlineData("tiny-rect.tga", 10515294190697599352)]
         [InlineData("true-32-mixed.tga", 11106503608441470562)]
+        [InlineData("true-24-bottom-right.tga", 7395853548289538387)]
         [InlineData("rgb24_top_left.tga", 13812820441044914689)]
         [InlineData("large-top-left.tga", 6247443778177354729)]
         [InlineData("marbles.tga", 2384540082298368449)]
