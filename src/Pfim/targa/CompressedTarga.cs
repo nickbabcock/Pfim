@@ -165,7 +165,7 @@ namespace Pfim
             // fetch another batch of bytes from the stream.
             int maxRead = bytesPerPixel * 128 + 1;
 
-            while (dataIndex >= 0)
+            for (int i = 0; i < header.Height; i++)
             {
                 int colIndex = 0;
                 do
@@ -198,8 +198,6 @@ namespace Pfim
                         dataIndex += bytcount;
                     }
                 } while (colIndex < header.Width);
-
-                dataIndex = ((dataIndex / stride) + 1) * stride;
             }
 
             return data;
