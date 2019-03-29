@@ -1,3 +1,11 @@
+### 0.6.0 - March 28th 2019
+
+* Added: `IImage::ApplyColorMap`, which will apply a colormap to the image, overwriting previous data and metadata like format, stride, pixel depth, etc. An example of a colormap is when an image only uses 256 colors. Instead of consuming 32 bits per pixel on disk, the image data instead will consist of 8 bit indices into the colormap located in the header of an image.
+* Support Targa images orientated in the top left corner.
+* Targa images encoded in the top right or bottom right corners (two extremely rare formats) fallback to bottom left corner decoding.
+* Fix errors or incorrect decoding of dds images with widths and heights that aren't divisible by their block size.
+* Fix `MipMapCount` misspelling in `DdsHeader`
+
 ### 0.5.2 - August 2nd 2018
 
 * Include Mipmap data as part of `IImage::Data` for DDS images that skipped decoding
