@@ -1,8 +1,0 @@
-image: 'Visual Studio 2017'
-build: off
-test_script:
-  cmd: |
-      dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
-      nuget restore
-      msbuild Pfim.sln
-

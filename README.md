@@ -1,5 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/bmc00ghxk0cvv0wi/branch/master?svg=true)](https://ci.appveyor.com/project/nickbabcock/pfim/branch/master)
-[![Build status](https://travis-ci.org/nickbabcock/Pfim.svg?branch=master)](https://travis-ci.org/nickbabcock/Pfim)
+[![Build Status](https://dev.azure.com/nbabcock19/nbabcock19/_apis/build/status/nickbabcock.Pfim?branchName=master)](https://dev.azure.com/nbabcock19/nbabcock19/_build/latest?definitionId=3&branchName=master)
 
 # Pfim
 
