@@ -4,7 +4,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Product>Pfim</Product>
-    <Description>A super simple and super fast image decoder that can work targa (.tga) and direct draw surface (.dds) images</Description>
+    <Description>A simple and fast .NET Standard image decoder for targa (.tga) and direct draw surface (.dds) images</Description>
     <Copyright>Nick Babcock</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Authors>Nick Babcock</Authors>
