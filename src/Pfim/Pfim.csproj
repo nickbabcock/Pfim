@@ -8,7 +8,7 @@
     <Copyright>Nick Babcock</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Authors>Nick Babcock</Authors>
-    <PackageTags>image-decoding</PackageTags>
+    <PackageTags>image-decoding;tga;targa;dds</PackageTags>
     <PackageLicenseUrl>https://raw.githubusercontent.com/nickbabcock/Pfim/master/LICENSE.txt</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://nickbabcock.github.io/Pfim/</PackageProjectUrl>
