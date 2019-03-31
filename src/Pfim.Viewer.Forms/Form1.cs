@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Pfim.Viewer.Forms
 {
     public partial class Form1 : Form
     {
+        private static GCHandle handle;
+
         public Form1()
         {
             InitializeComponent();
@@ -64,6 +67,12 @@ namespace Pfim.Viewer.Forms
                     return;
             }
 
+            if (handle.IsAllocated)
+            {
+                handle.Free();
+            }
+
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             unsafe
             {
                 fixed (byte* p = image.Data)
