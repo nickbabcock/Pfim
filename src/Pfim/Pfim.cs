@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD1_3
-using System;
+﻿using System;
 using System.IO;
 
 namespace Pfim
@@ -7,6 +6,7 @@ namespace Pfim
     /// <summary>Decodes images into a uniform structure</summary>
     public static class Pfim
     {
+#if NETSTANDARD1_3
         public static IImage FromFile(string path)
         {
             return FromFile(path, new PfimConfig());
@@ -23,19 +23,33 @@ namespace Pfim
 
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, config.BufferSize))
             {
-                switch (Path.GetExtension(path).ToUpper())
-                {
-                    case ".DDS":
-                        return Dds.Create(fs, config);
-                    case ".TGA":
-                    case ".TPIC":
-                        return Targa.Create(fs, config);
-                    default:
-                        string error = string.Format("{0}: unrecognized file format.", path);
-                        throw new Exception(error);
-                }
+                return FromStream(fs, config);
             }
+        }
+#endif
+
+        public static IImage FromStream(Stream stream)
+        {
+            return FromStream(stream, new PfimConfig());
+        }
+
+        /// <summary>
+        /// Create image from stream. Pfim will try to detect the format based on several leading bytes
+        /// </summary>
+        public static IImage FromStream(Stream stream, PfimConfig config)
+        {
+            byte[] magic = new byte[4];
+            if (stream.Read(magic, 0, 4) != 4)
+            {
+                throw new ArgumentException("stream must contain magic header", nameof(stream));
+            }
+
+            if (magic[0] == 0x44 && magic[1] == 0x44 && magic[2] == 0x53 && magic[3] == 0x20)
+            {
+                return Dds.CreateSkipMagic(stream, config);
+            }
+
+            return Targa.CreateWithPartialHeader(stream, config, magic);
         }
     }
 }
-#endif

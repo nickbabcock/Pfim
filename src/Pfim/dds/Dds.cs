@@ -39,6 +39,20 @@ namespace Pfim
         public static Dds Create(Stream stream, PfimConfig config)
         {
             DdsHeader header = new DdsHeader(stream);
+            return DecodeDds(stream, config, header);
+        }
+
+        /// <summary>
+        /// Same as a regular create except assumes that the magic number has already been consumed
+        /// </summary>
+        internal static IImage CreateSkipMagic(Stream stream, PfimConfig config)
+        {
+            DdsHeader header = new DdsHeader(stream, true);
+            return DecodeDds(stream, config, header);
+        }
+
+        private static Dds DecodeDds(Stream stream, PfimConfig config, DdsHeader header)
+        {
             Dds dds;
             switch (header.PixelFormat.FourCC)
             {
