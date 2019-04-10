@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
-using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Exporters.Csv;
+using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Reports;
 
 namespace Pfim.Benchmarks
 {
@@ -16,23 +15,13 @@ namespace Pfim.Benchmarks
     {
         public BaseConfig()
         {
-            Add(new CsvExporter(CsvSeparator.CurrentCulture,
-                new BenchmarkDotNet.Reports.SummaryStyle
-                {
-                    PrintUnitsInContent = false,
-                    TimeUnit = BenchmarkDotNet.Horology.TimeUnit.Nanosecond,
-                    SizeUnit = SizeUnit.B
-                }));
-
+            Add(new CsvExporter(CsvSeparator.CurrentCulture, new SummaryStyle(false, SizeUnit.B, TimeUnit.Nanosecond, false)));
             Add(MemoryDiagnoser.Default);
             Add(StatisticColumn.Mean);
             Add(StatisticColumn.StdErr);
             Add(StatisticColumn.StdDev);
             Add(StatisticColumn.Median);
-            Add(new Job("net-ryu-64bit")
-            {
-                Env = { Runtime = Runtime.Clr, Jit = Jit.RyuJit, Platform = Platform.X64 }
-            });
+            Add(new Job("net-ryu-64bit", EnvironmentMode.RyuJitX64));
         }
     }
 }

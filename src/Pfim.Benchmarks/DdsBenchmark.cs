@@ -6,6 +6,7 @@ using DS = DevILSharp;
 
 namespace Pfim.Benchmarks
 {
+    [Config(typeof(BaseConfig))]
     public class DdsBenchmark
     {
         [Params("dxt1-simple.dds", "dxt3-simple.dds", "dxt5-simple.dds", "32-bit-uncompressed.dds")]
