@@ -209,17 +209,18 @@ namespace Pfim
         DdsPixelFormat pixelFormat;
 
         /// <summary>Create header from stream</summary>
-        public DdsHeader(Stream stream)
+        public DdsHeader(Stream stream, bool skipMagic = false)
         {
-            headerInit(stream);
+            headerInit(stream, skipMagic);
         }
 
-        private unsafe void headerInit(Stream stream)
+        private unsafe void headerInit(Stream stream, bool skipMagic)
         {
-            byte[] buffer = new byte[SIZE + 4];
+            var headerSize = skipMagic ? SIZE : SIZE + 4;
+            byte[] buffer = new byte[headerSize];
             Reserved1 = new uint[11];
-            int bufferSize = stream.Read(buffer, 0, SIZE + 4);
-            if (bufferSize != SIZE + 4)
+            int bufferSize = stream.Read(buffer, 0, headerSize);
+            if (bufferSize != headerSize)
             {
                 throw new Exception($"Need at least {SIZE + 4} bytes for a valid DDS header");
             }
@@ -227,8 +228,13 @@ namespace Pfim
             fixed (byte* bufferPtr = buffer)
             {
                 uint* workingBufferPtr = (uint*)bufferPtr;
-                if (*workingBufferPtr++ != DDS_MAGIC)
-                    throw new Exception("Not a valid DDS");
+
+                if (!skipMagic)
+                {
+                    if (*workingBufferPtr++ != DDS_MAGIC)
+                        throw new Exception("Not a valid DDS");
+                }
+
                 if ((Size = *workingBufferPtr++) != SIZE)
                     throw new Exception("Not a valid header size");
                 Flags = (DdsFlags)(*workingBufferPtr++);

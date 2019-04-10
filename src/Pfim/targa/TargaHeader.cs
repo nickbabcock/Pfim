@@ -60,20 +60,56 @@ namespace Pfim
             TopRight = 3
         }
 
+        private const int MINIMUM_SIZE = 18;
+
+        internal TargaHeader(Stream str, byte[] partial)
+        {
+            DecodeTargaHeader(str, partial);
+        }
+
         /// <summary>
         /// Instantiate a targa header from a given stream. The stream will be parsed
         /// </summary>
         public TargaHeader(Stream str)
         {
-            byte[] buf = new byte[18];
-            if (str.Read(buf, 0, 18) != 18)
+            byte[] buf = new byte[MINIMUM_SIZE];
+            if (str.Read(buf, 0, MINIMUM_SIZE) != MINIMUM_SIZE)
             {
                 throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
             }
 
+            DecodeTargaHeader(str, buf);
+        }
+
+        private void DecodeTargaHeader(Stream str, byte[] partial)
+        {
+            byte[] buf;
+            if (partial.Length == MINIMUM_SIZE)
+            {
+                buf = partial;
+            }
+            else if (partial.Length > MINIMUM_SIZE)
+            {
+                throw new ArgumentException($"Partial header can't exceed {MINIMUM_SIZE} bytes");
+            }
+            else
+            {
+                buf = new byte[MINIMUM_SIZE];
+                var left = MINIMUM_SIZE - partial.Length;
+                for (int i = 0; i < partial.Length; i++)
+                {
+                    buf[i] = partial[i];
+                }
+
+                if (str.Read(buf, partial.Length, left) != left)
+                {
+                    throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
+                }
+            }
+
             IDLength = buf[0];
             HasColorMap = buf[1] == 1;
-            ImageType = (TargaImageType)buf[2];
+            ImageType = (TargaImageType) buf[2];
             ColorMapOrigin = BitConverter.ToInt16(buf, 3);
             ColorMapLength = BitConverter.ToInt16(buf, 5);
             ColorMapDepthBits = buf[7];
@@ -84,7 +120,7 @@ namespace Pfim
             PixelDepthBits = buf[16];
 
             // Extract the bits in place 4 and 5 for orientation
-            Orientation = (TargaOrientation)((buf[17] >> 4) & 3);
+            Orientation = (TargaOrientation) ((buf[17] >> 4) & 3);
 
             if (IDLength != 0)
             {

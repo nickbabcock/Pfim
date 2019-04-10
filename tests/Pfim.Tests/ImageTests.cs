@@ -52,9 +52,7 @@ namespace Pfim.Tests
         {
             var data = File.ReadAllBytes(Path.Combine("data", path));
             var image = Pfim.FromFile(Path.Combine("data", path));
-            var image2 = Path.GetExtension(path).ToLower() == ".dds"
-                ? (IImage)Dds.Create(data, new PfimConfig())
-                : Targa.Create(data, new PfimConfig());
+            var image2 = Pfim.FromStream(new MemoryStream(data), new PfimConfig());
             image.ApplyColorMap();
             image2.ApplyColorMap();
             Assert.Equal(format, image.Format);

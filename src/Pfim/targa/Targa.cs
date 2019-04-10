@@ -40,7 +40,19 @@ namespace Pfim
         public static Targa Create(Stream str, PfimConfig config)
         {
             var header = new TargaHeader(str);
-            var targa = (header.IsCompressed) ? (IDecodeTarga)(new CompressedTarga())
+            return DecodeTarga(str, config, header);
+        }
+
+        internal static IImage CreateWithPartialHeader(Stream str, PfimConfig config, byte[] magic)
+        {
+            var header = new TargaHeader(str, magic);
+            return DecodeTarga(str, config, header);
+        }
+
+        private static Targa DecodeTarga(Stream str, PfimConfig config, TargaHeader header)
+        {
+            var targa = (header.IsCompressed)
+                ? (IDecodeTarga) (new CompressedTarga())
                 : new UncompressedTarga();
 
             byte[] data;
