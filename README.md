@@ -19,9 +19,9 @@ All contributions are welcome. Here is a quick guideline:
 - Have a performance improvement for Pfim? Excellent, run the before and after benchmarks!
 
 ```
-dotnet build -c Release -f net46  .\src\Pfim.Benchmarks\Pfim.Benchmarks.csproj
-cd src\Pfim.Benchmarks\bin\Release\net46
-.\Pfim.Benchmarks.exe --filter=pfim
+dotnet build -c Release -f net461  .\src\Pfim.Benchmarks\Pfim.Benchmarks.csproj
+cd src\Pfim.Benchmarks\bin\Release\net461
+.\Pfim.Benchmarks.exe --filter *.Pfim
 ```
 
 - Know a library to include in the benchmarks? If it is NuGet installable / easily integratable, please raise an issue or pull request! It must run on .NET 4.6.
