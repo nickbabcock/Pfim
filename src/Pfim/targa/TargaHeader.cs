@@ -110,6 +110,11 @@ namespace Pfim
             IDLength = buf[0];
             HasColorMap = buf[1] == 1;
             ImageType = (TargaImageType) buf[2];
+            if (!Enum.IsDefined(typeof(TargaImageType), ImageType))
+            {
+                throw new ArgumentException("Detected invalid targa image");
+            }
+
             ColorMapOrigin = BitConverter.ToInt16(buf, 3);
             ColorMapLength = BitConverter.ToInt16(buf, 5);
             ColorMapDepthBits = buf[7];

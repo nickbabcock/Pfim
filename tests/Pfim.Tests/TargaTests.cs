@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using System.IO;
+using System.Text;
 
 namespace Pfim.Tests
 {
@@ -315,6 +316,14 @@ namespace Pfim.Tests
             {
                 Assert.Equal(0, image.Data[i + 3]);
             }
+        }
+
+        [Fact]
+        public void InvalidTargaException()
+        {
+            var data = Encoding.ASCII.GetBytes("Hello world! A wonderful evening");
+            var ex = Assert.ThrowsAny<Exception>(() => Pfim.FromStream(new MemoryStream(data)));
+            Assert.Equal("Detected invalid targa image", ex.Message);
         }
     }
 }
