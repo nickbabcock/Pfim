@@ -15,7 +15,7 @@ namespace Pfim
         protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 16;
 
-        public Dxt5Dds(DdsHeader header) : base(header)
+        public Dxt5Dds(DdsHeader header, PfimConfig config) : base(header, config)
         {
         }
 

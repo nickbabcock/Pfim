@@ -1,12 +1,20 @@
-﻿namespace Pfim
+﻿using System;
+
+namespace Pfim
 {
     /// <summary>
     /// Defines a common interface that all images are decoded into
     /// </summary>
-    public interface IImage
+    public interface IImage : IDisposable
     {
         /// <summary>The raw data</summary>
         byte[] Data { get; }
+
+        /// <summary>
+        /// Length of the raw data. Unless decoding with a custom allocator
+        /// this will be equivalent to `Data.Length`
+        /// </summary>
+        int DataLen { get; }
 
         /// <summary>Width of the image in pixels</summary>
         int Width { get; }

@@ -44,11 +44,11 @@ namespace Pfim
         /// The total number of bytes read into the buffer and translated. May be less than the
         /// buffer's length.
         /// </returns>
-        public static int Translate(Stream str, byte[] buf, int bufIndex)
+        public static int Translate(Stream str, byte[] buf, int bufLen, int bufIndex)
         {
-            Buffer.BlockCopy(buf, bufIndex, buf, 0, buf.Length - bufIndex);
-            int result = str.Read(buf, buf.Length - bufIndex, bufIndex);
-            return result + buf.Length - bufIndex;
+            Buffer.BlockCopy(buf, bufIndex, buf, 0, bufLen - bufIndex);
+            int result = str.Read(buf, bufLen - bufIndex, bufIndex);
+            return result + bufLen - bufIndex;
         }
 
         /// <summary>
@@ -91,27 +91,27 @@ namespace Pfim
 
 
 #if NETSTANDARD1_3
-        public static void Fill(Stream stream, byte[] data, int bufSize = BUFFER_SIZE)
+        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE)
         {
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
             {
-                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, data.Length);
+                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, dataLen);
             }
             else
             {
-                InnerFill(stream, data, bufSize);
+                InnerFill(stream, data, dataLen, bufSize);
             }
         }
 #else
-        public static void Fill(Stream stream, byte[] data, int bufSize = BUFFER_SIZE)
+        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE)
         {
-            InnerFill(stream, data, bufSize);
+            InnerFill(stream, data, dataLen, bufSize);
         }
 #endif
 
-        public static void InnerFillUnaligned(Stream str, byte[] buf, int width, int stride, int bufSize = BUFFER_SIZE)
+        public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE)
         {
-            for (int i = 0; i < buf.Length; i += stride)
+            for (int i = 0; i < bufLen; i += stride)
             {
                 str.Read(buf, i, width);
             }
@@ -123,12 +123,12 @@ namespace Pfim
         /// <param name="str">Stream that will be used to fill the buffer</param>
         /// <param name="buf">Buffer that will house the information from the stream</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
-        private static void InnerFill(Stream str, byte[] buf, int bufSize = BUFFER_SIZE)
+        private static void InnerFill(Stream str, byte[] buf, int dataLen, int bufSize = BUFFER_SIZE)
         {
             int bufPosition = 0;
-            for (int i = buf.Length / bufSize; i > 0; i--)
+            for (int i = dataLen / bufSize; i > 0; i--)
                 bufPosition += str.Read(buf, bufPosition, bufSize);
-            str.Read(buf, bufPosition, buf.Length % bufSize);
+            str.Read(buf, bufPosition, dataLen % bufSize);
         }
 
         /// <summary>
@@ -139,19 +139,27 @@ namespace Pfim
         /// <param name="rowSize">The size in bytes of each row in the stream</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
         /// <param name="stride">The number of bytes that make up a row in the data</param>
+        /// <param name="buffer">The temporary buffer used to read data in</param>
         public static void FillBottomLeft(
             Stream str,
             byte[] data,
+            int dataLen,
             int rowSize,
             int stride,
+            byte[] buffer = null,
             int bufSize = BUFFER_SIZE)
         {
+            buffer = buffer ?? new byte[BUFFER_SIZE];
+            if (buffer.Length < bufSize)
+            {
+                throw new ArgumentException("must be longer than bufSize", nameof(buffer));
+            }
+
             int bufferIndex = 0;
-            byte[] buffer = new byte[bufSize];
-            int rowsPerBuffer = Math.Min(bufSize, data.Length) / stride;
-            int dataIndex = data.Length - stride;
+            int rowsPerBuffer = Math.Min(bufSize, dataLen) / stride;
+            int dataIndex = dataLen - stride;
             int rowsRead = 0;
-            int totalRows = data.Length / rowSize;
+            int totalRows = dataLen / rowSize;
             int rowsToRead = rowsPerBuffer;
 
             if (rowsPerBuffer == 0)
@@ -169,7 +177,7 @@ namespace Pfim
 
                 if (dataIndex >= 0)
                 {
-                    workingSize = Translate(str, buffer, bufferIndex);
+                    workingSize = Translate(str, buffer, bufSize, bufferIndex);
                     bufferIndex = 0;
                     rowsRead += rowsPerBuffer;
                     rowsToRead = rowsRead + rowsPerBuffer < totalRows ? rowsPerBuffer : totalRows - rowsRead;

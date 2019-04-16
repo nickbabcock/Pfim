@@ -9,9 +9,8 @@ namespace Pfim
     public abstract class CompressedDds : Dds
     {
         private bool _compressed;
-        private PfimConfig _config;
 
-        protected CompressedDds(DdsHeader header) : base(header)
+        protected CompressedDds(DdsHeader header, PfimConfig config) : base(header, config)
         {
         }
 
@@ -61,59 +60,67 @@ namespace Pfim
             var stridePixels = StridePixels;
             var heightBlocks = HeightBlocks;
             var len = heightBlocks * DivSize * stride;
-            byte[] data = new byte[len];
+            DataLen = len;
+            byte[] data = config.Allocator.Rent(len);
             int pixelsLeft = len;
             int dataIndex = 0;
 
             int bufferSize;
             int divSize = DivSize;
 
-            byte[] streamBuffer = new byte[config.BufferSize];
             int bytesPerStride = BytesPerStride;
             int blocksPerStride = WidthBlocks;
 
-            do
+            byte[] streamBuffer = config.Allocator.Rent(config.BufferSize);
+            try
             {
-                int workingSize;
-                bufferSize = workingSize = stream.Read(streamBuffer, 0, config.BufferSize);
-                int bIndex = 0;
-                while (workingSize > 0 && pixelsLeft > 0)
+                do
                 {
-                    // If there is not enough of the buffer to fill the next
-                    // set of 16 square pixels Get the next buffer
-                    if (workingSize < bytesPerStride)
+                    int workingSize;
+                    bufferSize = workingSize = stream.Read(streamBuffer, 0, config.BufferSize);
+                    int bIndex = 0;
+                    while (workingSize > 0 && pixelsLeft > 0)
                     {
-                        bufferSize = workingSize = Util.Translate(stream, streamBuffer, bIndex);
-                        bIndex = 0;
+                        // If there is not enough of the buffer to fill the next
+                        // set of 16 square pixels Get the next buffer
+                        if (workingSize < bytesPerStride)
+                        {
+                            bufferSize = workingSize = Util.Translate(stream, streamBuffer, config.BufferSize, bIndex);
+                            bIndex = 0;
+                        }
+
+                        var origDataIndex = dataIndex;
+
+                        // Now that we have enough pixels to fill a stride (and
+                        // this includes the normally 4 pixels below the stride)
+                        for (uint i = 0; i < blocksPerStride; i++)
+                        {
+                            bIndex = Decode(streamBuffer, data, bIndex, (uint)dataIndex, (uint)stridePixels);
+
+                            // Advance to the next block, which is (pixel depth *
+                            // divSize) bytes away
+                            dataIndex += divSize * PixelDepthBytes;
+                        }
+
+                        // Each decoded block is divSize by divSize so pixels left
+                        // is Width * multiplied by block height
+                        workingSize -= bytesPerStride;
+
+                        var filled = stride * divSize;
+                        pixelsLeft -= filled;
+
+                        // Jump down to the block that is exactly (divSize - 1)
+                        // below the current row we are on
+                        dataIndex = origDataIndex + filled;
                     }
+                } while (bufferSize != 0 && pixelsLeft > 0);
 
-                    var origDataIndex = dataIndex;
-
-                    // Now that we have enough pixels to fill a stride (and
-                    // this includes the normally 4 pixels below the stride)
-                    for (uint i = 0; i < blocksPerStride; i++)
-                    {
-                        bIndex = Decode(streamBuffer, data, bIndex, (uint)dataIndex, (uint)stridePixels);
-
-                        // Advance to the next block, which is (pixel depth *
-                        // divSize) bytes away
-                        dataIndex += divSize * PixelDepthBytes;
-                    }
-
-                    // Each decoded block is divSize by divSize so pixels left
-                    // is Width * multiplied by block height
-                    workingSize -= bytesPerStride;
-
-                    var filled = stride * divSize;
-                    pixelsLeft -= filled;
-
-                    // Jump down to the block that is exactly (divSize - 1)
-                    // below the current row we are on
-                    dataIndex = origDataIndex + filled;
-                }
-            } while (bufferSize != 0 && pixelsLeft > 0);
-
-            return data;
+                return data;
+            }
+            finally
+            {
+                config.Allocator.Return(streamBuffer);
+            }
         }
 
         private byte[] InMemoryDecode(byte[] memBuffer, int bIndex)
@@ -122,7 +129,8 @@ namespace Pfim
             var stridePixels = StridePixels;
             var heightBlocks = HeightBlocks;
             var len = heightBlocks * DivSize * stride;
-            byte[] data = new byte[len];
+            DataLen = len;
+            byte[] data = Config.Allocator.Rent(len);
             var pixelsLeft = len;
             int dataIndex = 0;
             int divSize = DivSize;
@@ -153,7 +161,6 @@ namespace Pfim
 
         protected override void Decode(Stream stream, PfimConfig config)
         {
-            _config = config;
             if (config.Decompress)
             {
                 Data = DataDecode(stream, config);
@@ -174,9 +181,10 @@ namespace Pfim
                     totalSize += widthBlocks * heightBlocks * CompressedBytesPerBlock;
                 }
 
-                Data = new byte[totalSize];
+                DataLen = (int)totalSize;
+                Data = config.Allocator.Rent((int)totalSize);
                 _compressed = true;
-                Util.Fill(stream, Data, config.BufferSize);
+                Util.Fill(stream, Data, DataLen, config.BufferSize);
             }
         }
 
