@@ -13,13 +13,13 @@ namespace Pfim
         private readonly bool? _rgbSwapped;
         private ImageFormat _format;
 
-        internal UncompressedDds(DdsHeader header, uint bitsPerPixel, bool rgbSwapped) : base(header)
+        internal UncompressedDds(DdsHeader header, PfimConfig config, uint bitsPerPixel, bool rgbSwapped) : base(header, config)
         {
             _bitsPerPixel = bitsPerPixel;
             _rgbSwapped = rgbSwapped;
         }
 
-        internal UncompressedDds(DdsHeader header) : base(header)
+        internal UncompressedDds(DdsHeader header, PfimConfig config) : base(header, config)
         {
             
         }
@@ -89,16 +89,18 @@ namespace Pfim
             var imageInfo = ImageInfo();
             _format = imageInfo.Format;
 
-            byte[] data = new byte[CalcSize(imageInfo)];
+            var len = CalcSize(imageInfo);
+            DataLen = len;
+            byte[] data = config.Allocator.Rent(len);
 
             var stride = Util.Stride((int) Header.Width, BitsPerPixel);
             if (Header.Width * BytesPerPixel == stride)
             {
-                Util.Fill(str, data, config.BufferSize);
+                Util.Fill(str, data, len, config.BufferSize);
             }
             else
             {
-                Util.InnerFillUnaligned(str, data, (int)Header.Width * BytesPerPixel, stride, config.BufferSize);
+                Util.InnerFillUnaligned(str, data, len, (int)Header.Width * BytesPerPixel, stride, config.BufferSize);
             }
 
             // Swap the R and B channels
@@ -107,7 +109,7 @@ namespace Pfim
                 switch (imageInfo.Format)
                 {
                     case ImageFormat.Rgba32:
-                        for (int i = 0; i < data.Length; i += 4)
+                        for (int i = 0; i < len; i += 4)
                         {
                             byte temp = data[i];
                             data[i] = data[i + 2];
@@ -115,7 +117,7 @@ namespace Pfim
                         }
                         break;
                     case ImageFormat.Rgba16:
-                        for (int i = 0; i < data.Length; i += 2)
+                        for (int i = 0; i < len; i += 2)
                         {
                             byte temp = (byte) (data[i] & 0xF);
                             data[i] = (byte) ((data[i] & 0xF0) + (data[i + 1] & 0XF));

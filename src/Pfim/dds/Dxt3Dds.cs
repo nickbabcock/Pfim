@@ -11,7 +11,7 @@
         public override int BitsPerPixel => PIXEL_DEPTH * 8;
         public override ImageFormat Format => ImageFormat.Rgba32;
 
-        public Dxt3Dds(DdsHeader header) : base(header)
+        public Dxt3Dds(DdsHeader header, PfimConfig config) : base(header, config)
         {
         }
 

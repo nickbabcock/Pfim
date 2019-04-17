@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using FreeImageAPI;
 using ImageMagick;
+using Pfim.Tests;
 using DS = DevILSharp;
 
 namespace Pfim.Benchmarks
@@ -14,7 +15,7 @@ namespace Pfim.Benchmarks
 
         private byte[] data;
 
-        private readonly PfimConfig _pfimConfig = new PfimConfig();
+        private readonly PfimConfig _pfimConfig = new PfimConfig(allocator: new PfimAllocator());
 
         [GlobalSetup]
         public void SetupData()
@@ -24,7 +25,13 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public IImage Pfim() => Dds.Create(data, _pfimConfig);
+        public int Pfim()
+        {
+            using (var image = Dds.Create(data, _pfimConfig))
+            {
+                return image.BytesPerPixel;
+            }
+        }
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));

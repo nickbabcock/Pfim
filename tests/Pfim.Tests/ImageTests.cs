@@ -53,12 +53,31 @@ namespace Pfim.Tests
             var data = File.ReadAllBytes(Path.Combine("data", path));
             var image = Pfim.FromFile(Path.Combine("data", path));
             var image2 = Pfim.FromStream(new MemoryStream(data), new PfimConfig());
-            image.ApplyColorMap();
-            image2.ApplyColorMap();
-            Assert.Equal(format, image.Format);
-            Assert.Equal(image.Format, image2.Format);
-            Assert.Equal(hash, Hash64(image.Data, image.Data.Length));
-            Assert.Equal(hash, Hash64(image2.Data, image2.Data.Length));
+            Assert.NotEqual(0, image.DataLen);
+            Assert.NotEqual(0, image2.DataLen);
+
+            var allocator = new PfimAllocator();
+            Assert.Equal(0, allocator.Rented);
+
+            using (var image3 = Pfim.FromStream(new MemoryStream(data), new PfimConfig(allocator: allocator)))
+            {
+                image.ApplyColorMap();
+                image2.ApplyColorMap();
+                image3.ApplyColorMap();
+                Assert.Equal(format, image.Format);
+                Assert.Equal(image.Format, image2.Format);
+                Assert.Equal(hash, Hash64(image.Data, image.DataLen));
+                Assert.Equal(hash, Hash64(image2.Data, image2.DataLen));
+                Assert.Equal(hash, Hash64(image3.Data, image3.DataLen));
+
+                Assert.Equal(image.Data.Length, image.DataLen);
+                Assert.Equal(image.Data.Length, image2.Data.Length);
+                Assert.Equal(image3.DataLen, image.Data.Length);
+                Assert.NotEqual(0, image.DataLen);
+                Assert.NotEqual(0, allocator.Rented);
+            }
+
+            Assert.Equal(0, allocator.Rented);
         }
     }
 }

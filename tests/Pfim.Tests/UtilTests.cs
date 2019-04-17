@@ -10,7 +10,7 @@ namespace Pfim.Tests
         {
             byte[] buf = { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
-            var actual = Util.Translate(mem, buf, 0);
+            var actual = Util.Translate(mem, buf, buf.Length, 0);
             Assert.Equal(5, actual);
         }
 
@@ -19,7 +19,7 @@ namespace Pfim.Tests
         {
             byte[] buf = { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream(new byte[] { 100 });
-            var actual = Util.Translate(mem, buf, 1);
+            var actual = Util.Translate(mem, buf, buf.Length, 1);
             Assert.Equal(5, actual);
             Assert.Equal(new byte[] { 2, 3, 4, 5, 100 }, buf);
         }
@@ -29,7 +29,7 @@ namespace Pfim.Tests
         {
             byte[] buf = { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
-            var actual = Util.Translate(mem, buf, 1);
+            var actual = Util.Translate(mem, buf, buf.Length, 1);
             Assert.Equal(4, actual);
             Assert.Equal(new byte[] { 2, 3, 4, 5, 5 }, buf);
         }
@@ -39,7 +39,7 @@ namespace Pfim.Tests
         {
             byte[] buf = { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream(new byte[] { 100, 99, 98, 97 });
-            var actual = Util.Translate(mem, buf, 4);
+            var actual = Util.Translate(mem, buf, buf.Length, 4);
             Assert.Equal(5, actual);
             Assert.Equal(new byte[] { 5, 100, 99, 98, 97 }, buf);
         }
@@ -49,7 +49,7 @@ namespace Pfim.Tests
         {
             byte[] buf = { 1, 2, 3, 4, 5 };
             var mem = new MemoryStream();
-            var actual = Util.Translate(mem, buf, 4);
+            var actual = Util.Translate(mem, buf, buf.Length, 4);
             Assert.Equal(1, actual);
             Assert.Equal(new byte[] { 5, 2, 3, 4, 5 }, buf);
         }
@@ -59,7 +59,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5 });
-            Util.FillBottomLeft(mem, data, 1, 1);
+            Util.FillBottomLeft(mem, data, data.Length, 1, 1);
             Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
         }
 
@@ -68,7 +68,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6 });
-            Util.FillBottomLeft(mem, data, 2, 2);
+            Util.FillBottomLeft(mem, data, data.Length, 2, 2);
             Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
         }
 
@@ -77,7 +77,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[5];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5 });
-            Util.FillBottomLeft(mem, data, 1, 1);
+            Util.FillBottomLeft(mem, data, data.Length, 1, 1);
             Assert.Equal(new byte[] { 5, 4, 3, 2, 1 }, data);
         }
 
@@ -86,7 +86,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4, 5, 6 });
-            Util.FillBottomLeft(mem, data, 2, 2);
+            Util.FillBottomLeft(mem, data, data.Length, 2, 2);
             Assert.Equal(new byte[] { 5, 6, 3, 4, 1, 2 }, data);
         }
 
@@ -95,7 +95,7 @@ namespace Pfim.Tests
         {
             byte[] data = new byte[6];
             var mem = new MemoryStream(new byte[] { 1, 2, 3, 4 });
-            Util.FillBottomLeft(mem, data, 2, 3);
+            Util.FillBottomLeft(mem, data, data.Length, 2, 3);
             Assert.Equal(new byte[] { 3, 4, 0, 1, 2, 0 }, data);
         }
 

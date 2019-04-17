@@ -12,12 +12,13 @@ namespace Pfim
 #if NETSTANDARD1_3
         unsafe byte[] FastPass(byte[] data, ArraySegment<byte> arr, TargaHeader header, int stride, long arrPosition)
         {
+            var dataLen = header.Height * stride;
             int bytesPerPixel = header.PixelDepthBytes;
 
             fixed (byte* startDataPtr = data)
             fixed (byte* fixedInputPtr = &arr.Array[arrPosition])
             {
-                byte* endSentinal = startDataPtr + data.Length;
+                byte* endSentinal = startDataPtr + dataLen;
                 byte* dataPtr = endSentinal - stride;
                 byte* inputPtr = fixedInputPtr;
                 while (dataPtr >= startDataPtr)
@@ -80,7 +81,8 @@ namespace Pfim
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepthBits);
-            var data = new byte[header.Height * stride];
+            var dataLen = header.Height * stride;
+            var data = config.Allocator.Rent(dataLen);
 
 #if NETSTANDARD1_3
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
@@ -89,9 +91,7 @@ namespace Pfim
             }
 #endif
 
-            byte[] filebuffer = new byte[config.BufferSize];
-            int dataIndex = data.Length - stride;
-            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+            int dataIndex = dataLen - stride;
             int bytesPerPixel = header.PixelDepthBytes;
             int fileBufferIndex = 0;
 
@@ -100,43 +100,52 @@ namespace Pfim
             // fetch another batch of bytes from the stream.
             int maxRead = bytesPerPixel * 128 + 1;
 
-            while (dataIndex >= 0)
+            byte[] filebuffer = config.Allocator.Rent(config.BufferSize);
+            try
             {
-                int colIndex = 0;
-                do
+                int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+                while (dataIndex >= 0)
                 {
-                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == config.BufferSize)
+                    int colIndex = 0;
+                    do
                     {
-                        workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
-                        fileBufferIndex = 0;
-                    }
+                        if (config.BufferSize - fileBufferIndex < maxRead && workingSize == config.BufferSize)
+                        {
+                            workingSize = Util.Translate(str, filebuffer, config.BufferSize, fileBufferIndex);
+                            fileBufferIndex = 0;
+                        }
 
-                    bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
-                    int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
+                        bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                        int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
 
-                    // If the first bit is on, it means that the next packet is run length encoded
-                    if (isRunLength)
-                    {
-                        RunLength(data, filebuffer, dataIndex, fileBufferIndex, bytesPerPixel);
-                        dataIndex += (filebuffer[fileBufferIndex] - 127) * bytesPerPixel;
-                        colIndex += filebuffer[fileBufferIndex] - 127;
-                        fileBufferIndex += count;
-                    }
-                    else
-                    {
-                        int bytcount = count * bytesPerPixel;
-                        fileBufferIndex++;
+                        // If the first bit is on, it means that the next packet is run length encoded
+                        if (isRunLength)
+                        {
+                            RunLength(data, filebuffer, dataIndex, fileBufferIndex, bytesPerPixel);
+                            dataIndex += (filebuffer[fileBufferIndex] - 127) * bytesPerPixel;
+                            colIndex += filebuffer[fileBufferIndex] - 127;
+                            fileBufferIndex += count;
+                        }
+                        else
+                        {
+                            int bytcount = count * bytesPerPixel;
+                            fileBufferIndex++;
 
-                        Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
-                        fileBufferIndex += bytcount;
-                        colIndex += count;
-                        dataIndex += bytcount;
-                    }
-                } while (colIndex < header.Width);
-                dataIndex -= bytesPerPixel * header.Width + stride;
+                            Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
+                            fileBufferIndex += bytcount;
+                            colIndex += count;
+                            dataIndex += bytcount;
+                        }
+                    } while (colIndex < header.Width);
+                    dataIndex -= bytesPerPixel * header.Width + stride;
+                }
+
+                return data;
             }
-
-            return data;
+            finally
+            {
+                config.Allocator.Return(filebuffer);
+            }
         }
 
         public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
@@ -152,11 +161,9 @@ namespace Pfim
         public byte[] TopLeft(Stream str, TargaHeader header, PfimConfig config)
         {
             var stride = Util.Stride(header.Width, header.PixelDepthBits);
-            var data = new byte[header.Height * stride];
+            var data = config.Allocator.Rent(header.Height * stride);
 
-            byte[] filebuffer = new byte[config.BufferSize];
             int dataIndex = 0;
-            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
             int bytesPerPixel = header.PixelDepthBytes;
             int fileBufferIndex = 0;
 
@@ -165,42 +172,52 @@ namespace Pfim
             // fetch another batch of bytes from the stream.
             int maxRead = bytesPerPixel * 128 + 1;
 
-            for (int i = 0; i < header.Height; i++)
+            byte[] filebuffer = config.Allocator.Rent(config.BufferSize);
+            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+
+            try
             {
-                int colIndex = 0;
-                do
+                for (int i = 0; i < header.Height; i++)
                 {
-                    if (filebuffer.Length - fileBufferIndex < maxRead && workingSize == config.BufferSize)
+                    int colIndex = 0;
+                    do
                     {
-                        workingSize = Util.Translate(str, filebuffer, fileBufferIndex);
-                        fileBufferIndex = 0;
-                    }
+                        if (config.BufferSize - fileBufferIndex < maxRead && workingSize == config.BufferSize)
+                        {
+                            workingSize = Util.Translate(str, filebuffer, config.BufferSize, fileBufferIndex);
+                            fileBufferIndex = 0;
+                        }
 
-                    bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
-                    int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
+                        bool isRunLength = (filebuffer[fileBufferIndex] & 128) != 0;
+                        int count = isRunLength ? bytesPerPixel + 1 : filebuffer[fileBufferIndex] + 1;
 
-                    // If the first bit is on, it means that the next packet is run length encoded
-                    if (isRunLength)
-                    {
-                        RunLength(data, filebuffer, dataIndex, fileBufferIndex, bytesPerPixel);
-                        dataIndex += (filebuffer[fileBufferIndex] - 127) * bytesPerPixel;
-                        colIndex += filebuffer[fileBufferIndex] - 127;
-                        fileBufferIndex += count;
-                    }
-                    else
-                    {
-                        int bytcount = count * bytesPerPixel;
-                        fileBufferIndex++;
+                        // If the first bit is on, it means that the next packet is run length encoded
+                        if (isRunLength)
+                        {
+                            RunLength(data, filebuffer, dataIndex, fileBufferIndex, bytesPerPixel);
+                            dataIndex += (filebuffer[fileBufferIndex] - 127) * bytesPerPixel;
+                            colIndex += filebuffer[fileBufferIndex] - 127;
+                            fileBufferIndex += count;
+                        }
+                        else
+                        {
+                            int bytcount = count * bytesPerPixel;
+                            fileBufferIndex++;
 
-                        Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
-                        fileBufferIndex += bytcount;
-                        colIndex += count;
-                        dataIndex += bytcount;
-                    }
-                } while (colIndex < header.Width);
+                            Buffer.BlockCopy(filebuffer, fileBufferIndex, data, dataIndex, bytcount);
+                            fileBufferIndex += bytcount;
+                            colIndex += count;
+                            dataIndex += bytcount;
+                        }
+                    } while (colIndex < header.Width);
+                }
+
+                return data;
             }
-
-            return data;
+            finally
+            {
+                config.Allocator.Return(filebuffer);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

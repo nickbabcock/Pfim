@@ -5,7 +5,7 @@
         private readonly byte[] _firstGradient = new byte[8];
         private readonly byte[] _secondGradient = new byte[8];
 
-        public Bc5Dds(DdsHeader header) : base(header)
+        public Bc5Dds(DdsHeader header, PfimConfig config) : base(header, config)
         {
         }
 

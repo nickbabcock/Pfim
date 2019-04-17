@@ -5,7 +5,7 @@
         private const int PIXEL_DEPTH = 3;
         private const int DIV_SIZE = 4;
 
-        public Dxt1Dds(DdsHeader header) : base(header)
+        public Dxt1Dds(DdsHeader header, PfimConfig config) : base(header, config)
         {
         }
 

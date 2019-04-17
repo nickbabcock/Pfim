@@ -4,6 +4,7 @@ using BenchmarkDotNet.Attributes;
 using DmitryBrant.ImageFormats;
 using FreeImageAPI;
 using ImageMagick;
+using Pfim.Tests;
 using StbSharp;
 using TGASharpLib;
 using DS = DevILSharp;
@@ -18,7 +19,7 @@ namespace Pfim.Benchmarks
 
         private byte[] data;
 
-        private readonly PfimConfig _pfimConfig = new PfimConfig();
+        private readonly PfimConfig _pfimConfig = new PfimConfig(allocator: new PfimAllocator());
 
         [GlobalSetup]
         public void SetupData()
@@ -28,7 +29,13 @@ namespace Pfim.Benchmarks
         }
 
         [Benchmark]
-        public IImage Pfim() => Targa.Create(data, _pfimConfig);
+        public int Pfim()
+        {
+            using (var image = Targa.Create(data, _pfimConfig))
+            {
+                return image.BitsPerPixel;
+            }
+        }
 
         [Benchmark]
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));
@@ -73,7 +80,7 @@ namespace Pfim.Benchmarks
         [Benchmark]
         public int StbSharp() => StbImage.LoadFromMemory(data, StbImage.STBI_rgb_alpha).Width;
 
-        // TgaSharpLib does not neutrally orient targa images until a conversion to bitmap,
+        // TgaSharpLib does not naturally orient targa images until a conversion to bitmap,
         // so to make the comparison apples to apples, we flip the image in the benchmark
         [Benchmark]
         public Bitmap TgaSharpLib() => TGA.FromBytes(data).ToBitmap();

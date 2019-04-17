@@ -9,20 +9,25 @@ namespace Pfim
     /// </summary>
     public abstract class Dds : IImage
     {
+        private readonly PfimConfig _config;
+
         /// <summary>
         /// Instantiates a direct draw surface image from a header, the data,
         /// and additional info.
         /// </summary>
-        protected Dds(DdsHeader header)
+        protected Dds(DdsHeader header, PfimConfig config)
         {
             Header = header;
+            _config = config;
         }
 
+        protected PfimConfig Config => _config;
         public DdsHeader Header { get; }
         public abstract int BitsPerPixel { get; }
         public int BytesPerPixel => BitsPerPixel / 8;
         public virtual int Stride => Util.Stride((int)Header.Width, BitsPerPixel);
         public virtual byte[] Data { get; protected set; }
+        public int DataLen { get; protected set; }
         public int Width => (int)Header.Width;
         public int Height => (int)Header.Height;
         public abstract ImageFormat Format { get; }
@@ -57,32 +62,32 @@ namespace Pfim
             switch (header.PixelFormat.FourCC)
             {
                 case CompressionAlgorithm.D3DFMT_DXT1:
-                    dds = new Dxt1Dds(header);
+                    dds = new Dxt1Dds(header, config);
                     break;
 
                 case CompressionAlgorithm.D3DFMT_DXT2:
                 case CompressionAlgorithm.D3DFMT_DXT4:
                     throw new ArgumentException("Cannot support DXT2 or DXT4");
                 case CompressionAlgorithm.D3DFMT_DXT3:
-                    dds = new Dxt3Dds(header);
+                    dds = new Dxt3Dds(header, config);
                     break;
 
                 case CompressionAlgorithm.D3DFMT_DXT5:
-                    dds = new Dxt5Dds(header);
+                    dds = new Dxt5Dds(header, config);
                     break;
 
                 case CompressionAlgorithm.None:
-                    dds = new UncompressedDds(header);
+                    dds = new UncompressedDds(header, config);
                     break;
 
                 case CompressionAlgorithm.DX10:
                     var header10 = new DdsHeaderDxt10(stream);
-                    dds = header10.NewDecoder(header);
+                    dds = header10.NewDecoder(header, config);
                     dds.Header10 = header10;
                     break;
 
                 case CompressionAlgorithm.ATI2:
-                    dds = new Bc5Dds(header);
+                    dds = new Bc5Dds(header, config);
                     break;
 
                 default:
@@ -97,7 +102,11 @@ namespace Pfim
 
         public void ApplyColorMap()
         {
-            return;
+        }
+
+        public void Dispose()
+        {
+            _config.Allocator.Return(Data);
         }
     }
 }

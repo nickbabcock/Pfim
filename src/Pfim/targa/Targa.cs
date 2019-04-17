@@ -9,15 +9,17 @@ namespace Pfim
     /// </summary>
     public class Targa : IImage
     {
+        private readonly PfimConfig _config;
+
         /// <summary>
         /// Constructs a targa image from a targa image and raw data
         /// </summary>
-        /// <param name="header">The targa header</param>
-        /// <param name="data">The decoded targa data</param>
-        private Targa(TargaHeader header, byte[] data)
+        private Targa(TargaHeader header, PfimConfig config, byte[] data, int dataLen)
         {
+            _config = config;
             Header = header;
             Data = data;
+            DataLen = dataLen;
         }
 
         public static Targa Create(byte[] data, PfimConfig config)
@@ -39,13 +41,13 @@ namespace Pfim
         /// <returns>A targa image</returns>
         public static Targa Create(Stream str, PfimConfig config)
         {
-            var header = new TargaHeader(str);
+            var header = new TargaHeader(str, config);
             return DecodeTarga(str, config, header);
         }
 
         internal static IImage CreateWithPartialHeader(Stream str, PfimConfig config, byte[] magic)
         {
-            var header = new TargaHeader(str, magic);
+            var header = new TargaHeader(str, magic, 4, config);
             return DecodeTarga(str, config, header);
         }
 
@@ -78,14 +80,16 @@ namespace Pfim
                     throw new Exception("Targa orientation not recognized");
             }
 
-            return new Targa(header, data);
+            var stride = Util.Stride(header.Width, header.PixelDepthBits);
+            var len = header.Height * stride;
+            return new Targa(header, config, data, len);
         }
 
         public void ApplyColorMap()
         {
             // Check targa header field 2 and 3 as "it is best to check Field 3, Image Type, 
             // to make sure you have a file which can use the data stored in the Color Map Field.
-            // Otherwise ignore theinformation"
+            // Otherwise ignore the information"
             if (!Header.HasColorMap || 
                 (Header.ImageType != TargaHeader.TargaImageType.RunLengthColorMap &&
                 Header.ImageType != TargaHeader.TargaImageType.UncompressedColorMap)) {
@@ -94,13 +98,14 @@ namespace Pfim
 
             var currentDepthBytes = Header.PixelDepthBytes;
             var colorMapDepthBytes = Header.ColorMapDepthBytes;
-            var newData = new byte[colorMapDepthBytes * Data.Length];
+            var newLen = colorMapDepthBytes * DataLen;
+            var newData = _config.Allocator.Rent(newLen);
             switch (Header.ColorMapDepthBits)
             {
                 case 16:
                 case 24:
                 case 32:
-                    for (int i = 0; i < Data.Length; i += currentDepthBytes)
+                    for (int i = 0; i < DataLen; i += currentDepthBytes)
                     {
                         var colorMapIndex = Data[i] * colorMapDepthBytes;
                         for (int j = 0; j < colorMapDepthBytes; j++)
@@ -113,7 +118,9 @@ namespace Pfim
                     throw new NotImplementedException($"Unrecognized color map depth {Header.ColorMapDepthBits}");
             }
 
+            _config.Allocator.Return(Data);
             Data = newData;
+            DataLen = newLen;
             Header.PixelDepthBits = (byte)Header.ColorMapDepthBits;
             Header.ColorMap = new byte[] { };
             Header.ColorMapLength = 0;
@@ -123,6 +130,8 @@ namespace Pfim
 
         /// <summary>The raw image data</summary>
         public byte[] Data { get; private set; }
+
+        public int DataLen { get; private set; }
 
         public TargaHeader Header { get; private set; }
 
@@ -151,6 +160,11 @@ namespace Pfim
                     default: throw new Exception($"Unrecognized pixel depth: {Header.PixelDepthBits}");
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _config.Allocator.Return(Data);
         }
     }
 }

@@ -62,15 +62,15 @@ namespace Pfim
 
         private const int MINIMUM_SIZE = 18;
 
-        internal TargaHeader(Stream str, byte[] partial)
+        internal TargaHeader(Stream str, byte[] partial, int partialLen, PfimConfig config)
         {
-            DecodeTargaHeader(str, partial);
+            DecodeTargaHeader(str, partial, partialLen, config);
         }
 
         /// <summary>
         /// Instantiate a targa header from a given stream. The stream will be parsed
         /// </summary>
-        public TargaHeader(Stream str)
+        public TargaHeader(Stream str, PfimConfig config)
         {
             byte[] buf = new byte[MINIMUM_SIZE];
             if (str.Read(buf, 0, MINIMUM_SIZE) != MINIMUM_SIZE)
@@ -78,30 +78,31 @@ namespace Pfim
                 throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
             }
 
-            DecodeTargaHeader(str, buf);
+            DecodeTargaHeader(str, buf, MINIMUM_SIZE, config);
         }
 
-        private void DecodeTargaHeader(Stream str, byte[] partial)
+        private void DecodeTargaHeader(Stream str, byte[] partial, int partialLen, PfimConfig config)
         {
             byte[] buf;
-            if (partial.Length == MINIMUM_SIZE)
+
+            if (partialLen == MINIMUM_SIZE)
             {
                 buf = partial;
             }
-            else if (partial.Length > MINIMUM_SIZE)
+            else if (partialLen > MINIMUM_SIZE)
             {
                 throw new ArgumentException($"Partial header can't exceed {MINIMUM_SIZE} bytes");
             }
             else
             {
                 buf = new byte[MINIMUM_SIZE];
-                var left = MINIMUM_SIZE - partial.Length;
-                for (int i = 0; i < partial.Length; i++)
+                var left = MINIMUM_SIZE - partialLen;
+                for (int i = 0; i < partialLen; i++)
                 {
                     buf[i] = partial[i];
                 }
 
-                if (str.Read(buf, partial.Length, left) != left)
+                if (str.Read(buf, partialLen, left) != left)
                 {
                     throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
                 }
@@ -109,7 +110,7 @@ namespace Pfim
 
             IDLength = buf[0];
             HasColorMap = buf[1] == 1;
-            ImageType = (TargaImageType) buf[2];
+            ImageType = (TargaImageType)buf[2];
             if (!Enum.IsDefined(typeof(TargaImageType), ImageType))
             {
                 throw new ArgumentException("Detected invalid targa image");
@@ -125,13 +126,13 @@ namespace Pfim
             PixelDepthBits = buf[16];
 
             // Extract the bits in place 4 and 5 for orientation
-            Orientation = (TargaOrientation) ((buf[17] >> 4) & 3);
+            Orientation = (TargaOrientation)((buf[17] >> 4) & 3);
 
             if (IDLength != 0)
             {
-                buf = new byte[IDLength];
-                str.Read(buf, 0, IDLength);
-                ImageId = Encoding.Unicode.GetString(buf, 0, buf.Length);
+                var idBuf = new byte[IDLength];
+                var amount = str.Read(idBuf, 0, IDLength);
+                ImageId = Encoding.Unicode.GetString(idBuf, 0, amount);
             }
 
             if (HasColorMap)
