@@ -28,6 +28,11 @@ steps:
       projects: '**/Pfim.csproj'
       arguments: -f $(standard)
   - task: DotNetCoreCLI@2
+    displayName: ImageSharp Sample Build
+    inputs:
+      command: build
+      projects: '**/Pfim.ImageSharp.csproj'
+  - task: DotNetCoreCLI@2
     displayName: Windows Test
     condition: eq(variables['image'], 'vs2017-win2016')
     inputs:
