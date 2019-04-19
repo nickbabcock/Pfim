@@ -48,10 +48,18 @@ namespace Pfim.Tests
         [InlineData("wose_BC1_UNORM.DDS", 12101904599740452605, ImageFormat.Rgb24)]
         [InlineData("wose_BC1_UNORM_SRGB.DDS", 10469302966092815447, ImageFormat.Rgb24)]
         [InlineData("wose_R8G8B8A8_UNORM_SRGB.DDS", 18111997681897362439, ImageFormat.Rgba32)]
-        public void TestImageProperties(string path, ulong hash, ImageFormat format)
+        [InlineData("bench\\32bit.dds", 15068097721520544352, ImageFormat.Rgba32)]
+        [InlineData("bench\\dxt3.dds", 15068097721520544352, ImageFormat.Rgba32)]
+        [InlineData("bench\\dxt5.dds", 15068097721520544352, ImageFormat.Rgba32)]
+        [InlineData("bench\\32bit.tga", 15068097721520544352, ImageFormat.Rgba32)]
+        [InlineData("bench\\32bit-rle.tga", 15068097721520544352, ImageFormat.Rgba32)]
+        [InlineData("bench\\24bit-rle.tga", 2999539589530288153, ImageFormat.Rgb24)]
+        [InlineData("bench\\dxt1.dds", 2999539589530288153, ImageFormat.Rgb24)]
+        public void TestImageProperties(string allPath, ulong hash, ImageFormat format)
         {
-            var data = File.ReadAllBytes(Path.Combine("data", path));
-            var image = Pfim.FromFile(Path.Combine("data", path));
+            var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
+            var data = File.ReadAllBytes(path);
+            var image = Pfim.FromFile(path);
             var image2 = Pfim.FromStream(new MemoryStream(data), new PfimConfig());
             Assert.NotEqual(0, image.DataLen);
             Assert.NotEqual(0, image2.DataLen);
