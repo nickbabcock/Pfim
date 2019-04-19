@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pfim\Pfim.csproj" />
-    <None CopyToOutputDirectory="Always" Include="..\..\tests\Pfim.Tests\data\*" />
+    <None CopyToOutputDirectory="Always" Include="..\..\tests\Pfim.Tests\data\bench\*" LinkBase="bench\" />
     <None CopyToOutputDirectory="Always" Include="..\..\lib\FreeImage.dll" />
     <Compile Include="..\..\lib\TargaImage.cs" />
     <Compile Include="..\..\lib\TGASharpLib.cs" Link="TGASharpLib.cs" />

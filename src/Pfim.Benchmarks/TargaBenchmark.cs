@@ -14,7 +14,7 @@ namespace Pfim.Benchmarks
     [Config(typeof(BaseConfig))]
     public class TargaBenchmark
     {
-        [Params("true-32-rle-large.tga", "true-24-large.tga", "true-24.tga", "true-32-rle.tga", "rgb24_top_left.tga")]
+        [Params("32bit-rle.tga", "24bit-rle.tga", "32bit.tga")]
         public string Payload { get; set; }
 
         private byte[] data;
@@ -24,7 +24,7 @@ namespace Pfim.Benchmarks
         [GlobalSetup]
         public void SetupData()
         {
-            data = File.ReadAllBytes(Payload);
+            data = File.ReadAllBytes(Path.Combine("bench", Payload));
             DS.Bootstrap.Init();
         }
 
