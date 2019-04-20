@@ -10,7 +10,7 @@ namespace Pfim.Benchmarks
     [Config(typeof(BaseConfig))]
     public class DdsBenchmark
     {
-        [Params("dxt1-simple.dds", "dxt3-simple.dds", "dxt5-simple.dds", "32-bit-uncompressed.dds")]
+        [Params("dxt1.dds", "dxt3.dds", "dxt5.dds", "32bit.dds")]
         public string Payload { get; set; }
 
         private byte[] data;
@@ -20,7 +20,7 @@ namespace Pfim.Benchmarks
         [GlobalSetup]
         public void SetupData()
         {
-            data = File.ReadAllBytes(Payload);
+            data = File.ReadAllBytes(Path.Combine("bench", Payload));
             DS.Bootstrap.Init();
         }
 
