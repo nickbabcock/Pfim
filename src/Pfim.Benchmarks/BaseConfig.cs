@@ -21,7 +21,6 @@ namespace Pfim.Benchmarks
             Add(StatisticColumn.StdErr);
             Add(StatisticColumn.StdDev);
             Add(StatisticColumn.Median);
-            Add(new Job("net-ryu-64bit", EnvironmentMode.RyuJitX64));
         }
     }
 }
