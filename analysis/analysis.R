@@ -1,75 +1,53 @@
 library(tidyverse)
 library(readr)
-library(gdata)
+library(tools)
 
 # Combine the targa and dds benchmarks into a single data frame
-df <- rbind(read_csv("TargaBenchmark-report.csv"), read_csv("DdsBenchmark-report.csv"))
+df <- rbind(read_csv("TargaBenchmark-report.csv"), read_csv("DdsBenchmark-report.csv")) %>%
+  select(Method, Payload, Median)
 
-# Since the payload names are not entirely display friendly, convert them
-# into a more presentable form
-payload_name <- Vectorize(function(payload) {
-  switch(payload,
-         "true-24-large.tga" = "24Bit Large TGA",
-         "true-24.tga" = "24Bit Small TGA",
-         "true-32-rle-large.tga" = "32Bit RLE Large TGA",
-         "true-32-rle.tga" = "32Bit RLE Small TGA",
-         "rgb24_top_left.tga" = "24Bit TopLeft TGA",
-         "32-bit-uncompressed.dds" = "Uncompressed DDS",
-         "dxt1-simple.dds" = "DXT1 DDS",
-         "dxt3-simple.dds" = "DXT3 DDS",
-         "dxt5-simple.dds" = "DXT5 DDS")
+# Format nanoseconds to microseconds
+format_units <- Vectorize(function(ns) {
+  if (is.na(ns)) {
+    "NA"
+  } else {
+    format(round(ns / 1000, 2), digits = 3)
+  }
 })
 
 # For each image, group all the contestants together and compute the relative
 # throughput for each one by taking their median time to decode and dividing
 # it by the fastest median in the group.
-throughput <- df %>% mutate(Payload = payload_name(Payload)) %>%
+throughput <- df %>%
   group_by(Payload) %>%
   mutate(Relative = min(Median) / Median) %>%
   ungroup() %>%
-  select(Method, Payload, Relative) %>%
-  complete(Method, Payload)
+  complete(Method, Payload) %>%
+  mutate(ImageType = ifelse(file_ext(Payload) == 'dds', "Direct Draw Surface", "Targa"))
 
-ggplot(throughput, aes(Method, Payload)) +
+ggplot(throughput, aes(Method, file_path_sans_ext(Payload))) +
   geom_tile(aes(fill = Relative), color = "white") +
+  facet_grid(ImageType ~ ., scales = "free_y", switch = "y") +
   scale_x_discrete(position = "top") +
-  scale_fill_gradient(name = "Throughput", low = "white", high = "steelblue", na.value = "#D8D8D8") +
+  scale_fill_gradient(name = "Relative", low = "white", high = "steelblue", na.value = "#D8D8D8", guide = FALSE) +
   xlab("Decoding Library") +
-  ylab("Image Decoded") +
-  geom_text(aes(label = ifelse(is.na(Relative), "NA", format(round(Relative, 2), digits = 3)))) +
-  ggtitle("Image Decoding with Relative Throughput",
-          subtitle = "For Targa and Direct Draw Surface Images on the .NET platform. (Blue = Highest Throughput)")
+  ylab("Image") +
+  geom_text(aes(label = format_units(Median))) +
+  ggtitle("Decoding Targa and Direct Draw Surface Images on .NET",
+          subtitle = paste("Median time to decode (μs) images across libraries.",
+                           "Cells shaded blue relative to the fastest decoder for a given image.", sep = "\n")) +
+  labs(caption = "Images marked 'NA' were unable to be decoded by the library")
+ggsave('median-decode.png', width = 8, height = 5, dpi = 96)
 
-memory <- df %>% mutate(Payload = payload_name(Payload)) %>%
-  filter(!(Method %in% c("DevILSharp", "FreeImage", "ImageMagick"))) %>%
-  group_by(Payload) %>%
-  mutate(Relative = Allocated /  min(Allocated)) %>%
-  ungroup() %>%
-  select(Method, Payload, Relative, Allocated) %>%
-  complete(Method, Payload)
 
-ggplot(memory, aes(Method, Payload)) +
-  geom_tile(aes(fill = Relative), color = "white") +
-  scale_x_discrete(position = "top") +
-  scale_fill_gradient(name = "Relative ↑", low = "white", high = "#E63946", na.value = "#D8D8D8") +
-  xlab("Decoding Library") +
-  ylab("Image Decoded") +
-  geom_text(aes(label = ifelse(is.na(Relative), "NA", format(round(Relative, 2), digits = 3)))) +
-  ggtitle("Image Decoding with Relative Memory Allocation",
-          subtitle = "For Targa and Direct Draw Surface Images on the .NET platform.\nRelative allocations for a given image (red = more allocations)") +
-  labs(caption = ".NET dependencies that use native code for decoding are not shown")
-
-format_allocated <- Vectorize(function(alloc) {
-  ifelse(is.na(alloc), "NA", humanReadable(alloc, standard = "SI", digits = 0))
-})
-
-ggplot(memory, aes(Method, Payload)) +
-  geom_tile(aes(fill = Allocated), color = "white") +
-  scale_x_discrete(position = "top") +
-  scale_fill_gradient(name = "Memory", low = "white", high = "#E63946", na.value = "#D8D8D8", labels = format_allocated) +
-  xlab("Decoding Library") +
-  ylab("Image Decoded") +
-  geom_text(aes(label = format_allocated(Allocated))) +
-  ggtitle("Image Decoding with Total Memory Allocation",
-          subtitle = "For Targa and Direct Draw Surface Images on the .NET platform") +
-  labs(caption = ".NET dependencies that use native code for decoding are not shown")
+ps <- throughput %>% drop_na(Median) %>% mutate(PS = 10^9 / Median)
+ggplot(ps, aes(file_path_sans_ext(Payload), PS, fill=Method)) +
+  geom_bar(stat="identity", position=position_dodge(), width = 0.75) +
+  ylab("Decodes per Second") +
+  xlab("Image") +
+  scale_y_continuous(labels = scales::comma) +
+  coord_flip() +
+  facet_grid(ImageType ~ ., scales = "free_y", switch = "y") +
+  ggtitle("Decoding Targa and Direct Draw Surface Images on .NET",
+          subtitle = "Number of image decodes per second across libraries")
+ggsave('decode-per-second.png', width = 8, height = 5, dpi = 96)
