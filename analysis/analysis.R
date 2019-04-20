@@ -1,6 +1,7 @@
 library(tidyverse)
 library(readr)
 library(tools)
+library(RColorBrewer)
 
 # Combine the targa and dds benchmarks into a single data frame
 df <- rbind(read_csv("TargaBenchmark-report.csv"), read_csv("DdsBenchmark-report.csv")) %>%
@@ -32,11 +33,13 @@ ggplot(throughput, aes(Method, file_path_sans_ext(Payload))) +
   scale_fill_gradient(name = "Relative", low = "white", high = "steelblue", na.value = "#D8D8D8", guide = FALSE) +
   xlab("Decoding Library") +
   ylab("Image") +
+  scale_y_discrete(position = "right") +
+  theme(strip.text.y = element_text(size = 12)) +
   geom_text(aes(label = format_units(Median))) +
   ggtitle("Decoding Targa and Direct Draw Surface Images on .NET",
           subtitle = paste("Median time to decode (μs) images across libraries.",
                            "Cells shaded blue relative to the fastest decoder for a given image.", sep = "\n")) +
-  labs(caption = "Images marked 'NA' were unable to be decoded by the library")
+  labs(caption = "NA: Not applicable: decoding library doesn't interpret said format")
 ggsave('median-decode.png', width = 8, height = 5, dpi = 96)
 
 
@@ -46,6 +49,9 @@ ggplot(ps, aes(file_path_sans_ext(Payload), PS, fill=Method)) +
   ylab("Decodes per Second") +
   xlab("Image") +
   scale_y_continuous(labels = scales::comma) +
+  scale_x_discrete(position = "left") +
+  theme(strip.text.y = element_text(size = 12)) +
+  scale_fill_brewer(palette = "Dark2") +
   coord_flip() +
   facet_grid(ImageType ~ ., scales = "free_y", switch = "y") +
   ggtitle("Decoding Targa and Direct Draw Surface Images on .NET",
