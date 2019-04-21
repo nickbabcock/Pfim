@@ -51,7 +51,9 @@ namespace Pfim.Viewer
 
         private static IImage ParseImage(string file)
         {
-            return Pfim.FromFile(file);
+            var result = Pfim.FromFile(file);
+            result.ApplyColorMap();
+            return result;
         }
 
         private static Image WpfImage(IImage image)
@@ -80,8 +82,21 @@ namespace Pfim.Viewer
                     format = PixelFormats.Bgr32;
                     break;
 
+                case ImageFormat.Rgb8:
+                    format = PixelFormats.Gray8;
+                    break;
+
+                case ImageFormat.R5g5b5a1:
+                case ImageFormat.R5g5b5:
+                    format = PixelFormats.Bgr555;
+                    break;
+
+                case ImageFormat.R5g6b5:
+                    format = PixelFormats.Bgr565;
+                    break;
+
                 default:
-                    throw new Exception("Format not recognized");
+                    throw new Exception($"Unable to convert {image.Format} to WPF PixelFormat");
             }
 
             // Create a WPF ImageSource and then set an Image to our variable.
