@@ -72,25 +72,24 @@ namespace Pfim.Viewer.Forms
                 handle.Free();
             }
 
+            // Pin image data as the picture box can outlive the Pfim Image
+            // object, which, unless pinned, will garbage collect the data
+            // array causing image corruption.
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
-            unsafe
-            {
-                fixed (byte* p = image.Data)
-                {
-                    var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr) p);
-                    if (format == PixelFormat.Format8bppIndexed)
-                    {
-                        var palette = bitmap.Palette;
-                        for (int i = 0; i < 256; i++)
-                        {
-                            palette.Entries[i] = Color.FromArgb((byte)i, (byte)i, (byte)i);
-                        }
-                        bitmap.Palette = palette;
-                    }
+            var ptr = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
+            var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, ptr);
 
-                    pictureBox.Image = bitmap;
+            if (format == PixelFormat.Format8bppIndexed)
+            {
+                var palette = bitmap.Palette;
+                for (int i = 0; i < 256; i++)
+                {
+                    palette.Entries[i] = Color.FromArgb((byte)i, (byte)i, (byte)i);
                 }
+                bitmap.Palette = palette;
             }
+
+            pictureBox.Image = bitmap;
         }
     }
 }
