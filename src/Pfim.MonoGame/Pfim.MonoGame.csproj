@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None CopyToOutputDirectory="Always" Include="..\..\tests\Pfim.Tests\data\*" LinkBase="data\"/>
+    <ProjectReference Include="..\Pfim\Pfim.csproj" />
+  </ItemGroup>
+
+</Project>
