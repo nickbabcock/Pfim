@@ -262,6 +262,24 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void TargaColorMapIdempotent()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"));
+            var firstData = image.Data;
+            var firstLen = image.DataLen;
+            image.ApplyColorMap();
+            var secondData = image.Data;
+            var secondLen = image.DataLen;
+            image.ApplyColorMap();
+            var thirdData = image.Data;
+            var thirdLen = image.DataLen;
+
+            Assert.NotEqual(firstLen, secondLen);
+            Assert.Equal(secondLen, thirdLen);
+            Assert.True(ReferenceEquals(secondData, thirdData));
+        }
+
+        [Fact]
         public void ParseTargaTopLeftRleStride()
         {
             var data = File.ReadAllBytes(Path.Combine("data", "DSCN1910_24bpp_uncompressed_10_2.tga"));
