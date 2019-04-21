@@ -30,7 +30,6 @@ namespace Pfim.Viewer.Forms
             }
 
             var image = Pfim.FromFile(dialog.FileName);
-            image.ApplyColorMap();
 
             PixelFormat format;
             switch (image.Format)
@@ -79,6 +78,8 @@ namespace Pfim.Viewer.Forms
             var ptr = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
             var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, ptr);
 
+            // While frameworks like WPF and ImageSharp natively understand 8bit gray values.
+            // WinForms can only work with an 8bit palette that we construct of gray values.
             if (format == PixelFormat.Format8bppIndexed)
             {
                 var palette = bitmap.Palette;

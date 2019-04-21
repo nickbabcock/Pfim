@@ -82,7 +82,14 @@ namespace Pfim
 
             var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var len = header.Height * stride;
-            return new Targa(header, config, data, len);
+            var result = new Targa(header, config, data, len);
+
+            if (config.ApplyColorMap)
+            {
+                result.ApplyColorMap();
+            }
+
+            return result;
         }
 
         public void ApplyColorMap()

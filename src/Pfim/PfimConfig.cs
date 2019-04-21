@@ -6,13 +6,17 @@
             int bufferSize = 0x8000,
             TargetFormat targetFormat = TargetFormat.Native,
             bool decompress = true,
-            IImageAllocator allocator = null)
+            IImageAllocator allocator = null,
+            bool applyColorMap = true)
         {
             Allocator = allocator ?? new DefaultAllocator();
             BufferSize = bufferSize;
             TargetFormat = targetFormat;
             Decompress = decompress;
+            ApplyColorMap = applyColorMap;
         }
+
+        public bool ApplyColorMap { get; }
 
         public IImageAllocator Allocator { get; }
         public int BufferSize { get; }
@@ -29,14 +33,17 @@
 
         protected bool Equals(PfimConfig other)
         {
-            return Equals(Allocator, other.Allocator) && BufferSize == other.BufferSize && TargetFormat == other.TargetFormat && Decompress == other.Decompress;
+            return ApplyColorMap == other.ApplyColorMap && Allocator.Equals(other.Allocator) &&
+                   BufferSize == other.BufferSize && TargetFormat == other.TargetFormat &&
+                   Decompress == other.Decompress;
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = (Allocator != null ? Allocator.GetHashCode() : 0);
+                var hashCode = ApplyColorMap.GetHashCode();
+                hashCode = (hashCode * 397) ^ Allocator.GetHashCode();
                 hashCode = (hashCode * 397) ^ BufferSize;
                 hashCode = (hashCode * 397) ^ (int) TargetFormat;
                 hashCode = (hashCode * 397) ^ Decompress.GetHashCode();
@@ -46,7 +53,7 @@
 
         public override string ToString()
         {
-            return $"{nameof(Allocator)}: {Allocator}, {nameof(BufferSize)}: {BufferSize}, {nameof(TargetFormat)}: {TargetFormat}, {nameof(Decompress)}: {Decompress}";
+            return $"{nameof(ApplyColorMap)}: {ApplyColorMap}, {nameof(Allocator)}: {Allocator}, {nameof(BufferSize)}: {BufferSize}, {nameof(TargetFormat)}: {TargetFormat}, {nameof(Decompress)}: {Decompress}";
         }
     }
 }

@@ -51,9 +51,7 @@ namespace Pfim.Viewer
 
         private static IImage ParseImage(string file)
         {
-            var result = Pfim.FromFile(file);
-            result.ApplyColorMap();
-            return result;
+            return Pfim.FromFile(file);
         }
 
         private static Image WpfImage(IImage image)
