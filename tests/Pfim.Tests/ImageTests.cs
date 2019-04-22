@@ -69,9 +69,6 @@ namespace Pfim.Tests
 
             using (var image3 = Pfim.FromStream(new MemoryStream(data), new PfimConfig(allocator: allocator)))
             {
-                image.ApplyColorMap();
-                image2.ApplyColorMap();
-                image3.ApplyColorMap();
                 Assert.Equal(format, image.Format);
                 Assert.Equal(image.Format, image2.Format);
                 Assert.Equal(hash, Hash64(image.Data, image.DataLen));
