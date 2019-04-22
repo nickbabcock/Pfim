@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Text;
 
 namespace Pfim
 {
@@ -204,6 +206,91 @@ namespace Pfim
             // Even if not being used for Windows GDI+ there isn't a anything
             // bad with having extra space.
             return 4 * ((width * bytesPerPixel + 3) / 4);
+        }
+		
+        /// <summary>
+        /// Creates string representation of object in format:
+        /// --- CLASS NAME ---
+        /// Property = value
+        /// ...
+        /// --- END CLASS NAME ---
+        /// </summary>
+        /// <param name="obj">Object to get property description of.</param>
+        /// <param name="IsSubClass">True = Adds whitespace before and after, and uses less ---.</param>
+        /// <returns>String of object.</returns>
+        public static string StringifyObject(object obj, bool IsSubClass = false)
+        {
+            StringBuilder sb = new StringBuilder();
+            var classname = TypeDescriptor.GetClassName(obj);
+            string tags = IsSubClass ? "--" : "---";
+
+            if (IsSubClass)
+                sb.AppendLine();
+
+            sb.AppendLine($"{tags} {classname} {tags}");
+            sb.AppendLine((IsSubClass ? "    " : "") + "PROPERTIES");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
+                sb.AppendLine((IsSubClass ? "    " : "") + $"{descriptor.Name} = {descriptor.GetValue(obj)}");
+
+            sb.AppendLine((IsSubClass ? "    " : "") + "FIELDS");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(obj))
+                sb.AppendLine((IsSubClass ? "    " : "") + $"{descriptor.Name} = {descriptor.GetValue(obj)}");
+
+            sb.AppendLine($"{tags} END {classname} {tags}");
+            sb.AppendLine();
+
+            if (IsSubClass)
+                sb.AppendLine();
+
+            return sb.ToString();
+        }		
+		
+		/// <summary>
+		/// Reads a number of bytes from stream at the current position and advances that number of bytes.
+		/// </summary>
+		/// <param name="stream">Stream to read from.</param>
+		/// <param name="Length">Number of bytes to read.</param>
+		/// <returns>Bytes read from stream.</returns>
+		public static byte[] ReadBytes(this Stream stream, int Length)
+		{
+			byte[] bytes = new byte[Length];
+			stream.Read(bytes, 0, Length);
+			return bytes;
+		}		
+		
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Used in BC6.cs, because .NET Core's Color object doesn't have FromScRgb() function,
+        /// so it was replaced by FromArgb().
+        /// </remarks>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static byte ColorFloatToByte(float val)
+        {
+            if (!(val > 0.0)) // Handles NaN case too
+                return (0);
+            else if (val <= 0.0031308)
+                return ((byte)((255.0f * val * 12.92f) + 0.5f));
+            else if (val < 1.0)
+                return ((byte)((255.0f * ((1.055f *
+                                           (float)Math.Pow((double)val, (1.0 / 2.4))) - 0.055f)) + 0.5f));
+            else
+                return (255);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="toCheck"></param>
+        /// <param name="comp"></param>
+        /// <returns></returns>
+        /// <remarks>Or just better upgrade to .NET Core >= 2.2</remarks>
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source?.IndexOf(toCheck, comp) >= 0;
         }
     }
 }
