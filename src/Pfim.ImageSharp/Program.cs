@@ -21,8 +21,6 @@ namespace Pfim.ImageSharp
         {
             using (var image = Pfim.FromFile(file))
             {
-                image.ApplyColorMap();
-
                 byte[] newData;
 
                 // Since image sharp can't handle data with line padding in a stride

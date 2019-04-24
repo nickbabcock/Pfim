@@ -69,9 +69,6 @@ namespace Pfim.MonoGame
         private Texture2D CreateTexture(string file)
         {
             var image = Pfim.FromFile(file);
-
-            image.ApplyColorMap();
-
             byte[] newData;
 
             // Since mono game can't handle data with line padding in a stride
