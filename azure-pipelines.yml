@@ -33,6 +33,11 @@ steps:
       command: build
       projects: '**/Pfim.ImageSharp.csproj'
   - task: DotNetCoreCLI@2
+    displayName: Skia Sample Build
+    inputs:
+      command: build
+      projects: '**/Pfim.Skia.csproj'
+  - task: DotNetCoreCLI@2
     displayName: Windows Test
     condition: eq(variables['image'], 'vs2017-win2016')
     inputs:
