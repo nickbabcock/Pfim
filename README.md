@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="analysis/pfim.viewer.png?raw=true">
+  <img src="analysis/pfim-viewer.png?raw=true">
 <br/>
 Pfim
 </h1>
