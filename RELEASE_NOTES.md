@@ -1,3 +1,17 @@
+### 0.7.0
+
+* Added: `Pfim.FromStream` to decode tga or dds image from a stream. Pfim will heuristically determine what image based on the header.
+* Added: `IImageAllocator` that will allow one to pool intermediate byte buffers as well as the resulting data buffer. This is to reduce memory usage and GC pressure. Benchmarks have naive pooling implementations showing up to a 3x performance improvement. Set a custom allocator through `PfimConfig`
+* Changed: Targa color maps are applied by default (so no need to write `IImage::ApplyColorMap` every time). If this behavior is not desired, one can set `applyColorMap` to false in `PfimConfig`.
+* Changed: `IImage` implements `IDisposable` (so that the allocator can reclaim the data buffer). While disposing an image is only necessary when a custom allocator is supplied, the best practice is to still dispose an image:
+
+```csharp
+using (var image = Pfim.FromFile(file)) { }
+```
+
+* Changed: `Pfim.FromFile` no longer determines the image type by file extension. Instead it will heuristically determine the image type based on the file header.
+* Changed: Exception thrown on invalid targa image types (3rd byte in the header) 
+
 ### 0.6.0 - March 28th 2019
 
 * Added: `IImage::ApplyColorMap`, which will apply a colormap to the image, overwriting previous data and metadata like format, stride, pixel depth, etc. An example of a colormap is when an image only uses 256 colors. Instead of consuming 32 bits per pixel on disk, the image data instead will consist of 8 bit indices into the colormap located in the header of an image.
