@@ -1,4 +1,4 @@
-### 0.7.0
+### 0.7.0 - April 27th 2019
 
 * Added: `Pfim.FromStream` to decode tga or dds image from a stream. Pfim will heuristically determine what image based on the header.
 * Added: `IImageAllocator` that will allow one to pool intermediate byte buffers as well as the resulting data buffer. This is to reduce memory usage and GC pressure. Benchmarks have naive pooling implementations showing up to a 3x performance improvement. Set a custom allocator through `PfimConfig`
