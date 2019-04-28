@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://nickbabcock.github.io/Pfim/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nickbabcock/Pfim</RepositoryUrl>
-    <PackageIconUrl>https://nickbabcock.github.io/Pfim/logo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/nickbabcock/Pfim/master/analysis/logo.png?raw=true</PackageIconUrl>
 
     <Major>0</Major>
     <Minor>7</Minor>
