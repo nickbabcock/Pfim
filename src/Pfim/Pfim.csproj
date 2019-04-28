@@ -16,7 +16,7 @@
     <PackageIconUrl>https://nickbabcock.github.io/Pfim/logo.png</PackageIconUrl>
 
     <Major>0</Major>
-    <Minor>6</Minor>
+    <Minor>7</Minor>
     <Revision>0</Revision>
     <AssemblyVersion>$(Major).$(Minor).$(Revision)</AssemblyVersion>
     <AssemblyFileVersion>$(Major).$(Minor).$(Revision)</AssemblyFileVersion>
