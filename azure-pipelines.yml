@@ -1,17 +1,14 @@
 strategy:
   matrix:
-    windows-1.3:
-      image: 'vs2017-win2016'
-      standard: 'netstandard1.3'
     windows:
       image: 'vs2017-win2016'
-      standard: 'netstandard1.0'
+      standard: 'netstandard2.0'
     mac:
       image: 'macos-10.13'
-      standard: 'netstandard1.0'
+      standard: 'netstandard2.0'
     linux:
       image: 'ubuntu-16.04'
-      standard: 'netstandard1.0'
+      standard: 'netstandard2.0'
 
 pool:
   vmImage: $(image)
