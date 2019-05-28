@@ -13,17 +13,10 @@ namespace Pfim
         /// </summary>
         private const int BUFFER_SIZE = 0x8000;
 
-#if NETSTANDARD1_3
         internal static MemoryStream CreateExposed(byte[] data)
         {
             return new MemoryStream(data, 0, data.Length, false, true);
         }
-#else
-        internal static MemoryStream CreateExposed(byte[] data)
-        {
-            return new MemoryStream(data, 0, data.Length);
-        }
-#endif
 
         /// <summary>
         /// Takes all the bytes at and after an index and moves them to the front and fills the rest
@@ -90,7 +83,6 @@ namespace Pfim
         }
 
 
-#if NETSTANDARD1_3
         public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE)
         {
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
@@ -102,12 +94,6 @@ namespace Pfim
                 InnerFill(stream, data, dataLen, bufSize);
             }
         }
-#else
-        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE)
-        {
-            InnerFill(stream, data, dataLen, bufSize);
-        }
-#endif
 
         public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE)
         {

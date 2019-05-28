@@ -9,7 +9,6 @@ namespace Pfim
     /// </summary>
     public class CompressedTarga : IDecodeTarga
     {
-#if NETSTANDARD1_3
         unsafe byte[] FastPass(byte[] data, ArraySegment<byte> arr, TargaHeader header, int stride, long arrPosition)
         {
             var dataLen = header.Height * stride;
@@ -75,7 +74,6 @@ namespace Pfim
 
             return data;
         }
-#endif
 
         /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
@@ -84,12 +82,10 @@ namespace Pfim
             var dataLen = header.Height * stride;
             var data = config.Allocator.Rent(dataLen);
 
-#if NETSTANDARD1_3
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 return FastPass(data, arr, header, stride, s.Position);
             }
-#endif
 
             int dataIndex = dataLen - stride;
             int bytesPerPixel = header.PixelDepthBytes;
