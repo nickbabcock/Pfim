@@ -19,7 +19,6 @@ namespace Pfim
             return data;
         }
 
-#if NETSTANDARD1_3
         private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int dataLen, int stride, int rowBits)
         {
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
@@ -45,20 +44,6 @@ namespace Pfim
                 }
             }
         }
-#else
-        private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int dataLen, int stride, int rowBits)
-        {
-            var buffer = config.Allocator.Rent(config.BufferSize);
-            try
-            {
-                Util.FillBottomLeft(str, data, dataLen, rowBits / 8, stride, buffer, config.BufferSize);
-            }
-            finally
-            {
-                config.Allocator.Return(buffer);
-            }
-        }
-#endif
 
         public byte[] BottomRight(Stream str, TargaHeader header, PfimConfig config)
         {

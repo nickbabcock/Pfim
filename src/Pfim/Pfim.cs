@@ -6,7 +6,6 @@ namespace Pfim
     /// <summary>Decodes images into a uniform structure</summary>
     public static class Pfim
     {
-#if NETSTANDARD1_3
         public static IImage FromFile(string path)
         {
             return FromFile(path, new PfimConfig());
@@ -26,7 +25,6 @@ namespace Pfim
                 return FromStream(fs, config);
             }
         }
-#endif
 
         public static IImage FromStream(Stream stream)
         {

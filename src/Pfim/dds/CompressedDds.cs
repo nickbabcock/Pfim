@@ -47,14 +47,12 @@ namespace Pfim
         /// <summary>Decode data into raw rgb format</summary>
         public byte[] DataDecode(Stream stream, PfimConfig config)
         {
-#if NETSTANDARD1_3
             // If we are decoding in memory data, decode stream from that instead of
             // an intermediate buffer
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 return InMemoryDecode(arr.Array, (int)s.Position);
             }
-#endif
 
             var stride = DeflatedStrideBytes;
             var stridePixels = StridePixels;
