@@ -172,6 +172,7 @@ namespace Pfim.Tests
         [InlineData("dxt5-simple-odd.dds")]
         [InlineData("dxt5-simple-1x1.dds")]
         [InlineData("Antenna_Metal_0_Normal.dds")]
+        [InlineData("wose_BC1_UNORM.DDS")]
         public void TestDdsCompression(string path)
         {
             var data = File.ReadAllBytes(Path.Combine("data", path));
