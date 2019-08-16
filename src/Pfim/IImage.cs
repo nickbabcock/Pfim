@@ -36,8 +36,10 @@ namespace Pfim
 
         /// <summary>Decompress the image. Will have no effect if not compressed</summary>
         void Decompress();
-
+          
         ///<summary>Apply colormap, may change data and image format</summary>
         void ApplyColorMap();
+
+        MipMapOffset[] MipMaps { get; }
     }
 }

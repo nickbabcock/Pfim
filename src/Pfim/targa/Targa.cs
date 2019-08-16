@@ -135,6 +135,8 @@ namespace Pfim
             Header.ColorMapDepthBits = 0;
         }
 
+        public MipMapOffset[] MipMaps => new MipMapOffset[0];
+
         /// <summary>The raw image data</summary>
         public byte[] Data { get; private set; }
 

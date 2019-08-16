@@ -81,27 +81,33 @@ namespace Pfim
             for (int i = 0; i < rem; i++)
                 buffer[length - i - 1] = value;
         }
-
-
-        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE)
+        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE, int offset = 0)
         {
             if (stream is MemoryStream s && s.TryGetBuffer(out var arr))
             {
-                Buffer.BlockCopy(arr.Array, (int)s.Position, data, 0, dataLen);
+                Buffer.BlockCopy(arr.Array, (int)s.Position, data, offset, dataLen);
+                s.Position += dataLen;
             }
             else
             {
-                InnerFill(stream, data, dataLen, bufSize);
+                InnerFill(stream, data, dataLen, bufSize, offset);
             }
         }
 
-        public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE)
+        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE) => 
+            Fill(stream, data, dataLen, bufSize, 0);
+
+        public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE, int offset = 0)
         {
-            for (int i = 0; i < bufLen; i += stride)
+            for (int i = offset; i < bufLen + offset; i += stride)
             {
                 str.Read(buf, i, width);
             }
         }
+
+
+        public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE) =>
+            InnerFillUnaligned(str, buf, bufLen, width, stride, bufSize, 0);
 
         /// <summary>
         /// Fills the buffer all the way up with info from the stream
@@ -109,9 +115,9 @@ namespace Pfim
         /// <param name="str">Stream that will be used to fill the buffer</param>
         /// <param name="buf">Buffer that will house the information from the stream</param>
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
-        private static void InnerFill(Stream str, byte[] buf, int dataLen, int bufSize = BUFFER_SIZE)
+        private static void InnerFill(Stream str, byte[] buf, int dataLen, int bufSize = BUFFER_SIZE, int offset = 0)
         {
-            int bufPosition = 0;
+            int bufPosition = offset;
             for (int i = dataLen / bufSize; i > 0; i--)
                 bufPosition += str.Read(buf, bufPosition, bufSize);
             str.Read(buf, bufPosition, dataLen % bufSize);

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using Xunit;
 using static Farmhash.Sharp.Farmhash;
 
@@ -75,14 +77,34 @@ namespace Pfim.Tests
                 Assert.Equal(hash, Hash64(image2.Data, image2.DataLen));
                 Assert.Equal(hash, Hash64(image3.Data, image3.DataLen));
 
-                Assert.Equal(image.Data.Length, image.DataLen);
+                var mipMapSuffix = image.MipMaps.Sum(x => x.DataLen);
+
+                Assert.Equal(image.Data.Length - mipMapSuffix, image.DataLen);
                 Assert.Equal(image.Data.Length, image2.Data.Length);
-                Assert.Equal(image3.DataLen, image.Data.Length);
+                Assert.Equal(image3.DataLen, image.Data.Length - mipMapSuffix);
                 Assert.NotEqual(0, image.DataLen);
                 Assert.NotEqual(0, allocator.Rented);
             }
 
             Assert.Equal(0, allocator.Rented);
+        }
+
+        [Theory]
+        [InlineData("Antenna_Metal_0_Normal.dds", 4050857792466399628)]
+        [InlineData("wose_BC1_UNORM.DDS", 16114390941095032840)]
+        [InlineData("wose_R8G8B8A8_UNORM_SRGB.DDS", 15265978687041743669)]
+        public void TestMipMapProperties(string allPath, ulong hash)
+        {
+            var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
+            var data = File.ReadAllBytes(path);
+            var image = Pfim.FromFile(path);
+            var image2 = Dds.Create(data, new PfimConfig());
+            Assert.Equal(image.MipMaps, image2.MipMaps);
+
+            var mipMapLengths = image.MipMaps.Sum(x => x.DataLen);
+            var hash1 = Hash64(image.Data, image.DataLen + mipMapLengths);
+            Assert.Equal(hash1, Hash64(image2.Data, image2.DataLen + mipMapLengths));
+            Assert.Equal(hash, hash1);
         }
     }
 }

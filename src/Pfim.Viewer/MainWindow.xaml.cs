@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +13,8 @@ namespace Pfim.Viewer
 {
     public partial class MainWindow
     {
+        private static List<GCHandle> handles = new List<GCHandle>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +36,12 @@ namespace Pfim.Viewer
             }
 
             ImagePanel.Children.Clear();
+
+            foreach (var handle in handles)
+            {
+                handle.Free();
+            }
+
             Progress.Visibility = Visibility.Visible;
             Progress.Value = 0;
             Progress.IsIndeterminate = true;
@@ -42,65 +53,69 @@ namespace Pfim.Viewer
 
             foreach (var file in images)
             {
-                IImage image = await Task.Run(() => ParseImage(file));
-                ImagePanel.Children.Add(WpfImage(image));
+                IImage image = await Task.Run(() => Pfim.FromFile(file));
+                foreach (var im in WpfImage(image))
+                {
+                    ImagePanel.Children.Add(im);
+                }
                 Progress.Value += 1;
             }
             Progress.Visibility = Visibility.Collapsed;
         }
 
-        private static IImage ParseImage(string file)
+        private static IEnumerable<Image> WpfImage(IImage image)
         {
-            return Pfim.FromFile(file);
-        }
+            var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            var addr = pinnedArray.AddrOfPinnedObject();
+            var bsource = BitmapSource.Create(image.Width, image.Height, 96.0, 96.0, 
+                PixelFormat(image), null, addr, image.DataLen, image.Stride);
 
-        private static Image WpfImage(IImage image)
-        {
-            return new Image
+            handles.Add(pinnedArray);
+            yield return new Image
             {
-                Source = LoadImage(image),
+                Source = bsource,
                 Width = image.Width,
                 Height = image.Height,
                 MaxHeight = image.Height,
                 MaxWidth = image.Width,
                 Margin = new Thickness(4)
             };
+
+            foreach (var mip in image.MipMaps)
+            {
+                var mipAddr = addr + mip.DataOffset;
+                var mipSource = BitmapSource.Create(mip.Width, mip.Height, 96.0, 96.0,
+                    PixelFormat(image), null, mipAddr, mip.DataLen, mip.Stride);
+                yield return new Image
+                {
+                    Source = mipSource,
+                    Width = mip.Width,
+                    Height = mip.Height,
+                    MaxHeight = mip.Height,
+                    MaxWidth = mip.Width,
+                    Margin = new Thickness(4)
+                };
+            }
         }
 
-        private static BitmapSource LoadImage(IImage image)
+        private static PixelFormat PixelFormat(IImage image)
         {
-            PixelFormat format;
             switch (image.Format)
             {
                 case ImageFormat.Rgb24:
-                    format = PixelFormats.Bgr24;
-                    break;
-
+                    return PixelFormats.Bgr24;
                 case ImageFormat.Rgba32:
-                    format = PixelFormats.Bgr32;
-                    break;
-
+                    return PixelFormats.Bgr32;
                 case ImageFormat.Rgb8:
-                    format = PixelFormats.Gray8;
-                    break;
-
+                    return PixelFormats.Gray8;
                 case ImageFormat.R5g5b5a1:
                 case ImageFormat.R5g5b5:
-                    format = PixelFormats.Bgr555;
-                    break;
-
+                    return PixelFormats.Bgr555;
                 case ImageFormat.R5g6b5:
-                    format = PixelFormats.Bgr565;
-                    break;
-
+                    return PixelFormats.Bgr565;
                 default:
                     throw new Exception($"Unable to convert {image.Format} to WPF PixelFormat");
             }
-
-            // Create a WPF ImageSource and then set an Image to our variable.
-            // Make sure you notify property changes as appropriate ;)
-            return BitmapSource.Create(image.Width, image.Height,
-                96.0, 96.0, format, null, image.Data, image.Stride);
         }
     }
 }
