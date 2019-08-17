@@ -186,5 +186,26 @@ namespace Pfim.Tests
             image2.Decompress();
             Assert.Equal(image.Data, image2.Data);
         }
+
+        [Fact]
+        public void TestDdsMipMap1()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM.DDS"));
+            var expectedMips = new[]
+            {
+                new MipMapOffset(36, 36, 108, 15552, 3888),
+                new MipMapOffset(18, 18, 60, 19440, 1200),
+                new MipMapOffset(9, 9, 36, 20640, 432),
+                new MipMapOffset(4, 4, 12, 21072, 48),
+                new MipMapOffset(2, 2, 12, 21120, 48),
+                new MipMapOffset(1, 1, 12, 21168, 48)
+            };
+            Assert.Equal(expectedMips, image.MipMaps);
+            Assert.Equal(21168 + 48, image.Data.Length);
+
+            image = Dds.Create(File.ReadAllBytes(Path.Combine("data", "wose_BC1_UNORM.DDS")), new PfimConfig());
+            Assert.Equal(expectedMips, image.MipMaps);
+            Assert.Equal(21168 + 48, image.Data.Length);
+        }
     }
 }

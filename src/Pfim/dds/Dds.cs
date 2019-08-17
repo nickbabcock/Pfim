@@ -104,6 +104,8 @@ namespace Pfim
         {
         }
 
+        public abstract MipMapOffset[] MipMaps { get; }
+
         public void Dispose()
         {
             _config.Allocator.Return(Data);
