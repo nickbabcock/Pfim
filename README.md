@@ -7,7 +7,7 @@ Pfim
 [![Build Status](https://dev.azure.com/nbabcock19/nbabcock19/_apis/build/status/nickbabcock.Pfim?branchName=master)](https://dev.azure.com/nbabcock19/nbabcock19/_build/latest?definitionId=3&branchName=master) 
 [![NuGet](https://img.shields.io/nuget/v/Pfim.svg)](https://www.nuget.org/packages/Pfim/)
 
-**Pfim is a .NET Standard 1.0 compatible Targa (tga) and Direct Draw Surface
+**Pfim is a .NET Standard 2.0 compatible Targa (tga) and Direct Draw Surface
 (dds) decoding library**
 
 Pfim can interoperate with a multitude of environments and libraries.
