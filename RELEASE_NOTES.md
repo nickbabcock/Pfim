@@ -1,3 +1,58 @@
+### 0.8.0 - September 5th 2019
+
+Two big changes: netstandard 2.0 targeting and DDS mipmap support.
+
+With a bump to netstandard 2.0, Pfim is able to slim down dependencies and the amount of code that is conditionally compiled. The only platforms that lose out here are platforms that are EOL or nearing EOL.
+
+Each image file may contain several images in addition to the main image decoded. There are pre-calculated / optimized for smaller dimensions -- often called [mipmaps](https://en.wikipedia.org/wiki/Mipmap). Previously there was no way to access these images until now.
+
+New property under `IImage`
+
+```
+MipMapOffset[] MipMaps { get; }
+```
+
+With `MipMapOffset` defined with properties:
+
+```csharp
+public int Stride { get; }
+public int Width { get; }
+public int Height { get; }
+public int DataOffset { get; }
+public int DataLen { get; }
+```
+
+These should look familiar to known `IImage` properties, the one exception being `DataOffset`. This is the offset that the mipmap data starts in `IImage.Data`. To see usage, here is a snippet for WPF to split an `IImage` into separate images by mipmaps
+
+```csharp
+private IEnumerable<BitmapSource> WpfImage(IImage image)
+{
+    var pinnedArray = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+    var addr = pinnedArray.AddrOfPinnedObject();
+    var bsource = BitmapSource.Create(image.Width, image.Height, 96.0, 96.0, 
+        PixelFormat(image), null, addr, image.DataLen, image.Stride);
+
+    handles.Add(pinnedArray);
+    yield return bsource;
+
+    foreach (var mip in image.MipMaps)
+    {
+        var mipAddr = addr + mip.DataOffset;
+        var mipSource = BitmapSource.Create(mip.Width, mip.Height, 96.0, 96.0,
+            PixelFormat(image), null, mipAddr, mip.DataLen, mip.Stride);
+        yield return mipSource;
+    }
+}
+```
+
+Example image:
+
+![image](https://user-images.githubusercontent.com/2106129/63165974-a0aa0a80-bff2-11e9-9074-a7463fb286c5.png)
+
+Only additional images are stored in `MipMaps` (the base image is excluded).
+
+This continues the work in `0.7.0` were users should start relying on the `DataLen` property and not `Data.Length` as now multiple images share this buffer
+
 ### 0.7.0 - April 27th 2019
 
 * Added: `Pfim.FromStream` to decode tga or dds image from a stream. Pfim will heuristically determine what image based on the header.
