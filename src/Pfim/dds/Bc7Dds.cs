@@ -251,9 +251,9 @@ namespace Pfim.dds
                     // Note: whether it's sRGB is not taken into consideration
                     // we're returning data that could be either/or depending 
                     // on the input BC7 format
-                    data[dataIndex++] = outPixel.r;
-                    data[dataIndex++] = outPixel.g;
                     data[dataIndex++] = outPixel.b;
+                    data[dataIndex++] = outPixel.g;
+                    data[dataIndex++] = outPixel.r;
                     data[dataIndex++] = outPixel.a;
 
                     Math.DivRem(i + 1, DivSize, out rem);
