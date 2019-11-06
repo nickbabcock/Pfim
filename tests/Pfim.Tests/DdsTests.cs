@@ -102,6 +102,28 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseSimpleBc7()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc7-simple.dds"));
+            byte[] data = new byte[64 * 64 * 4];
+            for (int i = 0; i < data.Length; i += 4)
+            { 
+                // Format says Rgba32 (r at least significant)
+                // but it is Bgra32 (b at least significant)
+                // this mistake seems to be the case with all
+                // decoders, so I followed suit
+                data[i] = 255; // b
+                data[i + 1] = 128; // g
+                data[i + 2] = 129; // r
+                data[i + 3] = 255; // a
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
         public void ParseSimpleUncompressedOdd()
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
