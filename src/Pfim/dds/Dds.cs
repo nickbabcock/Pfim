@@ -87,6 +87,7 @@ namespace Pfim
                     break;
 
                 case CompressionAlgorithm.ATI2:
+                case CompressionAlgorithm.BC5U:
                     dds = new Bc5Dds(header, config);
                     break;
 
