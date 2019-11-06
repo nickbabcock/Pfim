@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pfim.dds;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -51,6 +52,11 @@ namespace Pfim
                 case DxgiFormat.BC5_TYPELESS:
                 case DxgiFormat.BC5_UNORM:
                     return new Dxt5Dds(header, config);
+
+                case DxgiFormat.BC7_TYPELESS:
+                case DxgiFormat.BC7_UNORM:
+                case DxgiFormat.BC7_UNORM_SRGB:
+                    return new Bc7Dds(header, config);
 
                 case DxgiFormat.R8G8B8A8_TYPELESS:
                 case DxgiFormat.R8G8B8A8_UNORM:
@@ -139,8 +145,6 @@ namespace Pfim
                 case DxgiFormat.BC6H_TYPELESS:
                 case DxgiFormat.BC6H_UF16:
                 case DxgiFormat.BC6H_SF16:
-                case DxgiFormat.BC7_TYPELESS:
-                case DxgiFormat.BC7_UNORM:
                 case DxgiFormat.NV12:
                 case DxgiFormat.P010:
                 case DxgiFormat.P016:
