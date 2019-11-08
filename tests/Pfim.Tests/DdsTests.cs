@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Pfim.dds;
+using System.IO;
 using Xunit;
 
 namespace Pfim.Tests
@@ -99,6 +100,67 @@ namespace Pfim.Tests
                     Assert.Equal(255, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 3]);
                 }
             }
+        }
+
+        public void ParseSimpleBc2()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc2-simple-srgb.dds"));
+            Assert.True(image is Dxt3Dds);
+            Assert.Equal(DxgiFormat.BC2_UNORM_SRGB, ((Dxt3Dds)image).Header10?.DxgiFormat);
+
+            byte[] data = new byte[64 * 64 * 4];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                data[i] = 255;
+                data[i + 1] = 189;
+                data[i + 2] = 189;
+                data[i + 3] = 255;
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void ParseSimpleBc3()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc3-simple-srgb.dds"));
+            Assert.True(image is Dxt5Dds);
+            Assert.Equal(DxgiFormat.BC3_UNORM_SRGB, ((Dxt5Dds)image).Header10?.DxgiFormat);
+
+            byte[] data = new byte[64 * 64 * 4];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                data[i] = 255;
+                data[i + 1] = 189;
+                data[i + 2] = 189;
+                data[i + 3] = 255;
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void ParseSimpleBc5()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc5-simple.dds"));
+            Assert.True(image is Bc5Dds);
+            Assert.Equal(CompressionAlgorithm.BC5U, ((Bc5Dds)image).Header?.PixelFormat.FourCC);
+
+            byte[] data = new byte[64 * 64 * 3];
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                data[i] = 0;
+                data[i + 1] = 128;
+                data[i + 2] = 128;
+        }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
         }
 
         [Fact]

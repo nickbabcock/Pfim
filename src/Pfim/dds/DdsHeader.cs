@@ -27,23 +27,24 @@ namespace Pfim
         D3DFMT_DXT2 = 844388420,
 
         /// <summary>
-        /// <see cref="Dxt3Dds"/>. Also known as BC3
+        /// <see cref="Dxt3Dds"/>. Also known as BC2
         /// </summary>
         D3DFMT_DXT3 = 861165636,
 
         /// <summary>
-        /// Not supported. Also known as BC4
+        /// Not supported. Also known as BC3
         /// </summary>
         D3DFMT_DXT4 = 877942852,
 
         /// <summary>
-        /// <see cref="Dxt5Dds"/>. Also known as BC5
+        /// <see cref="Dxt5Dds"/>. Also known as BC3
         /// </summary>
         D3DFMT_DXT5 = 894720068,
 
         DX10 = 808540228,
 
-        ATI2 = 843666497
+        ATI2 = 843666497,
+        BC5U = 1429553986
     }
 
     /// <summary>Flags to indicate which members contain valid data.</summary>
