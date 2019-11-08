@@ -40,7 +40,7 @@
                     // 3 bits determine alpha index to use
                     byte firstIndex = (byte)((firstCodes >> (alphaShift + 3 * j)) & 0x07);
                     byte secondIndex = (byte)((secondCodes >> (alphaShift + 3 * j)) & 0x07);
-                    dataIndex++; // skip blue
+                    data[dataIndex++] = 0; // skip blue
                     data[dataIndex++] = _secondGradient[secondIndex];
                     data[dataIndex++] = _firstGradient[firstIndex];
                 }
