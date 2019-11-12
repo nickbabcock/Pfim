@@ -1,3 +1,13 @@
+### 0.9.0 - November 12th 2019
+
+Much thanks to @ptasev for identifying the bugs / implementing features
+
+- Support for BC7 DDS decoding
+- Support for BC2 DDS decoding
+- Support for BC5U DDS decoding
+- Fixed decoding of BC3 and BC5 DDS
+- Fixed blue channel for BC5 DDS images when allocator reused buffer
+
 ### 0.8.0 - September 5th 2019
 
 Two big changes: netstandard 2.0 targeting and DDS mipmap support.
