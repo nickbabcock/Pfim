@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Pfim.dds
@@ -48,6 +49,7 @@ namespace Pfim.dds
             return streamIndex;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static byte InterpolateColor(byte index, sbyte red0, sbyte red1)
         {
             float red;
