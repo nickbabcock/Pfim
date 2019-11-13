@@ -220,7 +220,6 @@ namespace Pfim.dds
                     }
                 }
 
-                int rem;
                 for (i = 0; i < Constants.NUM_PIXELS_PER_BLOCK; ++i)
                 {
                     byte uRegion = Constants.g_aPartitionTable[uPartitions][uShape][i];
@@ -256,8 +255,8 @@ namespace Pfim.dds
                     data[dataIndex++] = outPixel.r;
                     data[dataIndex++] = outPixel.a;
 
-                    Math.DivRem(i + 1, DivSize, out rem);
-                    if (rem == 0)
+                    // Is mult 4?
+                    if (((i + 1) & 0x3) == 0)
                         dataIndex += PixelDepthBytes * (stride - DivSize);
                 }
             }
@@ -265,7 +264,17 @@ namespace Pfim.dds
             {
                 Debug.WriteLine("BC7: Reserved mode 8 encountered during decoding");
                 // Per the BC7 format spec, we must return transparent black
-                dataIndex += (uint)DivSize * DivSize * PixelDepthBytes;
+                for (int i = 0; i < Constants.NUM_PIXELS_PER_BLOCK; ++i)
+                {
+                    data[dataIndex++] = 0;
+                    data[dataIndex++] = 0;
+                    data[dataIndex++] = 0;
+                    data[dataIndex++] = 0;
+
+                    // Is mult 4?
+                    if (((i + 1) & 0x3) == 0)
+                        dataIndex += PixelDepthBytes * (stride - DivSize);
+                }
             }
 
             return streamIndex;
