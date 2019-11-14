@@ -43,8 +43,13 @@ namespace Pfim
 
         DX10 = 808540228,
 
+        ATI1 = 826889281,
+        BC4U = 1429488450,
+        BC4S = 1395934018,
+
         ATI2 = 843666497,
-        BC5U = 1429553986
+        BC5U = 1429553986,
+        BC5S = 1395999554
     }
 
     /// <summary>Flags to indicate which members contain valid data.</summary>

@@ -144,6 +144,24 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void ParseSimpleBc4()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc4-simple.dds"));
+            Assert.True(image is Bc4Dds);
+            Assert.Equal(CompressionAlgorithm.BC4U, ((Bc4Dds)image).Header?.PixelFormat.FourCC);
+
+            byte[] data = new byte[64 * 64];
+            for (int i = 0; i < data.Length; ++i)
+            {
+                data[i] = 128;
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
         public void ParseSimpleBc5()
         {
             var image = Pfim.FromFile(Path.Combine("data", "bc5-simple.dds"));
@@ -157,6 +175,26 @@ namespace Pfim.Tests
                 data[i + 1] = 128;
                 data[i + 2] = 128;
         }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void ParseSimpleBc5s()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc5-simple-snorm.dds"));
+            Assert.True(image is Bc5sDds);
+            Assert.Equal(CompressionAlgorithm.BC5S, ((Bc5sDds)image).Header?.PixelFormat.FourCC);
+
+            byte[] data = new byte[64 * 64 * 3];
+            for (int i = 0; i < data.Length; i += 3)
+            {
+                data[i] = 0;
+                data[i + 1] = 64;
+                data[i + 2] = 128;
+            }
 
             Assert.Equal(data, image.Data);
             Assert.Equal(64, image.Height);
