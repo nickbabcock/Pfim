@@ -5,6 +5,8 @@ namespace Pfim.dds.Bc6hBc7
     internal static class Constants
     {
         public const int NUM_PIXELS_PER_BLOCK = 16;
+        public const int BC6H_MAX_REGIONS = 2;
+        public const int BC6H_MAX_INDICES = 16;
         public const int BC7_MAX_REGIONS = 3;
         public const int BC7_MAX_INDICES = 16;
 

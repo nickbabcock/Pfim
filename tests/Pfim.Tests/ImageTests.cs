@@ -36,6 +36,7 @@ namespace Pfim.Tests
         [InlineData("bc4-simple.dds", 3506296397725802394, ImageFormat.Rgb8)]
         [InlineData("bc5-simple.dds", 13708866582685238694, ImageFormat.Rgb24)]
         [InlineData("bc5-simple-snorm.dds", 71597488204904769, ImageFormat.Rgb24)]
+        [InlineData("bc6h-simple.dds", 3916824648785599771, ImageFormat.Rgba32)]
         [InlineData("bc7-simple.dds", 6448059429400395812, ImageFormat.Rgba32)]
         [InlineData("flag_t32.tga", 7008764461524763534, ImageFormat.Rgba32)]
         [InlineData("large-top-left.tga", 10870824044492905452, ImageFormat.Rgb24)]
