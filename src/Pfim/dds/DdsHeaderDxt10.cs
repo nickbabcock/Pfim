@@ -65,6 +65,11 @@ namespace Pfim
                 case DxgiFormat.BC5_SNORM:
                     return new Bc5sDds(header, config);
 
+                case DxgiFormat.BC6H_TYPELESS:
+                case DxgiFormat.BC6H_UF16:
+                case DxgiFormat.BC6H_SF16:
+                    return new Bc6hDds(header, config);
+
                 case DxgiFormat.BC7_TYPELESS:
                 case DxgiFormat.BC7_UNORM:
                 case DxgiFormat.BC7_UNORM_SRGB:
@@ -150,9 +155,6 @@ namespace Pfim
                 case DxgiFormat.R10G10B10_XR_BIAS_A2_UNORM:
                 case DxgiFormat.B8G8R8X8_TYPELESS:
                 case DxgiFormat.B8G8R8X8_UNORM_SRGB:
-                case DxgiFormat.BC6H_TYPELESS:
-                case DxgiFormat.BC6H_UF16:
-                case DxgiFormat.BC6H_SF16:
                 case DxgiFormat.NV12:
                 case DxgiFormat.P010:
                 case DxgiFormat.P016:

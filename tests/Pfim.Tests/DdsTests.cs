@@ -102,6 +102,7 @@ namespace Pfim.Tests
             }
         }
 
+        [Fact]
         public void ParseSimpleBc2()
         {
             var image = Pfim.FromFile(Path.Combine("data", "bc2-simple-srgb.dds"));
@@ -194,6 +195,27 @@ namespace Pfim.Tests
                 data[i] = 0;
                 data[i + 1] = 64;
                 data[i + 2] = 128;
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void ParseSimpleBc6h()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "bc6h-simple.dds"));
+            Assert.True(image is Bc6hDds);
+            Assert.Equal(DxgiFormat.BC6H_UF16, ((Bc6hDds)image).Header10?.DxgiFormat);
+
+            byte[] data = new byte[64 * 64 * 4];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                data[i] = 255; // b
+                data[i + 1] = 128; // g
+                data[i + 2] = 128; // r
+                data[i + 3] = 255; // a
             }
 
             Assert.Equal(data, image.Data);
