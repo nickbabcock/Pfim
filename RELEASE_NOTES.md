@@ -2,9 +2,9 @@
 
 Much thanks to @ptasev for this release:
 
-- Add BC4 support
-- Add BC5S support
-- Add BC6H support
+- Add BC4 DDS support
+- Add BC5S DDS support
+- Add BC6H DDS support
 
 ### 0.9.0 - November 12th 2019
 
