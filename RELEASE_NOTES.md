@@ -1,3 +1,11 @@
+### 0.9.1 - November 20th 2019
+
+Much thanks to @ptasev for this release:
+
+- Add BC4 support
+- Add BC5S support
+- Add BC6H support
+
 ### 0.9.0 - November 12th 2019
 
 Much thanks to @ptasev for identifying the bugs / implementing features
