@@ -1,23 +1,23 @@
 strategy:
   matrix:
     windows:
-      image: 'vs2017-win2016'
+      image: 'windows-latest'
       standard: 'netstandard2.0'
     mac:
-      image: 'macos-10.13'
+      image: 'macos-latest'
       standard: 'netstandard2.0'
     linux:
-      image: 'ubuntu-16.04'
+      image: 'ubuntu-latest'
       standard: 'netstandard2.0'
 
 pool:
   vmImage: $(image)
 
 steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
     displayName: Install
     inputs:
-      version: '2.1.505'
+      version: '2.x'
   - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
@@ -36,14 +36,14 @@ steps:
       projects: '**/Pfim.Skia.csproj'
   - task: DotNetCoreCLI@2
     displayName: Windows Test
-    condition: eq(variables['image'], 'vs2017-win2016')
+    condition: eq(variables['image'], 'windows-latest')
     inputs:
       command: test
       projects: '**/*Tests.csproj'
       arguments: '-f netcoreapp2.0 --collect "Code coverage"'
   - task: DotNetCoreCLI@2
     displayName: Test
-    condition: ne(variables['image'], 'vs2017-win2016')
+    condition: ne(variables['image'], 'windows-latest')
     inputs:
       command: test
       projects: '**/*Tests.csproj'
