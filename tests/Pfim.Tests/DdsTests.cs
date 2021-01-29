@@ -28,17 +28,27 @@ namespace Pfim.Tests
         public void ParseSimpleDxt1()
         {
             var image = Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"));
-            byte[] data = new byte[64 * 64 * 3];
-            for (int i = 0; i < data.Length; i += 3)
+            byte[] data = new byte[64 * 64 * 4];
+            for (int i = 0; i < data.Length; i += 4)
             {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 127;
+                data[i + 3] = 255;
             }
 
             Assert.Equal(data, image.Data);
             Assert.Equal(64, image.Height);
             Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void ParseDxt1Alpha()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "dxt1-alpha.dds"));
+            Assert.Equal(0, image.Data[3]); // check alpha is off
+            Assert.Equal(64, image.Height);
+            Assert.Equal(128, image.Width);
         }
 
         [Fact]
@@ -337,19 +347,19 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM.DDS"));
             var expectedMips = new[]
             {
-                new MipMapOffset(36, 36, 108, 15552, 3888),
-                new MipMapOffset(18, 18, 60, 19440, 1200),
-                new MipMapOffset(9, 9, 36, 20640, 432),
-                new MipMapOffset(4, 4, 12, 21072, 48),
-                new MipMapOffset(2, 2, 12, 21120, 48),
-                new MipMapOffset(1, 1, 12, 21168, 48)
+                new MipMapOffset(36, 36, 144, 20736, 5184),
+                new MipMapOffset(18, 18, 80, 25920, 1600),
+                new MipMapOffset(9, 9, 48, 27520, 576),
+                new MipMapOffset(4, 4, 16, 28096, 64),
+                new MipMapOffset(2, 2, 16, 28160, 64),
+                new MipMapOffset(1, 1, 16, 28224, 64)
             };
             Assert.Equal(expectedMips, image.MipMaps);
-            Assert.Equal(21168 + 48, image.Data.Length);
+            Assert.Equal(28224 + 64, image.Data.Length);
 
             image = Dds.Create(File.ReadAllBytes(Path.Combine("data", "wose_BC1_UNORM.DDS")), new PfimConfig());
             Assert.Equal(expectedMips, image.MipMaps);
-            Assert.Equal(21168 + 48, image.Data.Length);
+            Assert.Equal(28224 + 64, image.Data.Length);
         }
     }
 }

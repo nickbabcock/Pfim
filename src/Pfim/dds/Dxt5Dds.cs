@@ -8,7 +8,7 @@ namespace Pfim
         private const byte DIV_SIZE = 4;
 
         private readonly byte[] alpha = new byte[8];
-        private readonly Color888[] colors = new Color888[4];
+        private readonly Colors888[] colors = new Colors888[4];
 
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
         public override ImageFormat Format => ImageFormat.Rgba32;

@@ -2,7 +2,7 @@
 {
     public class Dxt1Dds : CompressedDds
     {
-        private const int PIXEL_DEPTH = 3;
+        private const int PIXEL_DEPTH = 4;
         private const int DIV_SIZE = 4;
 
         public Dxt1Dds(DdsHeader header, PfimConfig config) : base(header, config)
@@ -12,10 +12,10 @@
         protected override byte PixelDepthBytes => PIXEL_DEPTH;
         protected override byte DivSize => DIV_SIZE;
         protected override byte CompressedBytesPerBlock => 8;
-        public override ImageFormat Format => ImageFormat.Rgb24;
+        public override ImageFormat Format => ImageFormat.Rgba32;
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
 
-        private readonly Color888[] colors = new Color888[4];
+        private readonly Color8888[] colors = new Color8888[4];
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
@@ -33,6 +33,7 @@
             colors[0].r = (byte)(colors[0].r << 3 | colors[0].r >> 2);
             colors[0].g = (byte)(colors[0].g << 2 | colors[0].g >> 3);
             colors[0].b = (byte)(colors[0].b << 3 | colors[0].b >> 2);
+            colors[0].a = 255;
 
             colors[1].r = (byte)((color1 & 0x1f));
             colors[1].g = (byte)((color1 & 0x7E0) >> 5);
@@ -40,6 +41,7 @@
             colors[1].r = (byte)(colors[1].r << 3 | colors[1].r >> 2);
             colors[1].g = (byte)(colors[1].g << 2 | colors[1].g >> 3);
             colors[1].b = (byte)(colors[1].b << 3 | colors[1].b >> 2);
+            colors[1].a = 255;
 
             // Used the two extracted colors to create two new colors that are
             // slightly different.
@@ -48,20 +50,24 @@
                 colors[2].r = (byte)((2 * colors[0].r + colors[1].r) / 3);
                 colors[2].g = (byte)((2 * colors[0].g + colors[1].g) / 3);
                 colors[2].b = (byte)((2 * colors[0].b + colors[1].b) / 3);
+                colors[2].a = 255;
 
                 colors[3].r = (byte)((colors[0].r + 2 * colors[1].r) / 3);
                 colors[3].g = (byte)((colors[0].g + 2 * colors[1].g) / 3);
                 colors[3].b = (byte)((colors[0].b + 2 * colors[1].b) / 3);
+                colors[3].a = 255;
             }
             else
             {
                 colors[2].r = (byte)((colors[0].r + colors[1].r) / 2);
                 colors[2].g = (byte)((colors[0].g + colors[1].g) / 2);
                 colors[2].b = (byte)((colors[0].b + colors[1].b) / 2);
+                colors[2].a = 255;
 
                 colors[3].r = 0;
                 colors[3].g = 0;
                 colors[3].b = 0;
+                colors[3].a = 0;
             }
 
 
@@ -80,6 +86,7 @@
                     data[dataIndex++] = col.r;
                     data[dataIndex++] = col.g;
                     data[dataIndex++] = col.b;
+                    data[dataIndex++] = col.a;
                 }
 
                 // Jump down a row and start at the beginning of the row
