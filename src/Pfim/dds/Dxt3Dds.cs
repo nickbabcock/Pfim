@@ -15,7 +15,7 @@
         {
         }
 
-        private readonly Color888[] colors = new Color888[4];
+        private readonly Colors888[] colors = new Colors888[4];
 
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {

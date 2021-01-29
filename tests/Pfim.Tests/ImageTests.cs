@@ -26,7 +26,8 @@ namespace Pfim.Tests
         [InlineData("dds_R5G6B5.dds", 7210134307573079898, ImageFormat.R5g6b5)]
         [InlineData("dds_R8G8B8.dds", 16481500256016389047, ImageFormat.Rgb24)]
         [InlineData("dds_a1r5g5b5.dds", 12461131412352196151, ImageFormat.R5g5b5a1)]
-        [InlineData("dxt1-simple.dds", 17605116077597162586, ImageFormat.Rgb24)]
+        [InlineData("dxt1-simple.dds", 8563937048591661181, ImageFormat.Rgba32)]
+        [InlineData("dxt1-alpha.dds", 6200050329987542700, ImageFormat.Rgba32)]
         [InlineData("dxt3-simple.dds", 95660261486543378, ImageFormat.Rgba32)]
         [InlineData("dxt5-simple-1x1.dds", 17927214943315913894, ImageFormat.Rgba32)]
         [InlineData("dxt5-simple-odd.dds", 12356928648841185691, ImageFormat.Rgba32)]
@@ -54,8 +55,8 @@ namespace Pfim.Tests
         [InlineData("true-32-rle-large.tga", 724744357722860486, ImageFormat.Rgba32)]
         [InlineData("true-32-rle.tga", 2277897038200108277, ImageFormat.Rgba32)]
         [InlineData("true-32.tga", 8563937048591661181, ImageFormat.Rgba32)]
-        [InlineData("wose_BC1_UNORM.DDS", 12101904599740452605, ImageFormat.Rgb24)]
-        [InlineData("wose_BC1_UNORM_SRGB.DDS", 10469302966092815447, ImageFormat.Rgb24)]
+        [InlineData("wose_BC1_UNORM.DDS", 12222833840891720957, ImageFormat.Rgba32)]
+        [InlineData("wose_BC1_UNORM_SRGB.DDS", 12371627260059712210, ImageFormat.Rgba32)]
         [InlineData("wose_R8G8B8A8_UNORM_SRGB.DDS", 18111997681897362439, ImageFormat.Rgba32)]
         [InlineData("bench\\32bit.dds", 15068097721520544352, ImageFormat.Rgba32)]
         [InlineData("bench\\dxt3.dds", 15068097721520544352, ImageFormat.Rgba32)]
@@ -63,7 +64,7 @@ namespace Pfim.Tests
         [InlineData("bench\\32bit.tga", 15068097721520544352, ImageFormat.Rgba32)]
         [InlineData("bench\\32bit-rle.tga", 15068097721520544352, ImageFormat.Rgba32)]
         [InlineData("bench\\24bit-rle.tga", 2999539589530288153, ImageFormat.Rgb24)]
-        [InlineData("bench\\dxt1.dds", 2999539589530288153, ImageFormat.Rgb24)]
+        [InlineData("bench\\dxt1.dds", 15068097721520544352, ImageFormat.Rgba32)]
         public void TestImageProperties(string allPath, ulong hash, ImageFormat format)
         {
             var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
@@ -98,7 +99,7 @@ namespace Pfim.Tests
 
         [Theory]
         [InlineData("Antenna_Metal_0_Normal.dds", 4050857792466399628)]
-        [InlineData("wose_BC1_UNORM.DDS", 16114390941095032840)]
+        [InlineData("wose_BC1_UNORM.DDS", 8862915425226549962)]
         [InlineData("wose_R8G8B8A8_UNORM_SRGB.DDS", 15265978687041743669)]
         public void TestMipMapProperties(string allPath, ulong hash)
         {
