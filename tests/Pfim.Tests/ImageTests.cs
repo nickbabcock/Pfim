@@ -27,7 +27,7 @@ namespace Pfim.Tests
         [InlineData("dds_R8G8B8.dds", 16481500256016389047, ImageFormat.Rgb24)]
         [InlineData("dds_a1r5g5b5.dds", 12461131412352196151, ImageFormat.R5g5b5a1)]
         [InlineData("dxt1-simple.dds", 8563937048591661181, ImageFormat.Rgba32)]
-        [InlineData("dxt1-alpha.dds", 6200050329987542700, ImageFormat.Rgba32)]
+        [InlineData("dxt1-alpha.dds", 6057963782908520357, ImageFormat.Rgba32)]
         [InlineData("dxt3-simple.dds", 95660261486543378, ImageFormat.Rgba32)]
         [InlineData("dxt5-simple-1x1.dds", 17927214943315913894, ImageFormat.Rgba32)]
         [InlineData("dxt5-simple-odd.dds", 12356928648841185691, ImageFormat.Rgba32)]

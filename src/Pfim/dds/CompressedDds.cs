@@ -152,8 +152,8 @@ namespace Pfim
 
             for (int i = 1; i < Header.MipMapCount; i++)
             {
-                var width = (int)(Header.Width / Math.Pow(2, i));
-                var height = (int)(Header.Height / Math.Pow(2, i));
+                var width = Math.Max((int)(Header.Width / Math.Pow(2, i)), 1);
+                var height = Math.Max((int)(Header.Height / Math.Pow(2, i)), 1);
                 var widthBlocks = CalcBlocks(width);
                 var heightBlocks = CalcBlocks(height);
 
@@ -186,8 +186,8 @@ namespace Pfim
 
                 if (imageIndex != 0)
                 {
-                    var width = (int)(Header.Width / Math.Pow(2, imageIndex));
-                    var height = (int)(Header.Height / Math.Pow(2, imageIndex));
+                    var width = Math.Max((int)(Header.Width / Math.Pow(2, imageIndex)), 1);
+                    var height = Math.Max((int)(Header.Height / Math.Pow(2, imageIndex)), 1);
                     var widthBlocks = CalcBlocks(width);
                     var heightBlocks = CalcBlocks(height);
 
@@ -233,8 +233,8 @@ namespace Pfim
 
                 for (int i = 1; i < Header.MipMapCount; i++)
                 {
-                    var width = (int)(Header.Width   / Math.Pow(2, i));
-                    var height = (int)(Header.Height / Math.Pow(2, i));
+                    var width = Math.Max((int)(Header.Width   / Math.Pow(2, i)), 1);
+                    var height = Math.Max((int)(Header.Height / Math.Pow(2, i)), 1);
                     var widthBlocks = CalcBlocks(width);
                     var heightBlocks = CalcBlocks(height);
                     totalSize += widthBlocks * heightBlocks * CompressedBytesPerBlock;

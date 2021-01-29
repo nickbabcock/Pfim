@@ -46,9 +46,23 @@ namespace Pfim.Tests
         public void ParseDxt1Alpha()
         {
             var image = Pfim.FromFile(Path.Combine("data", "dxt1-alpha.dds"));
-            Assert.Equal(0, image.Data[3]); // check alpha is off
+            Assert.Equal(0, image.Data[34]); // check alpha is off
             Assert.Equal(64, image.Height);
             Assert.Equal(128, image.Width);
+
+            // image also contains mip maps that would cause the height to be 0 if
+            // we don't apply a floor to the dimensions
+            var expectedMips = new[]
+            {
+                new MipMapOffset(64, 32, 256, 32768, 8192),
+                new MipMapOffset(32, 16, 128, 40960, 2048),
+                new MipMapOffset(16, 8, 64, 43008, 512),
+                new MipMapOffset(8, 4, 32, 43520, 128),
+                new MipMapOffset(4, 2, 16, 43648, 64),
+                new MipMapOffset(2, 1, 16, 43712, 64),
+                new MipMapOffset(1, 1, 16, 43776, 64),
+            };
+            Assert.Equal(expectedMips, image.MipMaps);
         }
 
         [Fact]
