@@ -1,3 +1,11 @@
+### 0.10.0 - February 8th 2021
+
+- Add support for decoding DXT1 with alpha channel. This required changing the
+  image format of DXT1 images to 32 bit rgba instead of 24 bit rgb, so this is
+  technically is a breaking change as code that assumed 24 bit data for DXT1
+  images will need to change.
+- Add a floor of 1 to dimensions of mipmap calculations
+
 ### 0.9.1 - November 20th 2019
 
 Much thanks to @ptasev for this release:
