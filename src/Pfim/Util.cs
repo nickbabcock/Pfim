@@ -151,7 +151,7 @@ namespace Pfim
             int rowsPerBuffer = Math.Min(bufSize, dataLen) / stride;
             int dataIndex = dataLen - stride;
             int rowsRead = 0;
-            int totalRows = dataLen / rowSize;
+            int totalRows = dataLen / stride;
             int rowsToRead = rowsPerBuffer;
 
             if (rowsPerBuffer == 0)

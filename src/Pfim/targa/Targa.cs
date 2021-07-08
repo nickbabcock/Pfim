@@ -103,8 +103,9 @@ namespace Pfim
                 return;
             }
 
-            var currentDepthBytes = Header.PixelDepthBytes;
             var colorMapDepthBytes = Header.ColorMapDepthBytes;
+            var oldStride = Stride;
+            var newStride = Util.Stride(Header.Width, colorMapDepthBytes * 8);
             var newLen = colorMapDepthBytes * DataLen;
             var newData = _config.Allocator.Rent(newLen);
             switch (Header.ColorMapDepthBits)
@@ -112,12 +113,17 @@ namespace Pfim
                 case 16:
                 case 24:
                 case 32:
-                    for (int i = 0; i < DataLen; i += currentDepthBytes)
+                    for (int i = 0; i < Header.Height; i++)
                     {
-                        var colorMapIndex = Data[i] * colorMapDepthBytes;
-                        for (int j = 0; j < colorMapDepthBytes; j++)
+                        var dataOffset = i * oldStride;
+                        var newDataOffset = i * newStride;
+                        for (int j = 0; j < Header.Width; j++)
                         {
-                            newData[i * colorMapDepthBytes + j] = Header.ColorMap[colorMapIndex + j];
+                            var colorMapIndex = Data[dataOffset + j] * colorMapDepthBytes;
+                            for (int k = 0; k < colorMapDepthBytes; k++)
+                            {
+                                newData[newDataOffset + (j * colorMapDepthBytes) + k] = Header.ColorMap[colorMapIndex + k];
+                            }
                         }
                     }
                     break;

@@ -17,7 +17,7 @@ namespace Pfim.Tests
         public void Return(byte[] data)
         {
             Interlocked.Decrement(ref _rented);
-            _shared.Return(data);
+            _shared.Return(data, true);
         }
 
         public int Rented => _rented;

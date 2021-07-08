@@ -10,6 +10,7 @@ namespace Pfim.Tests
     public class ImageTests
     {
         [Theory]
+        [InlineData("24-bit-odd.tga", 14709551298911859837, ImageFormat.Rgb24)]
         [InlineData("24-bit-uncompressed-odd.dds", 1312155254599784230, ImageFormat.Rgb24)]
         [InlineData("32-bit-uncompressed-odd.dds", 431228091138896641, ImageFormat.Rgba32)]
         [InlineData("32-bit-uncompressed.dds", 8563937048591661181, ImageFormat.Rgba32)]
@@ -21,6 +22,7 @@ namespace Pfim.Tests
         [InlineData("DSCN1910_24bpp_uncompressed_10_2.tga", 1527117886507111010, ImageFormat.Rgb24)]
         [InlineData("DSCN1910_24bpp_uncompressed_10_3.tga", 1527117886507111010, ImageFormat.Rgb24)]
         [InlineData("TestVolume_Noise3D.dds", 12008948602044967211, ImageFormat.Rgba32)]
+        [InlineData("colormap-odd.tga", 15577927903454497512, ImageFormat.Rgb24)]
         [InlineData("dds_A4R4G4B4.dds", 10024159200024540560, ImageFormat.Rgba16)]
         [InlineData("dds_A8B8G8R8.dds", 10380399580803577188, ImageFormat.Rgba32)]
         [InlineData("dds_R5G6B5.dds", 7210134307573079898, ImageFormat.R5g6b5)]
