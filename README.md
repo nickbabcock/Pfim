@@ -4,7 +4,7 @@
 Pfim
 </h1>
 
-[![Build Status](https://dev.azure.com/nbabcock19/nbabcock19/_apis/build/status/nickbabcock.Pfim?branchName=master)](https://dev.azure.com/nbabcock19/nbabcock19/_build/latest?definitionId=3&branchName=master) 
+[![CI](https://github.com/nickbabcock/Pfim/actions/workflows/ci.yml/badge.svg)](https://github.com/nickbabcock/Pfim/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Pfim.svg)](https://www.nuget.org/packages/Pfim/)
 
 **Pfim is a .NET Standard 2.0 compatible Targa (tga) and Direct Draw Surface
