@@ -170,7 +170,7 @@ cd src\Pfim.Benchmarks\bin\Release\net461
 Building the library is as easy as
 
 ```
-dotnet test -f netcoreapp2.0 tests/Pfim.Tests/Pfim.Tests.csproj
+dotnet test -f netcoreapp3.1
 ```
 
 Or hit "Build" in Visual Studio :smile:
