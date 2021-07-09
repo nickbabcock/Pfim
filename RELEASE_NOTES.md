@@ -1,3 +1,7 @@
+### 0.10.1 - July 8th 2021
+
+- Add more support for TGA images with dimensions that require stride padding
+
 ### 0.10.0 - February 8th 2021
 
 - Add support for decoding DXT1 with alpha channel. This required changing the
