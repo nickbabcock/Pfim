@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Xunit;
 using static Farmhash.Sharp.Farmhash;
@@ -15,6 +14,7 @@ namespace Pfim.Tests
         [InlineData("32-bit-uncompressed-odd.dds", 431228091138896641, ImageFormat.Rgba32)]
         [InlineData("32-bit-uncompressed.dds", 8563937048591661181, ImageFormat.Rgba32)]
         [InlineData("Antenna_Metal_0_Normal.dds", 11008763962346865605, ImageFormat.Rgb24)]
+        [InlineData("b8g8r8x8.dds", 14954708280773054506, ImageFormat.Rgba32)]
         [InlineData("CBW8.tga", 11906269729452326966, ImageFormat.Rgb8)]
         [InlineData("CCM8.tga", 11437704396291630213, ImageFormat.R5g5b5)]
         [InlineData("CTC16.tga", 11437704396291630213, ImageFormat.R5g5b5)]

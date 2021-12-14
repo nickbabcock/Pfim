@@ -85,6 +85,7 @@ namespace Pfim
                 case DxgiFormat.B8G8R8A8_TYPELESS:
                 case DxgiFormat.B8G8R8A8_UNORM:
                 case DxgiFormat.B8G8R8A8_UNORM_SRGB:
+                case DxgiFormat.B8G8R8X8_UNORM_SRGB:
                     return new UncompressedDds(header, config, 32, false);
 
                 case DxgiFormat.UNKNOWN:
@@ -154,7 +155,6 @@ namespace Pfim
                 case DxgiFormat.B8G8R8X8_UNORM:
                 case DxgiFormat.R10G10B10_XR_BIAS_A2_UNORM:
                 case DxgiFormat.B8G8R8X8_TYPELESS:
-                case DxgiFormat.B8G8R8X8_UNORM_SRGB:
                 case DxgiFormat.NV12:
                 case DxgiFormat.P010:
                 case DxgiFormat.P016:
