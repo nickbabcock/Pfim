@@ -172,7 +172,7 @@ namespace Pfim
                 case DxgiFormat.V208:
                 case DxgiFormat.V408:
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"Unimplemented DXGI format: {DxgiFormat}");
             }
         }
     }
