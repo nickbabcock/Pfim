@@ -1,3 +1,7 @@
+### 0.10.2 - December 14th 2021
+
+- Add initial support for b8g8r8x8 encoded DDS images
+
 ### 0.10.1 - July 8th 2021
 
 - Add more support for TGA images with dimensions that require stride padding
