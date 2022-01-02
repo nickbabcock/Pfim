@@ -88,6 +88,9 @@ namespace Pfim
                 case DxgiFormat.B8G8R8X8_UNORM_SRGB:
                     return new UncompressedDds(header, config, 32, false);
 
+                case DxgiFormat.B5G5R5A1_UNORM:
+                    return new UncompressedDds(header, config, 16, false);
+
                 case DxgiFormat.UNKNOWN:
                 case DxgiFormat.R32G32B32A32_TYPELESS:
                 case DxgiFormat.R32G32B32A32_FLOAT:
@@ -172,7 +175,7 @@ namespace Pfim
                 case DxgiFormat.V208:
                 case DxgiFormat.V408:
                 default:
-                    throw new ArgumentOutOfRangeException($"Unimplemented DXGI format: {DxgiFormat}");
+                    throw new ArgumentException($"Unimplemented DXGI format: {DxgiFormat}");
             }
         }
     }
