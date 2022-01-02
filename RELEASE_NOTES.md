@@ -1,3 +1,7 @@
+### 0.10.3 - January 1st 2022
+
+- Add support for B5G5R5A1_UNORM encoded DDS images
+
 ### 0.10.2 - December 14th 2021
 
 - Add initial support for b8g8r8x8 encoded DDS images
