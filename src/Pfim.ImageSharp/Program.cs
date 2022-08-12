@@ -75,7 +75,7 @@ namespace Pfim.ImageSharp
                         IS.Image.LoadPixelData<Bgr565>(newData, image.Width, image.Height).Save(fs, encoder);
                         break;
                     case ImageFormat.Rgb8:
-                        IS.Image.LoadPixelData<Gray8>(newData, image.Width, image.Height).Save(fs, encoder);
+                        IS.Image.LoadPixelData<L8>(newData, image.Width, image.Height).Save(fs, encoder);
                         break;
                     default:
                         throw new Exception($"ImageSharp does not recognize image format: {image.Format}");

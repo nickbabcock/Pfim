@@ -63,12 +63,12 @@ namespace Pfim.Skia
                 var handle = GCHandle.Alloc(newData, GCHandleType.Pinned);
                 var ptr = Marshal.UnsafeAddrOfPinnedArrayElement(newData, 0);
                 using (var data = SKData.Create(ptr, newDataLen, (address, context) => handle.Free()))
-                using (var skImage = SKImage.FromPixelData(imageInfo, data, stride))
+                using (var skImage = SKImage.FromPixels(imageInfo, data, stride))
                 using (var bitmap = SKBitmap.FromImage(skImage))
                 using (var fs = File.Create(Path.ChangeExtension(file, ".png")))
                 using (var wstream = new SKManagedWStream(fs))
                 {
-                    var success = SKPixmap.Encode(wstream, bitmap, SKEncodedImageFormat.Png, 95);
+                    var success = bitmap.Encode(wstream, SKEncodedImageFormat.Png, 95);
                     Console.WriteLine(success ? "Image converted successfully" : "Image unsuccessful");
                 }
             }
