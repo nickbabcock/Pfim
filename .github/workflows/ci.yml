@@ -19,9 +19,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: '6.0.x'
     - run: dotnet build src/Pfim/Pfim.csproj
     - run: dotnet build src/Pfim.ImageSharp/Pfim.ImageSharp.csproj
     - run: dotnet build src/Pfim.Skia/Pfim.Skia.csproj
