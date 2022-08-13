@@ -8,6 +8,15 @@ on:
   - cron: '00 01 * * *'
 
 jobs:
+  dev:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - run: docker build .
+      working-directory: ./.devcontainer/
+
   test:
     name: test
     runs-on: ${{ matrix.os }}

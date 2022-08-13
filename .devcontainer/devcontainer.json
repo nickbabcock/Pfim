@@ -1,0 +1,10 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+{
+  "name": "pfim",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "extensions": ["ms-dotnettools.csharp"],
+  "postCreateCommand": "dotnet restore",
+  "remoteUser": "vscode"
+}
