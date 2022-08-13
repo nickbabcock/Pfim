@@ -24,7 +24,9 @@ namespace Pfim.Benchmarks
         [GlobalSetup]
         public void SetupData()
         {
-            data = File.ReadAllBytes(Path.Combine("bench", Payload));
+            var loc = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var dir = Path.GetDirectoryName(loc);
+            data = File.ReadAllBytes(Path.Combine(dir, "bench", Payload));
             DS.Bootstrap.Init();
         }
 
