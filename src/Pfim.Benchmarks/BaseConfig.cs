@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Perfolizer.Horology;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters.Csv;
-using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 
@@ -15,12 +15,12 @@ namespace Pfim.Benchmarks
     {
         public BaseConfig()
         {
-            Add(new CsvExporter(CsvSeparator.CurrentCulture, new SummaryStyle(false, SizeUnit.B, TimeUnit.Nanosecond, false)));
-            Add(MemoryDiagnoser.Default);
-            Add(StatisticColumn.Mean);
-            Add(StatisticColumn.StdErr);
-            Add(StatisticColumn.StdDev);
-            Add(StatisticColumn.Median);
+            AddExporter(new CsvExporter(CsvSeparator.CurrentCulture, new SummaryStyle(null, false, SizeUnit.B, TimeUnit.Nanosecond, false)));
+            AddDiagnoser(MemoryDiagnoser.Default);
+            AddColumn(StatisticColumn.Mean);
+            AddColumn(StatisticColumn.StdErr);
+            AddColumn(StatisticColumn.StdDev);
+            AddColumn(StatisticColumn.Median);
         }
     }
 }
