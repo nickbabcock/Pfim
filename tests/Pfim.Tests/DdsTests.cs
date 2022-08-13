@@ -110,7 +110,7 @@ namespace Pfim.Tests
             Assert.Equal(0, image.Data[8 * 5 * 4 + 1]);
             Assert.Equal(128, image.Data[8 * 5 * 4 + 2]);
             Assert.Equal(255, image.Data[8 * 5 * 4 + 3]);
-            Assert.Equal(image.Data.Length, 8 * 12 * 4);
+            Assert.Equal( 8 * 12 * 4, image.Data.Length);
             Assert.Equal(9, image.Height);
             Assert.Equal(5, image.Width);
 
@@ -274,7 +274,7 @@ namespace Pfim.Tests
         {
             var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
             Assert.Equal(20, image.Stride);
-            Assert.Equal(image.Data.Length, 5 * 9 * 4);
+            Assert.Equal(5 * 9 * 4, image.Data.Length);
             Assert.Equal(9, image.Height);
             Assert.Equal(5, image.Width);
 
