@@ -18,7 +18,7 @@ namespace Pfim.Skia
         private static void ConvertFile(string file)
         {
             SKColorType colorType;
-            using (var image = Pfim.FromFile(file))
+            using (var image = Pfimage.FromFile(file))
             {
                 var newData = image.Data;
                 var newDataLen = image.DataLen;

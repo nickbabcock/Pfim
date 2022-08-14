@@ -4,7 +4,7 @@ using System.IO;
 namespace Pfim
 {
     /// <summary>Decodes images into a uniform structure</summary>
-    public static class Pfim
+    public static class Pfimage
     {
         public static IImage FromFile(string path)
         {
