@@ -21,6 +21,8 @@ namespace Pfim.Benchmarks
         public void SetupData()
         {
             data = File.ReadAllBytes(Path.Combine("bench", Payload));
+
+            Aardvark.Base.Aardvark.Init();
             DS.Bootstrap.Init();
         }
 

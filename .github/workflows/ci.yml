@@ -51,3 +51,10 @@ jobs:
     - run: dotnet build src/Pfim.Benchmarks/Pfim.Benchmarks.csproj
     - run: dotnet build src/Pfim.Viewer.Forms/Pfim.Viewer.Forms.csproj
     - run: dotnet build src/Pfim.Viewer/Pfim.Viewer.csproj
+    - run: |
+        dotnet run -c Release --project ./src/Pfim.Benchmarks -- --filter * --job Dry
+        $SEL = Select-String -Path ./BenchmarkDotNet.Artifacts/*.log -Pattern "Benchmarks with issues"
+        if ($SEL -ne $null)
+        {
+          exit 1
+        }

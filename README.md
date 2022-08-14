@@ -72,8 +72,8 @@ Pfim is fast. Faster than anything benchmarked in C#.
 
 The contestants:
 
-- Pfim 0.7.0
-- [DevIL](http://openil.sourceforge.net/) 0.2.4
+- Pfim 0.10.0
+- [DevIL](http://openil.sourceforge.net/) 0.2.19
 - [FreeImage](http://freeimage.sourceforge.net/) 4.3.6
 - [ImageMagick](https://www.imagemagick.org/script/index.php) 7.12.0
 - [TargaImage](https://www.codeproject.com/Articles/31702/NET-Targa-Image-Reader) 1.0
@@ -159,11 +159,9 @@ All contributions are welcome. Here is a quick guideline:
 - Have a performance improvement for Pfim? Excellent, run the before and after benchmarks!
 
 ```
-dotnet build -c Release -f net461  .\src\Pfim.Benchmarks\Pfim.Benchmarks.csproj
-cd src\Pfim.Benchmarks\bin\Release\net461
-.\Pfim.Benchmarks.exe --filter *.Pfim
+dotnet run -c Release --project .\src\Pfim.Benchmarks -- --filter '*.Pfim'
 ```
-- Know a library to include in the benchmarks? If it is NuGet installable / easily integratable, please raise an issue or pull request! It must run on .NET 4.6.
+- Know a library to include in the benchmarks? If it is NuGet installable / easily integratable, please raise an issue or pull request!
 
 ## Developer Resources
 

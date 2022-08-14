@@ -24,9 +24,9 @@ namespace Pfim.Benchmarks
         [GlobalSetup]
         public void SetupData()
         {
-            var loc = System.Reflection.Assembly.GetEntryAssembly().Location;
-            var dir = Path.GetDirectoryName(loc);
-            data = File.ReadAllBytes(Path.Combine(dir, "bench", Payload));
+            data = File.ReadAllBytes(Path.Combine("bench", Payload));
+
+            Aardvark.Base.Aardvark.Init();
             DS.Bootstrap.Init();
         }
 
