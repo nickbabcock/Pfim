@@ -26,48 +26,24 @@
             ushort color1 = (stream[streamIndex++]);
             color1 |= (ushort)(stream[streamIndex++] << 8);
 
-            // Extract R5G6B5 (in that order)
-            colors[0].r = (byte)((color0 & 0x1f));
-            colors[0].g = (byte)((color0 & 0x7E0) >> 5);
-            colors[0].b = (byte)((color0 & 0xF800) >> 11);
-            colors[0].r = (byte)(colors[0].r << 3 | colors[0].r >> 2);
-            colors[0].g = (byte)(colors[0].g << 2 | colors[0].g >> 3);
-            colors[0].b = (byte)(colors[0].b << 3 | colors[0].b >> 2);
-            colors[0].a = 255;
+            // Extract R5G6B5
+            var c0 = ColorFloatRgb.FromRgb565(color0);
+            var c1 = ColorFloatRgb.FromRgb565(color1);
 
-            colors[1].r = (byte)((color1 & 0x1f));
-            colors[1].g = (byte)((color1 & 0x7E0) >> 5);
-            colors[1].b = (byte)((color1 & 0xF800) >> 11);
-            colors[1].r = (byte)(colors[1].r << 3 | colors[1].r >> 2);
-            colors[1].g = (byte)(colors[1].g << 2 | colors[1].g >> 3);
-            colors[1].b = (byte)(colors[1].b << 3 | colors[1].b >> 2);
-            colors[1].a = 255;
+            c0.As8Bit(out colors[0]);
+            c1.As8Bit(out colors[1]);
 
             // Used the two extracted colors to create two new colors that are
             // slightly different.
             if (color0 > color1)
             {
-                colors[2].r = (byte)((2 * colors[0].r + colors[1].r) / 3);
-                colors[2].g = (byte)((2 * colors[0].g + colors[1].g) / 3);
-                colors[2].b = (byte)((2 * colors[0].b + colors[1].b) / 3);
-                colors[2].a = 255;
-
-                colors[3].r = (byte)((colors[0].r + 2 * colors[1].r) / 3);
-                colors[3].g = (byte)((colors[0].g + 2 * colors[1].g) / 3);
-                colors[3].b = (byte)((colors[0].b + 2 * colors[1].b) / 3);
-                colors[3].a = 255;
+                c0.Lerp(c1, 0.33333333f).As8Bit(out colors[2]);
+                c0.Lerp(c1, 0.66666666f).As8Bit(out colors[3]);
             }
             else
             {
-                colors[2].r = (byte)((colors[0].r + colors[1].r) / 2);
-                colors[2].g = (byte)((colors[0].g + colors[1].g) / 2);
-                colors[2].b = (byte)((colors[0].b + colors[1].b) / 2);
-                colors[2].a = 255;
-
-                colors[3].r = 0;
-                colors[3].g = 0;
-                colors[3].b = 0;
-                colors[3].a = 0;
+                c0.Lerp(c1, 0.5f).As8Bit(out colors[2]);
+                colors[3] = default;
             }
 
 

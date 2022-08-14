@@ -33,7 +33,7 @@ namespace Pfim.Tests
             {
                 data[i] = 0;
                 data[i + 1] = 0;
-                data[i + 2] = 127;
+                data[i + 2] = 128;
                 data[i + 3] = 255;
             }
 
@@ -74,7 +74,7 @@ namespace Pfim.Tests
             {
                 data[i] = 0;
                 data[i + 1] = 0;
-                data[i + 2] = 128;
+                data[i + 2] = 129;
                 data[i + 3] = 255;
             }
 
@@ -92,7 +92,7 @@ namespace Pfim.Tests
             {
                 data[i] = 0;
                 data[i + 1] = 0;
-                data[i + 2] = 128;
+                data[i + 2] = 129;
                 data[i + 3] = 255;
             }
 
@@ -108,7 +108,7 @@ namespace Pfim.Tests
             Assert.Equal(32, image.Stride);
             Assert.Equal(0, image.Data[8 * 5 * 4]);
             Assert.Equal(0, image.Data[8 * 5 * 4 + 1]);
-            Assert.Equal(128, image.Data[8 * 5 * 4 + 2]);
+            Assert.Equal(129, image.Data[8 * 5 * 4 + 2]);
             Assert.Equal(255, image.Data[8 * 5 * 4 + 3]);
             Assert.Equal( 8 * 12 * 4, image.Data.Length);
             Assert.Equal(9, image.Height);
@@ -120,7 +120,7 @@ namespace Pfim.Tests
                 {
                     Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8)]);
                     Assert.Equal(0, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 1]);
-                    Assert.Equal(128, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 2]);
+                    Assert.Equal(129, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 2]);
                     Assert.Equal(255, image.Data[i * image.Stride + (j * image.BitsPerPixel / 8) + 3]);
                 }
             }
@@ -137,7 +137,7 @@ namespace Pfim.Tests
             for (int i = 0; i < data.Length; i += 4)
             {
                 data[i] = 255;
-                data[i + 1] = 189;
+                data[i + 1] = 186;
                 data[i + 2] = 189;
                 data[i + 3] = 255;
             }
@@ -158,7 +158,7 @@ namespace Pfim.Tests
             for (int i = 0; i < data.Length; i += 4)
             {
                 data[i] = 255;
-                data[i + 1] = 189;
+                data[i + 1] = 186;
                 data[i + 2] = 189;
                 data[i + 3] = 255;
             }
@@ -253,7 +253,7 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(Path.Combine("data", "bc7-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
-            { 
+            {
                 // Format says Rgba32 (r at least significant)
                 // but it is Bgra32 (b at least significant)
                 // this mistake seems to be the case with all
@@ -317,7 +317,7 @@ namespace Pfim.Tests
             Assert.Equal(16, image.Stride);
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(0, image.Data[1]);
-            Assert.Equal(128, image.Data[2]);
+            Assert.Equal(129, image.Data[2]);
             Assert.Equal(255, image.Data[3]);
             Assert.Equal(64, image.Data.Length);
             Assert.Equal(1, image.Height);
@@ -374,6 +374,24 @@ namespace Pfim.Tests
             image = Dds.Create(File.ReadAllBytes(Path.Combine("data", "wose_BC1_UNORM.DDS")), new PfimConfig());
             Assert.Equal(expectedMips, image.MipMaps);
             Assert.Equal(28224 + 64, image.Data.Length);
+        }
+
+        [Fact]
+        public void TestBc1UnormSrgb47Dds()
+        {
+            var image = Pfim.FromFile(Path.Combine("data", "BC1_UNORM_SRGB-47.dds"));
+            byte[] data = new byte[349632];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                data[i + 0] = 47;
+                data[i + 1] = 47;
+                data[i + 2] = 47;
+                data[i + 3] = 255;
+            }
+
+            Assert.Equal(data, image.Data);
+            Assert.Equal(256, image.Height);
+            Assert.Equal(256, image.Width);
         }
     }
 }
