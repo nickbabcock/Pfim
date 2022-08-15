@@ -225,11 +225,7 @@ namespace Pfim
             var headerSize = skipMagic ? SIZE : SIZE + 4;
             byte[] buffer = new byte[headerSize];
             Reserved1 = new uint[11];
-            int bufferSize = stream.Read(buffer, 0, headerSize);
-            if (bufferSize != headerSize)
-            {
-                throw new Exception($"Need at least {SIZE + 4} bytes for a valid DDS header");
-            }
+            Util.ReadExactly(stream, buffer, 0, headerSize);
 
             fixed (byte* bufferPtr = buffer)
             {

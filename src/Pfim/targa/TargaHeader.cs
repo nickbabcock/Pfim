@@ -73,11 +73,7 @@ namespace Pfim
         public TargaHeader(Stream str, PfimConfig config)
         {
             byte[] buf = new byte[MINIMUM_SIZE];
-            if (str.Read(buf, 0, MINIMUM_SIZE) != MINIMUM_SIZE)
-            {
-                throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
-            }
-
+            Util.ReadExactly(str, buf, 0, buf.Length);
             DecodeTargaHeader(str, buf, MINIMUM_SIZE, config);
         }
 
@@ -102,10 +98,7 @@ namespace Pfim
                     buf[i] = partial[i];
                 }
 
-                if (str.Read(buf, partialLen, left) != left)
-                {
-                    throw new ArgumentException("Stream doesn't have enough data for a .tga", nameof(str));
-                }
+                Util.ReadExactly(str, buf, partialLen, left);
             }
 
             IDLength = buf[0];
@@ -131,8 +124,8 @@ namespace Pfim
             if (IDLength != 0)
             {
                 var idBuf = new byte[IDLength];
-                var amount = str.Read(idBuf, 0, IDLength);
-                ImageId = Encoding.Unicode.GetString(idBuf, 0, amount);
+                Util.ReadExactly(str, idBuf, 0, IDLength);
+                ImageId = Encoding.Unicode.GetString(idBuf, 0, IDLength);
             }
 
             if (HasColorMap)
@@ -144,7 +137,7 @@ namespace Pfim
 
                 var mapBytes = ColorMapDepthBytes;
                 ColorMap = new byte[ColorMapLength * mapBytes];
-                str.Read(ColorMap, ColorMapOrigin * mapBytes, (ColorMapLength - ColorMapOrigin) * mapBytes);
+                Util.ReadExactly(str, ColorMap, ColorMapOrigin * mapBytes, (ColorMapLength - ColorMapOrigin) * mapBytes);
             }
         }
 

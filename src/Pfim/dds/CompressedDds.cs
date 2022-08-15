@@ -69,66 +69,53 @@ namespace Pfim
             int blocksPerStride = WidthBlocks;
             int indexPixelsLeft = HeightBlocks * DivSize * stride;
             var stridePixels = StridePixels;
-            int bytesPerStride = BytesPerStride;
 
-            int bufferSize;
+            int strideBlocksRemaining = blocksPerStride;
             byte[] streamBuffer = config.Allocator.Rent(config.BufferSize);
             try
             {
-                do
+                int workingSize = Util.ReadFill(stream, streamBuffer, 0, config.BufferSize);
+                while (workingSize > 0 && indexPixelsLeft > 0)
                 {
-                    int workingSize;
-                    bufferSize = workingSize = stream.Read(streamBuffer, 0, config.BufferSize);
                     int bIndex = 0;
-                    while (workingSize > 0 && indexPixelsLeft > 0)
+                    int workingBlocks = workingSize / CompressedBytesPerBlock;
+                    while (workingBlocks > 0)
                     {
-                        // If there is not enough of the buffer to fill the next
-                        // set of 16 square pixels Get the next buffer
-                        if (workingSize < bytesPerStride)
+                        bIndex = Decode(streamBuffer, data, bIndex, (uint)dataIndex, (uint)stridePixels);
+                        
+                        // Advance to the next block
+                        dataIndex += divSize * PixelDepthBytes;
+
+                        workingBlocks -= 1;
+                        strideBlocksRemaining -= 1;
+                        if (strideBlocksRemaining == 0)
                         {
-                            bufferSize = workingSize = Util.Translate(stream, streamBuffer, config.BufferSize, bIndex);
-                            bIndex = 0;
-                        }
+                            strideBlocksRemaining = blocksPerStride;
+                            indexPixelsLeft -= stride * divSize;
+                            pixelsLeft -= stride * divSize;
 
-                        var origDataIndex = dataIndex;
+                            // Jump down to the starting block
+                            dataIndex += stride * (divSize - 1);
 
-                        // Now that we have enough pixels to fill a stride (and
-                        // this includes the normally 4 pixels below the stride)
-                        for (uint i = 0; i < blocksPerStride; i++)
-                        {
-                            bIndex = Decode(streamBuffer, data, bIndex, (uint)dataIndex, (uint)stridePixels);
+                            if (indexPixelsLeft <= 0)
+                            {
+                                if (imageIndex >= MipMaps.Length) break;
 
-                            // Advance to the next block, which is (pixel depth *
-                            // divSize) bytes away
-                            dataIndex += divSize * PixelDepthBytes;
-                        }
-
-                        // Each decoded block is divSize by divSize so pixels left
-                        // is Width * multiplied by block height
-                        workingSize -= bytesPerStride;
-
-                        var filled = stride * divSize;
-                        pixelsLeft -= filled;
-                        indexPixelsLeft -= filled;
-
-                        // Jump down to the block that is exactly (divSize - 1)
-                        // below the current row we are on
-                        dataIndex = origDataIndex + filled;
-
-                        if (indexPixelsLeft <= 0 && imageIndex < MipMaps.Length)
-                        {
-                            var mip = MipMaps[imageIndex];
-                            var widthBlocks = CalcBlocks(mip.Width);
-                            var heightBlocks = CalcBlocks(mip.Height);
-                            stridePixels = widthBlocks * DivSize;
-                            stride = stridePixels * PixelDepthBytes;
-                            blocksPerStride = widthBlocks;
-                            indexPixelsLeft = heightBlocks * DivSize * stride;
-                            bytesPerStride = widthBlocks * CompressedBytesPerBlock;
-                            imageIndex++;
+                                var mip = MipMaps[imageIndex];
+                                var widthBlocks = CalcBlocks(mip.Width);
+                                var heightBlocks = CalcBlocks(mip.Height);
+                                stridePixels = widthBlocks * DivSize;
+                                stride = stridePixels * PixelDepthBytes;
+                                blocksPerStride = widthBlocks;
+                                strideBlocksRemaining = blocksPerStride;
+                                indexPixelsLeft = heightBlocks * DivSize * stride;
+                                imageIndex++;
+                            }
                         }
                     }
-                } while (bufferSize != 0 && pixelsLeft > 0);
+
+                    workingSize = Util.Translate(stream, streamBuffer, config.BufferSize, bIndex);
+                }
 
                 return data;
             }
