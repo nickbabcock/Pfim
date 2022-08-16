@@ -15,6 +15,9 @@
     <RepositoryUrl>https://github.com/nickbabcock/Pfim</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/nickbabcock/Pfim/master/analysis/logo.png?raw=true</PackageIconUrl>
 
+    <AssemblyOriginatorKeyFile>..\pfim.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+
     <Major>0</Major>
     <Minor>10</Minor>
     <Revision>3</Revision>
