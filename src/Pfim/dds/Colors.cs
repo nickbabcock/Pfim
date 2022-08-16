@@ -1,6 +1,6 @@
 ﻿namespace Pfim
 {
-    struct Colors888
+    struct Color888
     {
         public byte r;
         public byte g;
@@ -34,28 +34,26 @@
             };
         }
 
-        public ColorFloatRgb Lerp(ColorFloatRgb other, float blend)
+        public ColorFloatRgb Lerp(ColorFloatRgb other, float blend) => new ColorFloatRgb()
         {
-            return new ColorFloatRgb()
-            {
-                r = r + blend * (other.r - r),
-                g = g + blend * (other.g - g),
-                b = b + blend * (other.b - b),
-            };
-        }
+            r = r + blend * (other.r - r),
+            g = g + blend * (other.g - g),
+            b = b + blend * (other.b - b),
+        };
 
-        public void As8Bit(out Colors888 result)
+        public Color888 As8Bit() => new Color888
         {
-            result.r = (byte)(r + 0.5f);
-            result.g = (byte)(g + 0.5f);
-            result.b = (byte)(b + 0.5f);
-        }
-        public void As8Bit(out Color8888 result)
+            r = (byte)(r + 0.5f),
+            g = (byte)(g + 0.5f),
+            b = (byte)(b + 0.5f),
+        };
+
+        public Color8888 As8BitA() => new Color8888
         {
-            result.r = (byte)(r + 0.5f);
-            result.g = (byte)(g + 0.5f);
-            result.b = (byte)(b + 0.5f);
-            result.a = 255;
-        }
+            r = (byte)(r + 0.5f),
+            g = (byte)(g + 0.5f),
+            b = (byte)(b + 0.5f),
+            a = 255,
+        };
     }
 }

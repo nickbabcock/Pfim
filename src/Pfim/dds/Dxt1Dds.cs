@@ -15,8 +15,6 @@
         public override ImageFormat Format => ImageFormat.Rgba32;
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
 
-        private readonly Color8888[] colors = new Color8888[4];
-
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             // Colors are stored in a pair of 16 bits
@@ -30,22 +28,12 @@
             var c0 = ColorFloatRgb.FromRgb565(color0);
             var c1 = ColorFloatRgb.FromRgb565(color1);
 
-            c0.As8Bit(out colors[0]);
-            c1.As8Bit(out colors[1]);
-
             // Used the two extracted colors to create two new colors that are
             // slightly different.
-            if (color0 > color1)
-            {
-                c0.Lerp(c1, 0.33333333f).As8Bit(out colors[2]);
-                c0.Lerp(c1, 0.66666666f).As8Bit(out colors[3]);
-            }
-            else
-            {
-                c0.Lerp(c1, 0.5f).As8Bit(out colors[2]);
-                colors[3] = default;
-            }
-
+            (var i0, var i1) = (c0.As8BitA(), c1.As8BitA());
+            Color8888[] colors = color0 > color1 ?
+                new[] { i0, i1, c0.Lerp(c1, 1f / 3).As8BitA(), c0.Lerp(c1, 2f / 3).As8BitA() } :
+                new[] { i0, i1, c0.Lerp(c1, 0.5f).As8BitA(), default };
 
             for (int i = 0; i < 4; i++)
             {

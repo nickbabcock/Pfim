@@ -15,8 +15,6 @@
         {
         }
 
-        private readonly Colors888[] colors = new Colors888[4];
-
         protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             /*
@@ -43,10 +41,8 @@
             var c0 = ColorFloatRgb.FromRgb565(color0);
             var c1 = ColorFloatRgb.FromRgb565(color1);
 
-            c0.As8Bit(out colors[0]);
-            c1.As8Bit(out colors[1]);
-            c0.Lerp(c1, 0.33333333f).As8Bit(out colors[2]);
-            c0.Lerp(c1, 0.66666666f).As8Bit(out colors[3]);
+            (var i0, var i1) = (c0.As8Bit(), c1.As8Bit());
+            Color888[] colors = new[] { i0, i1, c0.Lerp(c1, 1f / 3).As8Bit(), c0.Lerp(c1, 2f / 3).As8Bit() };
 
             for (int i = 0; i < 4; i++)
             {
