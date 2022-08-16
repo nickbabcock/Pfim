@@ -53,7 +53,7 @@ namespace Pfim.Viewer
 
             foreach (var file in images)
             {
-                IImage image = await Task.Run(() => Pfim.FromFile(file));
+                IImage image = await Task.Run(() => Pfimage.FromFile(file));
                 foreach (var im in WpfImage(image))
                 {
                     ImagePanel.Children.Add(im);

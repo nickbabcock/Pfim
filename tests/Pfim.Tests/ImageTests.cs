@@ -73,15 +73,15 @@ namespace Pfim.Tests
         {
             var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
             var data = File.ReadAllBytes(path);
-            var image = Pfim.FromFile(path);
-            var image2 = Pfim.FromStream(new MemoryStream(data), new PfimConfig());
+            var image = Pfimage.FromFile(path);
+            var image2 = Pfimage.FromStream(new MemoryStream(data), new PfimConfig());
             Assert.NotEqual(0, image.DataLen);
             Assert.NotEqual(0, image2.DataLen);
 
             var allocator = new PfimAllocator();
             Assert.Equal(0, allocator.Rented);
 
-            using (var image3 = Pfim.FromStream(new ChunkedStream(data), new PfimConfig(allocator: allocator, bufferSize: 600)))
+            using (var image3 = Pfimage.FromStream(new ChunkedStream(data), new PfimConfig(allocator: allocator, bufferSize: 600)))
             {
                 Assert.Equal(format, image.Format);
                 Assert.Equal(image.Format, image2.Format);
@@ -109,7 +109,7 @@ namespace Pfim.Tests
         {
             var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
             var data = File.ReadAllBytes(path);
-            var image = Pfim.FromFile(path);
+            var image = Pfimage.FromFile(path);
             var image2 = Dds.Create(data, new PfimConfig());
             Assert.Equal(image.MipMaps, image2.MipMaps);
             Assert.Equal(Hash64(image.Data, image.DataLen), Hash64(image2.Data, image2.DataLen));

@@ -18,7 +18,7 @@ namespace Pfim.Tests
                 expected[i + 2] = 0;
             }
 
-            var image = Pfim.FromFile(Path.Combine("data", "true-24.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-24.tga"));
             Assert.Equal(expected, image.Data);
         }
 
@@ -34,7 +34,7 @@ namespace Pfim.Tests
                 expected[i + 3] = 255;
             }
 
-            var image = Pfim.FromFile(Path.Combine("data", "true-32.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-32.tga"));
             Assert.Equal(expected, image.Data);
         }
 
@@ -99,7 +99,7 @@ namespace Pfim.Tests
                 data[i + 3] = 255;
             }
 
-            var image = Pfim.FromFile(Path.Combine("data", "true-32-rle.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-32-rle.tga"));
 
             Assert.Equal(data, image.Data);
         }
@@ -134,7 +134,7 @@ namespace Pfim.Tests
                 data[i + 2] = 255;
             }
 
-            var image = Pfim.FromFile(Path.Combine("data", "true-24-rle.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-24-rle.tga"));
 
             Assert.Equal(data, image.Data);
         }
@@ -142,7 +142,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseUncompressedNonSquareTga()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "tiny-rect.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "tiny-rect.tga"));
             byte[] data = new byte[12 * 20 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -157,7 +157,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseTrueTarga32MixedEncoding()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "true-32-mixed.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-32-mixed.tga"));
             byte[] data = new byte[256];
             for (int i = 0; i < 16 * 4; i += 4)
             {
@@ -209,7 +209,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseLarge32TargetImage()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "true-32-rle-large.tga"));
             byte[] data = new byte[1200 * 1200 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -225,7 +225,7 @@ namespace Pfim.Tests
         public void ParseTargaTopLeft()
         {
             bool seenBlue = false;
-            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "rgb24_top_left.tga"));
             for (int i = 0; i < image.Data.Length; i += 3)
             {
                 seenBlue |= image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255;
@@ -247,7 +247,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseTargaTopLeftColorMap()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"), new PfimConfig(applyColorMap: false));
+            var image = Pfimage.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"), new PfimConfig(applyColorMap: false));
             Assert.Equal(8, image.BitsPerPixel);
             Assert.Equal(4096, image.Data.Length);
             Assert.NotEqual(ImageFormat.Rgb24, image.Format);
@@ -264,7 +264,7 @@ namespace Pfim.Tests
         [Fact]
         public void TargaColorMapIdempotent()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"), new PfimConfig(applyColorMap: false));
+            var image = Pfimage.FromFile(Path.Combine("data", "rgb24_top_left_colormap.tga"), new PfimConfig(applyColorMap: false));
             var firstData = image.Data;
             var firstLen = image.DataLen;
             image.ApplyColorMap();
@@ -299,7 +299,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseLargeTargaTopLeft()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "large-top-left.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "large-top-left.tga"));
             foreach (byte bt in image.Data)
             {
                 Assert.Equal(0, bt);
@@ -309,7 +309,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseLargeTargaBottomLeft()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "marbles.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "marbles.tga"));
             Assert.Equal(4264260, image.Data.Length);
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(0, image.Data[1]);
@@ -319,7 +319,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseMarblesTarga()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "marbles2.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "marbles2.tga"));
             Assert.Equal(100 * 71 * 3, image.Data.Length);
             Assert.Equal(2, image.Data[0]);
             Assert.Equal(3, image.Data[1]);
@@ -329,7 +329,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseTransparentTarga()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "flag_t32.tga"));
+            var image = Pfimage.FromFile(Path.Combine("data", "flag_t32.tga"));
             for (int i = 0; i < image.Data.Length; i += 4)
             {
                 Assert.Equal(0, image.Data[i + 3]);
@@ -340,7 +340,7 @@ namespace Pfim.Tests
         public void InvalidTargaException()
         {
             var data = Encoding.ASCII.GetBytes("Hello world! A wonderful evening");
-            var ex = Assert.ThrowsAny<Exception>(() => Pfim.FromStream(new MemoryStream(data)));
+            var ex = Assert.ThrowsAny<Exception>(() => Pfimage.FromStream(new MemoryStream(data)));
             Assert.Equal("Detected invalid targa image", ex.Message);
         }
     }

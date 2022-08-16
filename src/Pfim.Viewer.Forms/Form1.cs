@@ -29,7 +29,7 @@ namespace Pfim.Viewer.Forms
                 return;
             }
 
-            var image = Pfim.FromFile(dialog.FileName);
+            var image = Pfimage.FromFile(dialog.FileName);
 
             PixelFormat format;
             switch (image.Format)

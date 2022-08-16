@@ -9,7 +9,7 @@ namespace Pfim.Tests
         [Fact]
         public void Parse32BitUncompressedDds()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "32-bit-uncompressed.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -27,7 +27,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleDxt1()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt1-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt1-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -45,7 +45,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseDxt1Alpha()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt1-alpha.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt1-alpha.dds"));
             Assert.Equal(0, image.Data[34]); // check alpha is off
             Assert.Equal(64, image.Height);
             Assert.Equal(128, image.Width);
@@ -68,7 +68,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleDxt3()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt3-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt3-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -86,7 +86,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleDxt5()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt5-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -104,7 +104,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleDxt5Odd()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple-odd.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt5-simple-odd.dds"));
             Assert.Equal(32, image.Stride);
             Assert.Equal(0, image.Data[8 * 5 * 4]);
             Assert.Equal(0, image.Data[8 * 5 * 4 + 1]);
@@ -129,7 +129,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc2()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc2-simple-srgb.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc2-simple-srgb.dds"));
             Assert.True(image is Dxt3Dds);
             Assert.Equal(DxgiFormat.BC2_UNORM_SRGB, ((Dxt3Dds)image).Header10?.DxgiFormat);
 
@@ -150,7 +150,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc3()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc3-simple-srgb.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc3-simple-srgb.dds"));
             Assert.True(image is Dxt5Dds);
             Assert.Equal(DxgiFormat.BC3_UNORM_SRGB, ((Dxt5Dds)image).Header10?.DxgiFormat);
 
@@ -171,7 +171,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc4()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc4-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc4-simple.dds"));
             Assert.True(image is Bc4Dds);
             Assert.Equal(CompressionAlgorithm.BC4U, ((Bc4Dds)image).Header?.PixelFormat.FourCC);
 
@@ -189,7 +189,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc5()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc5-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc5-simple.dds"));
             Assert.True(image is Bc5Dds);
             Assert.Equal(CompressionAlgorithm.BC5U, ((Bc5Dds)image).Header?.PixelFormat.FourCC);
 
@@ -209,7 +209,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc5s()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc5-simple-snorm.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc5-simple-snorm.dds"));
             Assert.True(image is Bc5sDds);
             Assert.Equal(CompressionAlgorithm.BC5S, ((Bc5sDds)image).Header?.PixelFormat.FourCC);
 
@@ -229,7 +229,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc6h()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc6h-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc6h-simple.dds"));
             Assert.True(image is Bc6hDds);
             Assert.Equal(DxgiFormat.BC6H_UF16, ((Bc6hDds)image).Header10?.DxgiFormat);
 
@@ -250,7 +250,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleBc7()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "bc7-simple.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "bc7-simple.dds"));
             byte[] data = new byte[64 * 64 * 4];
             for (int i = 0; i < data.Length; i += 4)
             {
@@ -272,7 +272,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleUncompressedOdd()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "32-bit-uncompressed-odd.dds"));
             Assert.Equal(20, image.Stride);
             Assert.Equal(5 * 9 * 4, image.Data.Length);
             Assert.Equal(9, image.Height);
@@ -293,7 +293,7 @@ namespace Pfim.Tests
         [Fact]
         public void Parse24bitUncompressedOdd()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "24-bit-uncompressed-odd.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "24-bit-uncompressed-odd.dds"));
             Assert.Equal(4, image.Stride);
             Assert.Equal(12, image.Data.Length);
             Assert.Equal(3, image.Height);
@@ -313,7 +313,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseSimpleDxt51x1()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "dxt5-simple-1x1.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "dxt5-simple-1x1.dds"));
             Assert.Equal(16, image.Stride);
             Assert.Equal(0, image.Data[0]);
             Assert.Equal(0, image.Data[1]);
@@ -327,7 +327,7 @@ namespace Pfim.Tests
         [Fact]
         public void ParseWoseBc1Snorm()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM_SRGB.DDS"));
+            var image = Pfimage.FromFile(Path.Combine("data", "wose_BC1_UNORM_SRGB.DDS"));
             Assert.IsAssignableFrom<Dds>(image);
             var dds = (Dds)image;
             Assert.Equal(DxgiFormat.BC1_UNORM_SRGB, dds.Header10?.DxgiFormat);
@@ -358,7 +358,7 @@ namespace Pfim.Tests
         [Fact]
         public void TestDdsMipMap1()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "wose_BC1_UNORM.DDS"));
+            var image = Pfimage.FromFile(Path.Combine("data", "wose_BC1_UNORM.DDS"));
             var expectedMips = new[]
             {
                 new MipMapOffset(36, 36, 144, 20736, 5184),
@@ -379,7 +379,7 @@ namespace Pfim.Tests
         [Fact]
         public void TestBc1UnormSrgb47Dds()
         {
-            var image = Pfim.FromFile(Path.Combine("data", "BC1_UNORM_SRGB-47.dds"));
+            var image = Pfimage.FromFile(Path.Combine("data", "BC1_UNORM_SRGB-47.dds"));
             byte[] data = new byte[349632];
             for (int i = 0; i < data.Length; i += 4)
             {

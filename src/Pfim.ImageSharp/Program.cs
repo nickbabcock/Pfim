@@ -19,7 +19,7 @@ namespace Pfim.ImageSharp
 
         private static void ConvertFile(string file)
         {
-            using (var image = Pfim.FromFile(file))
+            using (var image = Pfimage.FromFile(file))
             {
                 byte[] newData;
 
