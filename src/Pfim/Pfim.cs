@@ -37,11 +37,7 @@ namespace Pfim
         public static IImage FromStream(Stream stream, PfimConfig config)
         {
             byte[] magic = new byte[4];
-            if (stream.Read(magic, 0, 4) != 4)
-            {
-                throw new ArgumentException("stream must contain magic header", nameof(stream));
-            }
-
+            Util.ReadExactly(stream, magic, 0, magic.Length);
             if (magic[0] == 0x44 && magic[1] == 0x44 && magic[2] == 0x53 && magic[3] == 0x20)
             {
                 return Dds.CreateSkipMagic(stream, config);

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using static Farmhash.Sharp.Farmhash;
@@ -80,7 +81,7 @@ namespace Pfim.Tests
             var allocator = new PfimAllocator();
             Assert.Equal(0, allocator.Rented);
 
-            using (var image3 = Pfim.FromStream(new MemoryStream(data), new PfimConfig(allocator: allocator)))
+            using (var image3 = Pfim.FromStream(new ChunkedStream(data), new PfimConfig(allocator: allocator, bufferSize: 600)))
             {
                 Assert.Equal(format, image.Format);
                 Assert.Equal(image.Format, image2.Format);
@@ -111,6 +112,11 @@ namespace Pfim.Tests
             var image = Pfim.FromFile(path);
             var image2 = Dds.Create(data, new PfimConfig());
             Assert.Equal(image.MipMaps, image2.MipMaps);
+            Assert.Equal(Hash64(image.Data, image.DataLen), Hash64(image2.Data, image2.DataLen));
+
+            var maps = image.MipMaps.Select((x) => Hash64(new Span<byte>(image.Data, x.DataOffset, x.DataLen))).ToList();
+            var maps2 = image2.MipMaps.Select((x) => Hash64(new Span<byte>(image2.Data, x.DataOffset, x.DataLen))).ToList();
+            Assert.Equal(maps, maps2);
 
             var mipMapLengths = image.MipMaps.Sum(x => x.DataLen);
             var hash1 = Hash64(image.Data, image.DataLen + mipMapLengths);

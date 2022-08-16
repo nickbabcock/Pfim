@@ -95,11 +95,15 @@ namespace Pfim
             // If our buffer doesn't have enough to decode the maximum number of bytes,
             // fetch another batch of bytes from the stream.
             int maxRead = bytesPerPixel * 128 + 1;
+            if (config.BufferSize < maxRead)
+            {
+                throw new ArgumentException($"Buffer size not big enough to read {maxRead} bytes", nameof(config.BufferSize));
+            }
 
             byte[] filebuffer = config.Allocator.Rent(config.BufferSize);
             try
             {
-                int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+                int workingSize = Util.ReadFill(str, filebuffer, 0, config.BufferSize);
                 while (dataIndex >= 0)
                 {
                     int colIndex = 0;
@@ -167,9 +171,13 @@ namespace Pfim
             // If our buffer doesn't have enough to decode the maximum number of bytes,
             // fetch another batch of bytes from the stream.
             int maxRead = bytesPerPixel * 128 + 1;
+            if (config.BufferSize < maxRead)
+            {
+                throw new ArgumentException($"Buffer size not big enough to read {maxRead} bytes", nameof(config.BufferSize));
+            }
 
             byte[] filebuffer = config.Allocator.Rent(config.BufferSize);
-            int workingSize = str.Read(filebuffer, 0, config.BufferSize);
+            int workingSize = Util.ReadFill(str, filebuffer, 0, config.BufferSize);
 
             try
             {

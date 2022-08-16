@@ -40,7 +40,7 @@ namespace Pfim
         public static int Translate(Stream str, byte[] buf, int bufLen, int bufIndex)
         {
             Buffer.BlockCopy(buf, bufIndex, buf, 0, bufLen - bufIndex);
-            int result = str.Read(buf, bufLen - bufIndex, bufIndex);
+            int result = Util.ReadFill(str, buf, bufLen - bufIndex, bufIndex);
             return result + bufLen - bufIndex;
         }
 
@@ -94,14 +94,14 @@ namespace Pfim
             }
         }
 
-        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE) => 
+        public static void Fill(Stream stream, byte[] data, int dataLen, int bufSize = BUFFER_SIZE) =>
             Fill(stream, data, dataLen, bufSize, 0);
 
         public static void InnerFillUnaligned(Stream str, byte[] buf, int bufLen, int width, int stride, int bufSize = BUFFER_SIZE, int offset = 0)
         {
             for (int i = offset; i < bufLen + offset; i += stride)
             {
-                str.Read(buf, i, width);
+                ReadExactly(str, buf, i, width);
             }
         }
 
@@ -117,10 +117,7 @@ namespace Pfim
         /// <param name="bufSize">The chunk size of data that will be read from the stream</param>
         private static void InnerFill(Stream str, byte[] buf, int dataLen, int bufSize = BUFFER_SIZE, int offset = 0)
         {
-            int bufPosition = offset;
-            for (int i = dataLen / bufSize; i > 0; i--)
-                bufPosition += str.Read(buf, bufPosition, bufSize);
-            str.Read(buf, bufPosition, dataLen % bufSize);
+            ReadExactly(str, buf, offset, dataLen);
         }
 
         /// <summary>
@@ -155,26 +152,84 @@ namespace Pfim
             int rowsToRead = rowsPerBuffer;
 
             if (rowsPerBuffer == 0)
-                throw new ArgumentOutOfRangeException(nameof(rowSize), "Row size must be small enough to fit in the buffer");
-
-            int workingSize = str.Read(buffer, 0, bufSize);
-            do
             {
-                for (int i = 0; i < rowsToRead; i++)
+                int workingSize = Util.ReadFill(str, buffer, 0, bufSize);
+                while (workingSize > 0 && dataIndex >= 0)
                 {
-                    Buffer.BlockCopy(buffer, bufferIndex, data, dataIndex, rowSize);
+                    int copied = 0;
+                    while (workingSize > 0 && copied < rowSize)
+                    {
+                        int toCopy = Math.Min(workingSize, rowSize - copied);
+                        Buffer.BlockCopy(buffer, 0, data, dataIndex + copied, toCopy);
+                        copied += toCopy;
+                        workingSize = Translate(str, buffer, bufSize, toCopy);
+                    }
+
                     dataIndex -= stride;
-                    bufferIndex += rowSize;
+                }
+            }
+            else
+            {
+                int workingSize = Util.ReadFill(str, buffer, 0, bufSize);
+                while (workingSize > 0 && dataIndex >= 0)
+                {
+                    for (int i = 0; i < rowsToRead; i++)
+                    {
+                        Buffer.BlockCopy(buffer, bufferIndex, data, dataIndex, rowSize);
+                        dataIndex -= stride;
+                        bufferIndex += rowSize;
+                    }
+
+                    if (dataIndex >= 0)
+                    {
+                        workingSize = Translate(str, buffer, bufSize, bufferIndex);
+                        bufferIndex = 0;
+                        rowsRead += rowsPerBuffer;
+                        rowsToRead = rowsRead + rowsPerBuffer < totalRows ? rowsPerBuffer : totalRows - rowsRead;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Fills the provided buffer. Throws if not enough data is available
+        /// </summary>
+        public static void ReadExactly(Stream str, byte[] buffer, int offset, int count)
+        {
+            ReadAtLeastCore(str, buffer, offset, count, throwOnEndOfStream: true);
+        }
+
+        /// <summary>
+        /// Reads from the stream until either the buffer is full or the stream has been consumed
+        /// </summary>
+        public static int ReadFill(Stream str, byte[] buffer, int offset, int count)
+        {
+            return ReadAtLeastCore(str, buffer, offset, count, throwOnEndOfStream: false);
+        }
+
+        /// <summary>
+        /// From https://github.com/dotnet/runtime/blob/c61ef61be8672bbc32d5e1d4e70c5ed4c04f4293/src/libraries/System.Private.CoreLib/src/System/IO/Stream.cs#L896
+        /// </summary>
+        private static int ReadAtLeastCore(Stream str, byte[] buffer, int offset, int count, bool throwOnEndOfStream = true)
+        {
+            int totalRead = 0;
+            while (totalRead < count)
+            {
+                int read = str.Read(buffer, offset + totalRead, count - totalRead);
+                if (read == 0)
+                {
+                    if (throwOnEndOfStream)
+                    {
+                        throw new EndOfStreamException($"Unable to fill buffer with {count} bytes");
+                    }
+
+                    return totalRead;
                 }
 
-                if (dataIndex >= 0)
-                {
-                    workingSize = Translate(str, buffer, bufSize, bufferIndex);
-                    bufferIndex = 0;
-                    rowsRead += rowsPerBuffer;
-                    rowsToRead = rowsRead + rowsPerBuffer < totalRows ? rowsPerBuffer : totalRows - rowsRead;
-                }
-            } while (dataIndex >= 0 && workingSize != 0);
+                totalRead += read;
+            }
+
+            return totalRead;
         }
 
         /// <summary>

@@ -17,10 +17,7 @@ namespace Pfim
         public unsafe DdsHeaderDxt10(Stream stream)
         {
             byte[] buffer = new byte[5 * 4];
-            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
-            {
-                throw new Exception($"Need at least {buffer.Length} bytes for a valid DDS DX10 header");
-            }
+            Util.ReadExactly(stream, buffer, 0, buffer.Length);
 
             fixed (byte* bufferPtr = buffer)
             {
