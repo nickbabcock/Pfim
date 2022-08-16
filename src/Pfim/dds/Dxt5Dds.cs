@@ -8,7 +8,6 @@ namespace Pfim
         private const byte DIV_SIZE = 4;
 
         private readonly byte[] alpha = new byte[8];
-        private readonly Colors888[] colors = new Colors888[4];
 
         public override int BitsPerPixel => 8 * PIXEL_DEPTH;
         public override ImageFormat Format => ImageFormat.Rgba32;
@@ -43,10 +42,8 @@ namespace Pfim
             var c0 = ColorFloatRgb.FromRgb565(color0);
             var c1 = ColorFloatRgb.FromRgb565(color1);
 
-            c0.As8Bit(out colors[0]);
-            c1.As8Bit(out colors[1]);
-            c0.Lerp(c1, 0.33333333f).As8Bit(out colors[2]);
-            c0.Lerp(c1, 0.66666666f).As8Bit(out colors[3]);
+            (var i0, var i1) = (c0.As8Bit(), c1.As8Bit());
+            Color888[] colors = new[] { i0, i1, c0.Lerp(c1, 1f / 3).As8Bit(), c0.Lerp(c1, 2f / 3).As8Bit() };
 
             for (int alphaShift = 0; alphaShift < 48; alphaShift += 12)
             {
