@@ -34,7 +34,7 @@ Since Pfim emphasizes on being frontend and backend agnostic some work is entail
 Below is a snippet that will convert a 32bit rgba targa or direct draw surface image into a png using the .NET framework.
 
 ```csharp
-using (var image = Pfim.FromFile(path))
+using (var image = Pfimage.FromFile(path))
 {
     PixelFormat format;
 

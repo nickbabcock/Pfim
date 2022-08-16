@@ -1,3 +1,21 @@
+### 0.11.0 - August 16th 2022
+
+**Breaking Changes**
+
+The `Pfim` class has been renamed to `Pfimage` to avoid namespace collision. Migration should be simple:
+
+```diff
+- using (var image = Pfim.FromFile(file))
++ using (var image = Pfimage.FromFile(file))
+```
+
+**Other Changes**
+
+- Fix rounding errors in DXT1, DXT3, and DXT5 where the decoded channels may be inaccurate within a few degrees. See PR #98 and issue #88 for more info
+- Fix image decoding on smaller buffers and chunked streams
+- Pfim is now a strong named assembly
+- Code samples updated to use NET 6.0
+
 ### 0.10.3 - January 1st 2022
 
 - Add support for B5G5R5A1_UNORM encoded DDS images
