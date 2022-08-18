@@ -74,7 +74,7 @@ namespace Pfim.Tests
             var path = Path.Combine("data", Path.Combine(allPath.Split('\\')));
             var data = File.ReadAllBytes(path);
             var image = Pfimage.FromFile(path);
-            var image2 = Pfimage.FromStream(new MemoryStream(data), new PfimConfig());
+            var image2 = Pfimage.FromStream(new MemoryStream(data, 0, data.Length, false, true), new PfimConfig());
             Assert.NotEqual(0, image.DataLen);
             Assert.NotEqual(0, image2.DataLen);
 

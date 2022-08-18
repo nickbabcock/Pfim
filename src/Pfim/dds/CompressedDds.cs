@@ -163,7 +163,7 @@ namespace Pfim
             var pixelsLeft = totalLen;
             int dataIndex = 0;
 
-            for (int imageIndex = 0; imageIndex < Header.MipMapCount && pixelsLeft > 0; imageIndex++)
+            for (int imageIndex = 0; imageIndex < Header.MipMapCount + 1 && pixelsLeft > 0; imageIndex++)
             {
                 int divSize = DivSize;
                 int stride = DeflatedStrideBytes;
