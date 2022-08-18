@@ -1,3 +1,7 @@
+### 0.11.1 - August 17th 2022
+
+- Fix targa and dds decoding from publicly visible memory streams
+
 ### 0.11.0 - August 16th 2022
 
 **Breaking Changes**
