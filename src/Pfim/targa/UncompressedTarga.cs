@@ -14,20 +14,20 @@ namespace Pfim
             var stride = Util.Stride(header.Width, header.PixelDepthBits);
             var len = header.Height * stride;
             var data = config.Allocator.Rent(len);
-            var trueStride = header.PixelDepthBytes * header.Width;
-            InnerBottomLeft(str, config, data, len, stride, trueStride);
+            var width = header.PixelDepthBytes * header.Width;
+            InnerBottomLeft(str, config, data, len, stride, width);
             return data;
         }
 
-        private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int dataLen, int stride, int trueStride)
+        private static void InnerBottomLeft(Stream str, PfimConfig config, byte[] data, int dataLen, int stride, int width)
         {
             if (str is MemoryStream s && s.TryGetBuffer(out var arr))
             {
                 int dataIndex = dataLen - stride;
 
-                for (int i = 0; dataIndex > 0; i++, dataIndex -= stride)
+                for (int i = 0; dataIndex >= 0; i++, dataIndex -= stride)
                 {
-                    Buffer.BlockCopy(arr.Array, (int) (s.Position + i * trueStride), data, dataIndex, trueStride);
+                    Buffer.BlockCopy(arr.Array, (int) (s.Position + i * width), data, dataIndex, width);
                 }
             }
             else
@@ -35,7 +35,7 @@ namespace Pfim
                 var buffer = config.Allocator.Rent(config.BufferSize);
                 try
                 {
-                    Util.FillBottomLeft(str, data, dataLen, trueStride, stride, buffer, config.BufferSize);
+                    Util.FillBottomLeft(str, data, dataLen, width, stride, buffer, config.BufferSize);
                 }
                 finally
                 {
