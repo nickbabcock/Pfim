@@ -311,6 +311,48 @@ namespace Pfim.Tests
         }
 
         [Fact]
+        public void Parse24bitUncompressedBgrOdd()
+        {
+            var image = Pfimage.FromFile(Path.Combine("data", "24-bit-uncompressed-bgr-odd.dds"));
+            Assert.Equal(16, image.Stride);
+            Assert.Equal(5, image.Height);
+            Assert.Equal(5, image.Width);
+            Assert.Equal(2, image.MipMaps.Length);
+
+            var mips =
+                new MipMapOffset[]
+                {
+                    new MipMapOffset(5, 5, 16, 0, image.DataLen),
+                    image.MipMaps[0],
+                    image.MipMaps[1]
+                };
+
+            var colors =
+                new int[][]
+                {
+                    new int[] {72, 29, 0},
+                    new int[] {19, 0, 188},
+                    new int[] {0, 173, 19}
+                };
+
+            for (int level = 0; level < mips.Length; level++)
+            {
+                for (int y = 0; y < mips[level].Height; y++)
+                {
+                    var rowOffset = mips[level].DataOffset + y * mips[level].Stride;
+
+                    for (int x = 0; x < mips[level].Width; x++)
+                    {
+                        var i = rowOffset + x * 3;
+                        Assert.Equal(colors[level][0], image.Data[i + 0]);
+                        Assert.Equal(colors[level][1], image.Data[i + 1]);
+                        Assert.Equal(colors[level][2], image.Data[i + 2]);
+                    }
+                }
+            }
+        }
+
+        [Fact]
         public void ParseSimpleDxt51x1()
         {
             var image = Pfimage.FromFile(Path.Combine("data", "dxt5-simple-1x1.dds"));
