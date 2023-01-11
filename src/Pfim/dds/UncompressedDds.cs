@@ -111,6 +111,21 @@ namespace Pfim
             return totalLen;
         }
 
+        private static void SwapLevelRgb24(byte[] data, MipMapOffset mip)
+        {
+            for (int y = 0; y < mip.Height; y++)
+            {
+                var rowOffset = mip.DataOffset + y * mip.Stride;
+                for (int x = 0; x < mip.Width; x++)
+                {
+                    var i = rowOffset + x * 3;
+                    byte temp = data[i];
+                    data[i] = data[i + 2];
+                    data[i + 2] = temp;
+                }
+            }
+        }
+
         /// <summary>Decode data into raw rgb format</summary>
         private byte[] DataDecode(Stream str, PfimConfig config)
         {
@@ -151,6 +166,13 @@ namespace Pfim
             {
                 switch (imageInfo.Format)
                 {
+                    case ImageFormat.Rgb24:
+                        SwapLevelRgb24(data, new MipMapOffset(width, (int) Header.Height, stride, 0, 0));
+                        foreach (var mip in _mipMaps)
+                        {
+                            SwapLevelRgb24(data, mip);
+                        }
+                        break;
                     case ImageFormat.Rgba32:
                         for (int i = 0; i < totalLen; i += 4)
                         {
