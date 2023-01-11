@@ -1,3 +1,7 @@
+### 0.11.2 - January 11th 2023
+
+- Implement RGB swap for BGR8 DDS images
+
 ### 0.11.1 - August 17th 2022
 
 - Fix targa and dds decoding from publicly visible memory streams
