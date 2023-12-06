@@ -7,16 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aardvark.Base" Version="5.2.10" />
+    <PackageReference Include="Aardvark.Base" Version="5.2.28" />
     <PackageReference Include="Perfolizer" Version="0.2.1" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-    <PackageReference Include="DevILSharp" Version="0.2.19" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.11" />
+    <PackageReference Include="DevILSharp" Version="0.2.20" />
     <PackageReference Include="FreeImage.Standard" Version="4.3.8" />
     <PackageReference Include="ImageFormats" Version="1.0.0" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.12.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.5.0" />
     <PackageReference Include="StbSharp" Version="0.7.2.38" />
-    <PackageReference Include="System.Buffers" Version="4.5.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
