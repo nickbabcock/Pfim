@@ -1,4 +1,6 @@
-﻿namespace Pfim
+﻿using System;
+
+namespace Pfim
 {
     public class PfimConfig
     {
@@ -7,13 +9,19 @@
             TargetFormat targetFormat = TargetFormat.Native,
             bool decompress = true,
             IImageAllocator allocator = null,
-            bool applyColorMap = true)
+            bool applyColorMap = true,
+			bool enableThreading = true)
         {
             Allocator = allocator ?? new DefaultAllocator();
             BufferSize = bufferSize;
             TargetFormat = targetFormat;
             Decompress = decompress;
             ApplyColorMap = applyColorMap;
+			
+            ThreadingEnabled = enableThreading;
+            ThreadingMaxThreads = 1;
+            if (ThreadingEnabled)
+                ThreadingMaxThreads = Environment.ProcessorCount - 1;			
         }
 
         public bool ApplyColorMap { get; }
@@ -22,6 +30,9 @@
         public int BufferSize { get; }
         public TargetFormat TargetFormat { get; }
         public bool Decompress { get; }
+		
+        public bool ThreadingEnabled { get; }
+        public int ThreadingMaxThreads { get; }		
 
         public override bool Equals(object obj)
         {
