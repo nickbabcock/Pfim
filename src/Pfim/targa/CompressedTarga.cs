@@ -9,6 +9,8 @@ namespace Pfim
     /// </summary>
     public class CompressedTarga : IDecodeTarga
     {
+        internal static readonly CompressedTarga Instance = new CompressedTarga();
+
         unsafe byte[] FastPass(byte[] data, ArraySegment<byte> arr, TargaHeader header, int stride, long arrPosition)
         {
             var dataLen = header.Height * stride;

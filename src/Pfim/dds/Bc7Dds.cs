@@ -65,7 +65,7 @@ namespace Pfim.dds
         protected override byte DivSize => 4;
         protected override byte CompressedBytesPerBlock => 16;
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
+        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             // I would prefer to use Span, but not sure if I should reference System.Memory in this project
             // copy data instead
@@ -86,7 +86,7 @@ namespace Pfim.dds
                 byte uIndexPrec2 = ms_aInfo[uMode].uIndexPrec2;
                 int i;
                 uint uStartBit = uMode + 1u;
-                int[] P = new int[6];
+                int* P = stackalloc int[6];
                 byte uShape = GetBits(ref uStartBit, ms_aInfo[uMode].uPartitionBits);
                 Debug.Assert(uShape < Constants.BC7_MAX_SHAPES);
 

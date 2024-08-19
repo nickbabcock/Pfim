@@ -54,8 +54,8 @@ namespace Pfim
         private static Targa DecodeTarga(Stream str, PfimConfig config, TargaHeader header)
         {
             var targa = (header.IsCompressed)
-                ? (IDecodeTarga) (new CompressedTarga())
-                : new UncompressedTarga();
+                ? (IDecodeTarga) (CompressedTarga.Instance)
+                : UncompressedTarga.Instance;
 
             byte[] data;
             switch (header.Orientation)
@@ -141,7 +141,7 @@ namespace Pfim
             Header.ColorMapDepthBits = 0;
         }
 
-        public MipMapOffset[] MipMaps => new MipMapOffset[0];
+        public MipMapOffset[] MipMaps => Array.Empty<MipMapOffset>();
 
         /// <summary>The raw image data</summary>
         public byte[] Data { get; private set; }

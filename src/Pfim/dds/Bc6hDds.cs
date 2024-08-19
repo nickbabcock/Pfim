@@ -421,13 +421,12 @@ namespace Pfim.dds
                     fc.g = FinishUnquantize((g1 * (Constants.BC67_WEIGHT_MAX - aWeights[uIndex]) + g2 * aWeights[uIndex] + Constants.BC67_WEIGHT_ROUND) >> Constants.BC67_WEIGHT_SHIFT, bSigned);
                     fc.b = FinishUnquantize((b1 * (Constants.BC67_WEIGHT_MAX - aWeights[uIndex]) + b2 * aWeights[uIndex] + Constants.BC67_WEIGHT_ROUND) >> Constants.BC67_WEIGHT_SHIFT, bSigned);
 
-                    ushort[] rgb = new ushort[3];
-                    fc.ToF16(rgb, bSigned);
+                    fc.ToF16(out ushort r, out ushort g, out ushort b, bSigned);
 
                     // Clamp 0..1, and convert to byte (we're losing high dynamic range)
-                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(rgb[2]))) * 255.0f) + 0.5f); // blue
-                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(rgb[1]))) * 255.0f) + 0.5f); // green
-                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(rgb[0]))) * 255.0f) + 0.5f); // red
+                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(b))) * 255.0f) + 0.5f); // blue
+                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(g))) * 255.0f) + 0.5f); // green
+                    data[dataIndex++] = (byte)((Math.Max(0.0f, Math.Min(1.0f, ConvertHalfToFloat(r))) * 255.0f) + 0.5f); // red
                     data[dataIndex++] = 255;
 
                     // Is mult 4?

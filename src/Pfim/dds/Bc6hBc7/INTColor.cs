@@ -63,11 +63,11 @@ namespace Pfim.dds.Bc6hBc7
             return ((((x) & (1 << ((nb) - 1))) != 0 ? ((~0) ^ ((1 << (nb)) - 1)) : 0) | (x));
         }
 
-        public void ToF16(ushort[] aF16, bool bSigned)
+        public void ToF16(out ushort red, out ushort green, out ushort blue, bool bSigned)
         {
-            aF16[0] = INT2F16(r, bSigned);
-            aF16[1] = INT2F16(g, bSigned);
-            aF16[2] = INT2F16(b, bSigned);
+            red = INT2F16(r, bSigned);
+            green = INT2F16(g, bSigned);
+            blue = INT2F16(b, bSigned);
         }
 
         private static ushort INT2F16(int input, bool bSigned)
