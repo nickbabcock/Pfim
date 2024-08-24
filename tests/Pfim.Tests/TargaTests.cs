@@ -231,7 +231,7 @@ namespace Pfim.Tests
                 seenBlue |= image.Data[i] == 12 && image.Data[i + 1] == 0 && image.Data[i + 2] == 255;
                 if (image.Data[i] == 255 && image.Data[i + 1] == 4 && image.Data[i + 2] == 4 && !seenBlue)
                 {
-                    Assert.True(false, "Expected to see blue before red (this could mean that the color channels are swapped)");
+                    Assert.Fail("Expected to see blue before red (this could mean that the color channels are swapped)");
                 }
 
                 if (!((image.Data[i] == 0 && image.Data[i + 1] == 255 && image.Data[i + 2] == 0) ||
@@ -239,7 +239,7 @@ namespace Pfim.Tests
                       (image.Data[i] == 255 && image.Data[i + 1] == 255 && image.Data[i + 2] == 255) ||
                       (image.Data[i + 2] == 255 && image.Data[i + 1] == image.Data[i])))
                 {
-                    Assert.True(false, $"Did not expect pixel {image.Data[i]} {image.Data[i + 1]} {image.Data[i + 2]}");
+                    Assert.Fail($"Did not expect pixel {image.Data[i]} {image.Data[i + 1]} {image.Data[i + 2]}");
                 }
             }
         }
