@@ -1,3 +1,7 @@
+### 0.11.3 - August 25th, 2024
+
+- Reduce memory allocation necessary to decode images
+
 ### 0.11.2 - January 11th 2023
 
 - Implement RGB swap for BGR8 DDS images
