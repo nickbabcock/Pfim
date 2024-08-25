@@ -12,7 +12,7 @@ namespace Pfim
         private readonly uint? _bitsPerPixel;
         private readonly bool? _rgbSwapped;
         private ImageFormat _format;
-        private MipMapOffset[] _mipMaps = new MipMapOffset[0];
+        private MipMapOffset[] _mipMaps = Array.Empty<MipMapOffset>();
 
 
         internal UncompressedDds(DdsHeader header, PfimConfig config, uint bitsPerPixel, bool rgbSwapped) : base(header, config)

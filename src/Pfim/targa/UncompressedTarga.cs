@@ -8,6 +8,8 @@ namespace Pfim
     /// </summary>
     public class UncompressedTarga : IDecodeTarga
     {
+        internal static readonly UncompressedTarga Instance = new UncompressedTarga();
+
         /// <summary>Fills data starting from the bottom left</summary>
         public byte[] BottomLeft(Stream str, TargaHeader header, PfimConfig config)
         {

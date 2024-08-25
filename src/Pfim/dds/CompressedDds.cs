@@ -9,7 +9,7 @@ namespace Pfim
     public abstract class CompressedDds : Dds
     {
         private bool _compressed;
-        private MipMapOffset[] _mipMaps = new MipMapOffset[0];
+        private MipMapOffset[] _mipMaps = Array.Empty<MipMapOffset>();
 
         public override MipMapOffset[] MipMaps => _mipMaps;
 

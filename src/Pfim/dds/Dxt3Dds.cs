@@ -15,7 +15,7 @@
         {
         }
 
-        protected override int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
+        protected override unsafe int Decode(byte[] stream, byte[] data, int streamIndex, uint dataIndex, uint stride)
         {
             /*
              * Strategy for decompression:
@@ -42,7 +42,7 @@
             var c1 = ColorFloatRgb.FromRgb565(color1);
 
             (var i0, var i1) = (c0.As8Bit(), c1.As8Bit());
-            Color888[] colors = new[] { i0, i1, c0.Lerp(c1, 1f / 3).As8Bit(), c0.Lerp(c1, 2f / 3).As8Bit() };
+            Color888* colors = stackalloc Color888[] { i0, i1, c0.Lerp(c1, 1f / 3).As8Bit(), c0.Lerp(c1, 2f / 3).As8Bit() };
 
             for (int i = 0; i < 4; i++)
             {
