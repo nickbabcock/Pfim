@@ -1,5 +1,4 @@
-ARG NET_VERSION=6.0
-FROM mcr.microsoft.com/vscode/devcontainers/dotnet:0.204-${NET_VERSION}-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/dotnet:1.5.4-8.0
 
 RUN apt-get update && apt-get install -y \
         apt-transport-https \
