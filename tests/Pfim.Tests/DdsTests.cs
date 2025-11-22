@@ -1,5 +1,7 @@
 ﻿using Pfim.dds;
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace Pfim.Tests
@@ -434,6 +436,48 @@ namespace Pfim.Tests
             Assert.Equal(data, image.Data);
             Assert.Equal(256, image.Height);
             Assert.Equal(256, image.Width);
+        }
+
+        [Fact]
+        public void Parse16bitFloat()
+        {
+            var image = Pfimage.FromFile(Path.Combine("data", "16-bit-float.dds"));
+            Assert.True(image is Dds);
+            Assert.Equal(CompressionAlgorithm.D3DFMT_R16F, ((Dds)image).Header?.PixelFormat.FourCC);
+
+            Half[] data = new Half[64 * 64];
+            for (int y = 0; y < 64; ++y)
+            {
+                for (int x = 0; x < 64; ++x)
+                {
+                    data[y * 64 + x] = (Half)(x * 256);
+                }
+            }
+
+            Assert.Equal(MemoryMarshal.Cast<Half, byte>(data), image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
+        }
+
+        [Fact]
+        public void Parse32bitFloat()
+        {
+            var image = Pfimage.FromFile(Path.Combine("data", "32-bit-float.dds"));
+            Assert.True(image is Dds);
+            Assert.Equal(CompressionAlgorithm.D3DFMT_R32F, ((Dds)image).Header?.PixelFormat.FourCC);
+
+            float[] data = new float[64 * 64];
+            for (int y = 0; y < 64; ++y)
+            {
+                for (int x = 0; x < 64; ++x)
+                {
+                    data[y * 64 + x] = x * 256.0f;
+                }
+            }
+
+            Assert.Equal(MemoryMarshal.Cast<float, byte>(data), image.Data);
+            Assert.Equal(64, image.Height);
+            Assert.Equal(64, image.Width);
         }
     }
 }
