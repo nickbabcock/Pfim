@@ -88,6 +88,10 @@ namespace Pfim
                 case DxgiFormat.B5G5R5A1_UNORM:
                     return new UncompressedDds(header, config, 16, false);
 
+                case DxgiFormat.R16_FLOAT:
+                case DxgiFormat.R32_FLOAT:
+                    return new UncompressedDds(header, config);
+
                 case DxgiFormat.UNKNOWN:
                 case DxgiFormat.R32G32B32A32_TYPELESS:
                 case DxgiFormat.R32G32B32A32_FLOAT:
@@ -123,7 +127,6 @@ namespace Pfim
                 case DxgiFormat.R16G16_SINT:
                 case DxgiFormat.R32_TYPELESS:
                 case DxgiFormat.D32_FLOAT:
-                case DxgiFormat.R32_FLOAT:
                 case DxgiFormat.R32_UINT:
                 case DxgiFormat.R32_SINT:
                 case DxgiFormat.R24G8_TYPELESS:
@@ -136,7 +139,6 @@ namespace Pfim
                 case DxgiFormat.R8G8_SNORM:
                 case DxgiFormat.R8G8_SINT:
                 case DxgiFormat.R16_TYPELESS:
-                case DxgiFormat.R16_FLOAT:
                 case DxgiFormat.D16_UNORM:
                 case DxgiFormat.R16_UNORM:
                 case DxgiFormat.R16_UINT:

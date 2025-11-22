@@ -17,6 +17,16 @@ namespace Pfim
         None = 0,
 
         /// <summary>
+        /// Uncompressed single channel 16-bit floating-point format.
+        /// </summary>
+        D3DFMT_R16F = 111,
+
+        /// <summary>
+        /// Uncompressed single channel 32-bit floating-point format.
+        /// </summary>
+        D3DFMT_R32F = 114,
+
+        /// <summary>
         /// <see cref="Dxt1Dds"/>. Also known as BC1
         /// </summary>
         D3DFMT_DXT1 = 827611204,

@@ -57,6 +57,16 @@ namespace Pfim
                 case 32:
                     return new DdsLoadInfo(false, rgbSwapped, false, 1, 4, 32, ImageFormat.Rgba32);
                 default:
+                    // all the Header.PixelFormat BitMasks are zero for float formats so we have to check FourCC respectively DxgiFormat
+                    if (Header.PixelFormat.FourCC == CompressionAlgorithm.D3DFMT_R16F || Header10?.DxgiFormat == DxgiFormat.R16_FLOAT)
+                    {
+                        return new DdsLoadInfo(false, false, false, 1, 2, 16, ImageFormat.R16f);
+                    }
+                    else if (Header.PixelFormat.FourCC == CompressionAlgorithm.D3DFMT_R32F || Header10?.DxgiFormat == DxgiFormat.R32_FLOAT)
+                    {
+                        return new DdsLoadInfo(false, false, false, 1, 2, 32, ImageFormat.R32f);
+                    }
+
                     throw new Exception($"Unrecognized rgb bit count: {Header.PixelFormat.RGBBitCount}");
             }
         }
