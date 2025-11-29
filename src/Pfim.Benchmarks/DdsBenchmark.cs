@@ -39,7 +39,7 @@ namespace Pfim.Benchmarks
         public FreeImageBitmap FreeImage() => FreeImageAPI.FreeImageBitmap.FromStream(new MemoryStream(data));
 
         [Benchmark]
-        public int ImageMagick()
+        public uint ImageMagick()
         {
             var settings = new MagickReadSettings { Format = MagickFormat.Dds };
             using (var image = new MagickImage(new MemoryStream(data), settings))
