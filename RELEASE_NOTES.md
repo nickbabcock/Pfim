@@ -1,3 +1,7 @@
+### 0.11.4 - November 29th, 2025
+
+- Add support for DDS float formats R16F + R32F
+
 ### 0.11.3 - August 25th, 2024
 
 - Reduce memory allocation necessary to decode images
