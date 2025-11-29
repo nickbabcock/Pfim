@@ -1,4 +1,5 @@
-﻿/*                         MIT License
+﻿#pragma warning disable
+/*                         MIT License
                  Copyright (c) 2017 TGASharpLib
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
