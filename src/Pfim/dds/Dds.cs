@@ -77,6 +77,8 @@ namespace Pfim
                     break;
 
                 case CompressionAlgorithm.None:
+                case CompressionAlgorithm.D3DFMT_R16F:
+                case CompressionAlgorithm.D3DFMT_R32F:
                     dds = new UncompressedDds(header, config);
                     break;
 

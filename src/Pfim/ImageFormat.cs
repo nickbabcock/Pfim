@@ -21,6 +21,16 @@
         /// <summary>
         /// Red, green, blue, and alpha are 8 bits apiece
         /// </summary>
-        Rgba32
+        Rgba32,
+
+        /// <summary>
+        /// Single channel 16-bit floating-point format.
+        /// </summary>
+        R16f,
+
+        /// <summary>
+        /// Single channel 32-bit floating-point format.
+        /// </summary>
+        R32f
     }
 }
