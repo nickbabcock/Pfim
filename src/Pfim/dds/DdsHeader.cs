@@ -148,6 +148,75 @@ namespace Pfim
     }
 
     /// <summary>
+    /// Specifies the complexity of the surfaces stored.
+    /// </summary>
+    [Flags]
+    public enum DdsCaps : uint
+    {
+        /// <summary>
+        /// Optional; must be used on any file that contains more than one surface (a mipmap, a cubic environment map, or mipmapped volume texture).
+        /// </summary>
+        Complex = 0x8,
+
+        /// <summary>
+        /// Optional; should be used for a mipmap.
+        /// </summary>
+        MipMap = 0x400000,
+
+        /// <summary>
+        /// Required.
+        /// </summary>
+        Texture = 0x1000
+    }
+
+    /// <summary>
+    /// Additional detail about the surfaces stored.
+    /// </summary>
+    [Flags]
+    public enum DdsCaps2 : uint
+    {
+        /// <summary>
+        /// Required for a cube map.
+        /// </summary>
+        Cubemap = 0x200,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapPositiveX = 0x400,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapNegativeX = 0x800,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapPositiveY = 0x1000,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapNegativeY = 0x2000,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapPositiveZ = 0x4000,
+
+        /// <summary>
+        /// Required when these surfaces are stored in a cube map.
+        /// </summary>
+        CubemapNegativeZ = 0x8000,
+
+        /// <summary>
+        /// Required for a volume texture.
+        /// </summary>
+        Volume = 0x200000,
+    }
+
+    /// <summary>
     /// Surface pixel format.
     /// https://msdn.microsoft.com/en-us/library/windows/desktop/bb943984(v=vs.85).aspx
     /// </summary>
@@ -224,8 +293,13 @@ namespace Pfim
 
         DdsPixelFormat pixelFormat;
 
+        internal DdsHeader()
+        {
+            Reserved1 = new uint[11];
+        }
+
         /// <summary>Create header from stream</summary>
-        public DdsHeader(Stream stream, bool skipMagic = false)
+        public DdsHeader(Stream stream, bool skipMagic = false) : this()
         {
             headerInit(stream, skipMagic);
         }
@@ -234,7 +308,7 @@ namespace Pfim
         {
             var headerSize = skipMagic ? SIZE : SIZE + 4;
             byte[] buffer = new byte[headerSize];
-            Reserved1 = new uint[11];
+
             Util.ReadExactly(stream, buffer, 0, headerSize);
 
             fixed (byte* bufferPtr = buffer)
@@ -276,54 +350,82 @@ namespace Pfim
                 pixelFormat.BBitMask = *workingBufferPtr++;
                 pixelFormat.ABitMask = *workingBufferPtr++;
 
-                Caps = *workingBufferPtr++;
-                Caps2 = *workingBufferPtr++;
+                Caps = (DdsCaps)(*workingBufferPtr++);
+                Caps2 = (DdsCaps2)(*workingBufferPtr++);
                 Caps3 = *workingBufferPtr++;
                 Caps4 = *workingBufferPtr++;
                 Reserved2 = *workingBufferPtr++;
             }
         }
 
+        internal void Encode(BinaryWriter writer)
+        {
+            writer.Write(DDS_MAGIC);
+            writer.Write(SIZE);
+            writer.Write((uint)Flags);
+            writer.Write(Height);
+            writer.Write(Width);
+            writer.Write(PitchOrLinearSize);
+            writer.Write(Depth);
+            writer.Write(MipMapCount);
+            foreach (var r in Reserved1) writer.Write(r);
+
+            writer.Write(32);
+            writer.Write((uint)pixelFormat.PixelFormatFlags);
+            writer.Write((uint)pixelFormat.FourCC);
+            writer.Write(pixelFormat.RGBBitCount);
+            writer.Write(pixelFormat.RBitMask);
+            writer.Write(pixelFormat.GBitMask);
+            writer.Write(pixelFormat.BBitMask);
+            writer.Write(pixelFormat.ABitMask);
+
+            writer.Write((uint)Caps);
+            writer.Write((uint)Caps2);
+            writer.Write(Caps3);
+            writer.Write(Caps4);
+            writer.Write(Reserved2);
+        }
+
         /// <summary>
         /// Size of structure. This member must be set to 124.
         /// </summary>
-        public uint Size { get; private set; }
+        public uint Size { get; internal set; }
 
         /// <summary>
         /// Flags to indicate which members contain valid data. 
         /// </summary>
-        DdsFlags Flags { get;  set; }
+        public DdsFlags Flags { get; internal set; }
 
         /// <summary>
         /// Surface height in pixels
         /// </summary>
-        public uint Height { get; private set; }
+        public uint Height { get; internal set; }
 
         /// <summary>
         /// Surface width in pixels
         /// </summary>
-        public uint Width { get; private set; }
+        public uint Width { get; internal set; }
 
         /// <summary>
         /// The pitch or number of bytes per scan line in an uncompressed texture.
         /// The total number of bytes in the top level texture for a compressed texture.
         /// </summary>
-        public uint PitchOrLinearSize { get; private set; }
+        public uint PitchOrLinearSize { get; internal set; }
 
         /// <summary>
         /// Depth of a volume texture (in pixels), otherwise unused. 
         /// </summary>
-        public uint Depth { get; private set; }
+        public uint Depth { get; internal set; }
 
         /// <summary>
         /// Number of mipmap levels, otherwise unused.
         /// </summary>
-        public uint MipMapCount { get; private set; }
+        public uint MipMapCount { get; internal set; }
 
         /// <summary>
         /// Unused
         /// </summary>
-        public uint[] Reserved1 { get; private set; }
+        public uint[] Reserved1 { get; internal set; }
 
         /// <summary>
         /// The pixel format 
@@ -337,26 +439,26 @@ namespace Pfim
         /// <summary>
         /// Specifies the complexity of the surfaces stored.
         /// </summary>
-        public uint Caps { get; private set; }
+        public DdsCaps Caps { get; internal set; }
 
         /// <summary>
         /// Additional detail about the surfaces stored.
         /// </summary>
-        public uint Caps2 { get; private set; }
+        public DdsCaps2 Caps2 { get; internal set; }
 
         /// <summary>
         /// Unused
         /// </summary>
-        public uint Caps3 { get; private set; }
+        public uint Caps3 { get; internal set; }
 
         /// <summary>
         /// Unused
         /// </summary>
-        public uint Caps4 { get; private set; }
+        public uint Caps4 { get; internal set; }
 
         /// <summary>
         /// Unused
         /// </summary>
-        public uint Reserved2 { get; private set; }
+        public uint Reserved2 { get; internal set; }
     }
 }

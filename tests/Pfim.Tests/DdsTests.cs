@@ -479,5 +479,127 @@ namespace Pfim.Tests
             Assert.Equal(64, image.Height);
             Assert.Equal(64, image.Width);
         }
+
+        private static void ValidatePixelGrid(
+            byte[] origData, int origW, int origH, int origStride, int origOffset,
+            byte[] loadData, int loadW, int loadH, int loadStride, int loadOffset,
+            int bytesPerPixel, string levelName)
+        {
+            for (int y = 0; y < origH; y++)
+            {
+                // Calculate starting indices by incorporating the respective layer offsets and row strides
+                int origRowIndex = origOffset + (y * origStride);
+                int loadRowIndex = loadOffset + (y * loadStride);
+
+                for (int x = 0; x < origW; x++)
+                {
+                    int origPixelIndex = origRowIndex + (x * bytesPerPixel);
+                    int loadPixelIndex = loadRowIndex + (x * bytesPerPixel);
+
+                    for (int ch = 0; ch < bytesPerPixel; ch++)
+                    {
+                        byte expectedByte = origData[origPixelIndex + ch];
+                        byte actualByte = loadData[loadPixelIndex + ch];
+
+                        if (expectedByte != actualByte)
+                        {
+                            Assert.Fail(
+                                $"[{levelName}] Mismatch at coordinate ({x},{y}), Channel Byte Offset {ch}. Expected: {expectedByte}, Got: {actualByte}"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData("16-bit-float.dds")]
+        [InlineData("24-bit-uncompressed-bgr-odd.dds")]
+        [InlineData("24-bit-uncompressed-odd.dds")]
+        [InlineData("32-bit-float.dds")]
+        [InlineData("32-bit-uncompressed-odd.dds")]
+        [InlineData("32-bit-uncompressed.dds")]
+        [InlineData("Antenna_Metal_0_Normal.dds")]
+        [InlineData("bc4-simple.dds")]
+        [InlineData("bc5-simple-snorm.dds")]
+        [InlineData("bc5-simple.dds")]
+        [InlineData("dds_a1r5g5b5.dds")]
+        [InlineData("dds_A4R4G4B4.dds")]
+        [InlineData("dds_A8B8G8R8.dds")]
+        [InlineData("dds_R5G6B5.dds")]
+        [InlineData("dds_R8G8B8.dds")]
+        [InlineData("dxt1-alpha.dds")]
+        [InlineData("dxt1-simple.dds")]
+        [InlineData("dxt3-simple.dds")]
+        [InlineData("dxt5-simple-1x1.dds")]
+        [InlineData("dxt5-simple-odd.dds")]
+        [InlineData("dxt5-simple.dds")]
+        [InlineData("TestVolume_Noise3D.dds")]
+        [InlineData("wose_BC1_UNORM.DDS")]
+        [InlineData("24-bit-odd.tga")]
+        [InlineData("CBW8.tga")]
+        [InlineData("CCM8.tga")]
+        [InlineData("colormap-odd.tga")]
+        [InlineData("CTC16.tga")]
+        [InlineData("CYA.tga")]
+        [InlineData("DSCN1910_24bpp_uncompressed_10_2.tga")]
+        [InlineData("DSCN1910_24bpp_uncompressed_10_3.tga")]
+        [InlineData("flag_t32.tga")]
+        [InlineData("large-top-left.tga")]
+        [InlineData("marbles.tga")]
+        [InlineData("marbles2.tga")]
+        [InlineData("rgb24_top_left_colormap.tga")]
+        [InlineData("rgb24_top_left.tga")]
+        [InlineData("rgb32_top_left_rle_colormap.tga")]
+        [InlineData("tiny-rect.tga")]
+        [InlineData("true-24-bottom-right.tga")]
+        [InlineData("true-24-large.tga")]
+        [InlineData("true-24-rle.tga")]
+        [InlineData("true-24.tga")]
+        [InlineData("true-32-mixed.tga")]
+        [InlineData("true-32-rle-large.tga")]
+        [InlineData("true-32-rle.tga")]
+        [InlineData("true-32.tga")]
+        public void SaveUncompressedDds(string fileName)
+        {
+            var path = Path.Combine("data", fileName);
+            var original = Pfimage.FromFile(path);
+            var originalMipCount = original.MipMaps?.Length ?? 0;
+
+            var ms = new MemoryStream();
+            original.SaveAsDds(ms);
+            ms.Seek(0, SeekOrigin.Begin);
+
+            var loaded = Pfimage.FromStream(ms);
+            Assert.Equal(original.Width, loaded.Width);
+            Assert.Equal(original.Height, loaded.Height);
+            Assert.Equal(original.BitsPerPixel, loaded.BitsPerPixel);
+            Assert.Equal(original.Format, loaded.Format);
+            Assert.Equal(original.MipMaps?.Length, loaded.MipMaps?.Length);
+
+            ValidatePixelGrid(
+                original.Data, original.Width, original.Height, original.Stride, 0,
+                loaded.Data, loaded.Width, loaded.Height, loaded.Stride, 0,
+                original.BitsPerPixel / 8, levelName: "Base Layer (Mip 0)"
+            );
+
+            if (originalMipCount > 0)
+            {
+                for (int m = 0; m < originalMipCount; m++)
+                {
+                    var origMip = original.MipMaps[m];
+                    var loadMip = loaded.MipMaps[m];
+
+                    Assert.Equal(origMip.Width, loadMip.Width);
+                    Assert.Equal(origMip.Height, loadMip.Height);
+
+                    ValidatePixelGrid(
+                        original.Data, origMip.Width, origMip.Height, origMip.Stride, origMip.DataOffset,
+                        loaded.Data, loadMip.Width, loadMip.Height, loadMip.Stride, loadMip.DataOffset,
+                        original.BitsPerPixel / 8, levelName: $"Mip Level {m + 1}"
+                    );
+                }
+            }
+        }
     }
 }

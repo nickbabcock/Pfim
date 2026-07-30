@@ -114,6 +114,18 @@ namespace Pfim
 
         protected abstract void Decode(Stream stream, PfimConfig config);
 
+        internal static void EncodeAsDds(IImage image, Stream stream)
+            => UncompressedDds.Encode(image, stream);
+
+        internal static void EncodeAsDds(IImage image, string path, PfimConfig config)
+        {
+            if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(nameof(path));
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, config.BufferSize))
+            {
+                EncodeAsDds(image, fs);
+            }
+        }
+
         public void ApplyColorMap()
         {
         }
@@ -124,5 +136,26 @@ namespace Pfim
         {
             _config.Allocator.Return(Data);
         }
+    }
+
+    public static class IImageDdsExtensions
+    {
+        /// <summary>
+        /// Saves the given image to a stream as an uncompressed DDS image.
+        /// </summary>
+        public static void SaveAsDds(this IImage image, Stream stream)
+            => Dds.EncodeAsDds(image, stream);
+
+        /// <summary>
+        /// Saves the given image to the specified file path as an uncompressed DDS image.
+        /// </summary>
+        public static void SaveAsDds(this IImage image, string path, PfimConfig config)
+            => Dds.EncodeAsDds(image, path, config);
+
+        /// <summary>
+        /// Saves the given image to the specified file path as an uncompressed DDS image.
+        /// </summary>
+        public static void SaveAsDds(this IImage image, string path)
+            => Dds.EncodeAsDds(image, path, new PfimConfig());
     }
 }

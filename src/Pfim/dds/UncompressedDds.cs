@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace Pfim
 {
@@ -38,6 +39,139 @@ namespace Pfim
         protected override void Decode(Stream stream, PfimConfig config)
         {
             Data = DataDecode(stream, config);
+        }
+
+        internal static void Encode(IImage image, Stream stream)
+        {
+            if (image == null) throw new ArgumentNullException(nameof(image));
+            if (image.Compressed) throw new InvalidOperationException("Image must be uncompressed before saving.");
+
+            var format = new DdsPixelFormat();
+
+            switch (image.Format)
+            {
+                case ImageFormat.Rgba32:
+                    format.RGBBitCount = 32;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.AlphaPixels | DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x00FF0000;
+                    format.GBitMask = 0x0000FF00;
+                    format.BBitMask = 0x000000FF;
+                    format.ABitMask = 0xFF000000;
+                    break;
+
+                case ImageFormat.Rgb24:
+                    format.RGBBitCount = 24;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x00FF0000;
+                    format.GBitMask = 0x0000FF00;
+                    format.BBitMask = 0x000000FF;
+                    break;
+
+                case ImageFormat.Rgba16:
+                    format.RGBBitCount = 16;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.AlphaPixels | DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x00000F00;
+                    format.GBitMask = 0x000000F0;
+                    format.BBitMask = 0x0000000F;
+                    format.ABitMask = 0x0000F000;
+                    break;
+
+                case ImageFormat.R5g5b5:
+                    format.RGBBitCount = 16;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x00007C00;
+                    format.GBitMask = 0x000003E0;
+                    format.BBitMask = 0x0000001F;
+                    break;
+
+                case ImageFormat.R5g5b5a1:
+                    format.RGBBitCount = 16;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.AlphaPixels | DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x00007C00;
+                    format.GBitMask = 0x000003E0;
+                    format.BBitMask = 0x0000001F;
+                    format.ABitMask = 0x00008000;
+                    break;
+
+                case ImageFormat.R5g6b5:
+                    format.RGBBitCount = 16;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Rgb;
+                    format.RBitMask = 0x0000F800;
+                    format.GBitMask = 0x000007E0;
+                    format.BBitMask = 0x0000001F;
+                    break;
+
+                case ImageFormat.Rgb8:
+                    format.RGBBitCount = 8;
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Luminance;
+                    format.RBitMask = 0x000000FF;
+                    break;
+
+                case ImageFormat.R16f:
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Fourcc;
+                    format.FourCC = CompressionAlgorithm.D3DFMT_R16F;
+                    break;
+
+                case ImageFormat.R32f:
+                    format.PixelFormatFlags = DdsPixelFormatFlags.Fourcc;
+                    format.FourCC = CompressionAlgorithm.D3DFMT_R32F;
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Cannot encode {image.Format} as uncompressed DDS.");
+            }
+
+            var bytesPerPixel = image.BitsPerPixel / 8;
+
+            DdsHeader header = new DdsHeader
+            {
+                PixelFormat = format,
+                Width = (uint)image.Width,
+                Height = (uint)image.Height,
+                MipMapCount = (image.MipMaps != null && image.MipMaps.Length > 0) ? (uint)image.MipMaps.Length + 1 : 0,
+                PitchOrLinearSize = (uint)(image.Width * bytesPerPixel),
+                Flags = DdsFlags.Caps | DdsFlags.Width | DdsFlags.Height | DdsFlags.Pitch | DdsFlags.PixelFormat,
+                Caps = DdsCaps.Texture
+            };
+
+            if (header.MipMapCount > 0)
+            {
+                header.Flags |= DdsFlags.MipMapCount;
+                header.Caps |= DdsCaps.MipMap | DdsCaps.Complex;
+            }
+
+            using (var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
+            {
+                header.Encode(writer);
+
+                void WriteDataBlock(int lengthInBytes, int width, int height, int offset, int stride)
+                {
+                    var bytesPerRow = width * bytesPerPixel; // No padding. Decoder ignores header pitch.
+
+                    if (bytesPerRow * height == lengthInBytes)
+                    {
+                        writer.Write(image.Data, offset, lengthInBytes);
+                    }
+                    else
+                    {
+                        for (int y = 0; y < height; y++)
+                        {
+                            int rowOffset = offset + y * stride;
+                            writer.Write(image.Data, rowOffset, bytesPerRow);
+                        }
+                    }
+                }
+
+                WriteDataBlock(image.DataLen, image.Width, image.Height, 0, image.Stride);
+
+                if (image.MipMaps != null && image.MipMaps.Length > 0)
+                {
+                    foreach (var mip in image.MipMaps)
+                    {
+                        WriteDataBlock(mip.DataLen, mip.Width, mip.Height, mip.DataOffset, mip.Stride);
+                    }
+                }
+            }
         }
 
         /// <summary>Determine image info from header</summary>
